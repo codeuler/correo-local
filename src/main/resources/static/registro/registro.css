@@ -1,0 +1,123 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    background-image: linear-gradient(#BDCCF0, #A4B3E9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 400px;
+    background-color: #BDCCF0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 4px #0003;
+    box-sizing: border-box;
+    text-align: center;
+    transition: box-shadow .5s;
+    padding: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.card__title {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.card__info {
+    font-size: 16px;
+    font-weight: 100;
+}
+
+.card__separador {
+    width: 100%;
+    margin: 15px 0;
+}
+
+.separador--username {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card__input {
+    font-size: 20px;
+    color: #666;
+    padding: 5px;
+    padding-left: 15px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    border: transparent 2.5px solid;
+}
+
+.card__input:hover {
+    border: #8a9ae1 2px solid;
+}
+
+.input--username {
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-wrap: wrap;
+    margin-right: 5px;
+}
+
+.card__label {
+    font-size: 20px;
+    color: #666;
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-right: 5px;
+}
+
+.card__input:focus {
+    color: #000;
+    outline: transparent solid 1px;
+    border: #000 2.5px solid;
+}
+
+.card__submit {
+    background-color:#000;
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    color: #fff;
+    border: transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px #000 solid;
+    transition: background-color .5s;
+}
+
+.card__submit:hover {
+    background-color: #fff;
+    color: #000;
+    border: 1px black solid;
+}
+
+.card__form {
+    width: 100%;
+}
+
+.card__link-registro {
+    color: #8f9a9c;
+    text-decoration: underline;
+}
+
+/*Sin visitar*/
+.card__link-registro:link {
+    color: #65727a;
+}
+
+.card__link-registro:visited {
+    color: #65727a;
+}
+
+.card__link-registro:active,
+.card__link-registro:hover {
+    color: #6572cc;
+}
+.card:hover {
+    box-shadow: 0 0 10px 0 #000;
+}

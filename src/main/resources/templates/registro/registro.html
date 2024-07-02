@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/registro/registro.css">
+    <title>Registro</title>
+    <script defer src="/registro/registro.js"></script>
+</head>
+<body>
+    <div class="card">
+        <h1 class="card__title">LearnCode</h1>
+        <p class="card__info">Ingresa a continuación tus datos para crear satisfactoriamente tu cuenta</p>
+        <form class="card__form">
+            <div class="card__separador">
+                <input placeholder="Nombre" 
+                type="text" 
+                class="card__input" 
+                id="name" 
+                required 
+                minlength="3"
+                pattern="[A-za-z]{3,16}">
+            </div>
+            <div class="card__separador">
+                <input placeholder="Apellido" 
+                type="text" 
+                class="card__input" 
+                id="lastname" 
+                required minlength="3"
+                pattern="[A-Za-z]{3,16}">
+            </div>
+            <div class="card__separador separador--username">
+                <input placeholder="Username" 
+                type="text" 
+                class="card__input input--username" 
+                id="username"
+                pattern="[A-Za-z0-9]{3,16}" 
+                required>
+                <label for="username" class="card__label">@learncode.local</label>
+            </div>
+            <div class="card__separador">
+                <input placeholder="Password" 
+                type="password" 
+                class="card__input" 
+                id="password" 
+                minlength="8" 
+                maxlength="30" 
+                required
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}" 
+                >
+            </div>
+            <div class="card__separador">
+                <input placeholder="Confirmación" 
+                type="password" 
+                class="card__input" 
+                id="verificacion" 
+                required>
+            </div>
+            <div class="card__separador">
+                <button  class="card__submit" id="submit">Registrar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
