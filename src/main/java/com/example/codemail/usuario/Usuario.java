@@ -15,11 +15,13 @@ public class Usuario {
             length = 15
     )
     private String nombre;
+
     @Column(
             nullable = false,
             length = 15
     )
     private String apellido;
+
     @Column(
             unique = true,
             length = 30
@@ -34,6 +36,13 @@ public class Usuario {
 
     public Usuario () {
 
+    }
+
+    public Usuario(String nombre, String apellido, String email, String password) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.password = password;
     }
 
     public Integer getId() {
