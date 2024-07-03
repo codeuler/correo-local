@@ -6,10 +6,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UsuarioControlador {
+
+    private final UsuarioService usuarioService;
+
+    public UsuarioControlador(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
     @PostMapping("/usuarios")
-    public Usuario crearUsuario (
-            @RequestBody Usuario usuario
+    public UsuarioDto crearUsuario (
+            @RequestBody UsuarioDto usuarioDto
     ) {
-        return usuario;
+
+        return usuarioService.create(usuarioDto);
     }
 }
