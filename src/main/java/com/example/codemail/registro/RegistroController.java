@@ -10,5 +10,4 @@ public class RegistroController {
     public String registroTemplate() {
         return "registro/registro";
     }
-
 }
