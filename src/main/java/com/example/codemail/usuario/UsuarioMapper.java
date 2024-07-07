@@ -10,7 +10,8 @@ public class UsuarioMapper {
                 usuarioDto.nombre(),
                 usuarioDto.apellido(),
                 usuarioDto.correo(),
-                usuarioDto.password()
+                usuarioDto.password(),
+                Rol.USUARIO
         );
     }
 

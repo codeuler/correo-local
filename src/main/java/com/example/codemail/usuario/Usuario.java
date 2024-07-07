@@ -1,9 +1,6 @@
 package com.example.codemail.usuario;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Usuario {
@@ -31,16 +28,18 @@ public class Usuario {
             nullable = false
     )
     private String password;
-
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
     public Usuario () {
 
     }
 
-    public Usuario(String nombre, String apellido, String email, String password) {
+    public Usuario(String nombre, String apellido, String email, String password, Rol rol) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.password = password;
+        this.rol = rol;
     }
 
     public Integer getId() {
@@ -80,5 +79,13 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 }
