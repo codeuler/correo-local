@@ -1,5 +1,6 @@
 package com.example.codemail.usuario;
 
+import com.example.codemail.Auth.RegisterRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,16 @@ public class UsuarioMapper {
                 usuarioDto.apellido(),
                 usuarioDto.correo(),
                 usuarioDto.password(),
+                Rol.USUARIO
+        );
+    }
+
+    public Usuario toUsuario(RegisterRequest registerRequest) {
+        return new Usuario(
+                registerRequest.nombre(),
+                registerRequest.apellido(),
+                registerRequest.correo(),
+                registerRequest.password(),
                 Rol.USUARIO
         );
     }

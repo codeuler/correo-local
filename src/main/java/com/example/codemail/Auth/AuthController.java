@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping(value = "registro")
     public ResponseEntity<AuthResponse> registro(
-            @RequestBody LoginRequest request
+            @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.ok(authService.registro(request));
     }
