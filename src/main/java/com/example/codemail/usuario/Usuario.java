@@ -1,9 +1,15 @@
 package com.example.codemail.usuario;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
@@ -73,10 +79,6 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -87,5 +89,40 @@ public class Usuario {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+    //Metodos implementados de la interfaz
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //Retorna una lista de un objeto que representa el rol del usuario
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return nombre;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
