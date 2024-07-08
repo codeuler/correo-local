@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private UsuarioMapper usuarioMapper;
-    private UsuarioRepository usuarioRepository;
-    private JwtService jwtService;
+    private final UsuarioMapper usuarioMapper;
+    private final UsuarioRepository usuarioRepository;
+    private final JwtService jwtService;
 
     public AuthService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService) {
         this.usuarioMapper = usuarioMapper;

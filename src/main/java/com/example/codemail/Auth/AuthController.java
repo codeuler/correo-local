@@ -36,6 +36,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> registro(
             @RequestBody RegisterRequest request
     ) {
+        //Implementar la busqueda de email
         return ResponseEntity.ok(authService.registro(request));
     }
 
