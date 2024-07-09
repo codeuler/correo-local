@@ -35,7 +35,7 @@ public class WebSecurityConfig {
         http.
                 authorizeHttpRequests(
                     (requests) -> requests
-                            .requestMatchers("/registro","/registro/**","/usuarios").permitAll()
+                            .requestMatchers("/registro","/registro/**","/usuarios","login").permitAll()
                             .anyRequest().authenticated()
                 )//Deshabilitar las sesiones
                 .sessionManagement( sessionManger ->
