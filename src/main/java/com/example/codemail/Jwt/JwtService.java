@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = Base64.getEncoder().encodeToString("llavesecretaqueseusaenjwt".getBytes());
+    private static final String SECRET_KEY = Base64.getEncoder().encodeToString("llavesecretaqueseusaenjwtafasfadfadfafadfdd".getBytes());
 
     public String getToken(UserDetails usuario) {
         return getToken(new HashMap<>(), usuario);
