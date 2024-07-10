@@ -26,17 +26,4 @@ public class UsuarioControlador {
         return usuarioService.create(usuarioDto);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException ex
-    ) {
-        var errors = new HashMap<String,String>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            var fieldName = ((FieldError) error).getField();
-            var errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-
 }
