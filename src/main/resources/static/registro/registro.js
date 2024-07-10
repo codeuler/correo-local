@@ -3,18 +3,12 @@ const lastname = document.getElementById("lastname");
 const username = document.getElementById("username");
 const password = document.getElementById("password");
 const verificacion = document.getElementById("verificacion");
+const submit = document.getElementById("submit")
 
 const validarFormulario = (event) => {
     event.preventDefault();
 }
 
-const verificarCampo = (input) => {
-    if (input.validity.patternMismatch) {
-        input.setCustomValidity("Debe tener únicamente letras y entre (3 - 16) caracteres");
-    } else {
-        input.setCustomValidity("")
-    }
-}
 
 /*
     Verificar que el campo de nombre sea únicamente letras
@@ -73,3 +67,30 @@ verificacion.addEventListener("input", function (event) {
 
 document.querySelector(".card__form").addEventListener("submit", validarFormulario);
 
+/*
+ * Realizar solicitud post para registrar el usuario
+ */
+submit.addEventListener("click", function (event) {
+    fetch("http://localhost:8080/registro",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/JSON",
+            },
+            body: JSON.stringify({
+                nombre: nameUser.value,
+                apellido: lastname.value,
+                correo: username.value + "nuevo@learncode.local",
+                password: password.value
+            })
+    })
+            .then(response => {
+                if (response.ok) {
+                    //La respuesta http tiene un codigo 2xx y es considerada existosa
+                } else {
+                    //Crear logica para codigo de estado 409,es decir, el correo ya existe
+                }
+                return response.json()
+            })
+            .then(json => console.log(json));
+    }
+    );

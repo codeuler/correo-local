@@ -42,8 +42,15 @@ public class AuthController {
     public ResponseEntity<AuthResponse> registro(
             @RequestBody RegisterRequest request
     ) {
-        //Implementar la busqueda de email
-        return ResponseEntity.ok(authService.registro(request));
+        /*
+         * En caso de que el correo que se ingresa exista, se devolverá un código de error 409
+         * de lo contrario se creará el usuario en la base de datos
+         */
+        if (authService.buscarUsuario(request.correo()).isPresent()) {
+            return ResponseEntity.ok(authService.registro(request));
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
     //Controlar errores en el metodo post de registro
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
     private final UsuarioMapper usuarioMapper;
@@ -55,5 +57,9 @@ public class AuthService {
         Usuario usuario = usuarioMapper.toUsuario(request);
         usuarioRepository.save(usuario);
         return new AuthResponse(jwtService.getToken(usuario));
+    }
+
+    public Optional<Usuario> buscarUsuario(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }
