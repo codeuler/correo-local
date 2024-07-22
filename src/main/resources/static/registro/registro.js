@@ -3,20 +3,14 @@ const lastname = document.getElementById("lastname");
 const username = document.getElementById("username");
 const password = document.getElementById("password");
 const verificacion = document.getElementById("verificacion");
-const submit = document.getElementById("submit")
-const errorCorreo = document.getElementById("errorCorreo");
-const cuentaCreada = document.getElementById("cuentaCreada");
+const errorCorreo = document.querySelector(".card__errorCorreo");
+const cuentaCreada = document.querySelector(".card__cuentaCreada");
 const errorExtra = document.querySelector(".card__errorExtra")
-
-const validarFormulario = (event) => {
-    event.preventDefault();
-}
-
 
 /*
     Verificar que el campo de nombre sea únicamente letras
 */
-nameUser.addEventListener("input", function (event) {
+nameUser.addEventListener("input", () => {
     if (nameUser.validity.patternMismatch) {
         nameUser.setCustomValidity("Debe tener únicamente letras y entre (3 - 16) caracteres");
     } else {
@@ -27,7 +21,7 @@ nameUser.addEventListener("input", function (event) {
 /*
     Verificar que el campo de apellido sea únicamente letras
 */
-lastname.addEventListener("input", function (event) { 
+lastname.addEventListener("input", () => {
     if (lastname.validity.patternMismatch) {
         lastname.setCustomValidity("Debe tener únicamente letras y entre (3 - 16) caracteres");
     } else {
@@ -38,7 +32,7 @@ lastname.addEventListener("input", function (event) {
 /*
     Verificar que el campo de username contenga solo letras y/o números
 */
-username.addEventListener("input", function (event) { 
+username.addEventListener("input", () => {
     if (username.validity.patternMismatch) {
         username.setCustomValidity("Debe tener únicamente letras y/o números (min 8 caracteres)");
     } else {
@@ -49,7 +43,7 @@ username.addEventListener("input", function (event) {
 /*
     Verificar que el campo de constraseña contenga lo especificado
 */
-password.addEventListener("input", function (event) {
+password.addEventListener("input", () => {
     if (password.validity.patternMismatch) {
         password.setCustomValidity("Password debe contener mínimo 8 caracteres de los cuales deben haber " +
             "al menos una letra en mayúscula, una en minuscula, un número y un caracter especial");
@@ -61,7 +55,7 @@ password.addEventListener("input", function (event) {
 /*
     Verificar que el campo de verificación sea exactamente igual al de contraseña
 */
-verificacion.addEventListener("input", function (event) {
+verificacion.addEventListener("input", () => {
     if (!(password.value === verificacion.value)) {
         verificacion.setCustomValidity("Las contraseñas no coinciden");
     } else {

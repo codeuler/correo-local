@@ -19,16 +19,15 @@
                 type="text" 
                 class="card__input" 
                 id="name" 
-                required 
-                minlength="3"
+                required
                 pattern="[A-za-z]{3,16}">
             </div>
             <div class="card__separador">
                 <input placeholder="Apellido" 
                 type="text" 
                 class="card__input" 
-                id="lastname" 
-                required minlength="3"
+                id="lastname"
+                required
                 pattern="[A-Za-z]{3,16}">
             </div>
             <div class="card__separador separador--username">
@@ -40,20 +39,17 @@
                 required>
                 <label for="username" class="card__label">@learncode.local</label>
             </div>
-            <p class="card__errorCorreo"
-                id="errorCorreo">
+            <p class="card__errorCorreo">
                 ¡Ups! parece que el correo ya existe
             </p>
 
             <div class="card__separador">
-                <input placeholder="Password" 
-                type="password" 
-                class="card__input" 
-                id="password" 
-                minlength="8" 
-                maxlength="30" 
+                <input placeholder="Password"
+                type="password"
+                class="card__input"
+                id="password"
                 required
-                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}" 
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,30}"
                 >
             </div>
             <div class="card__separador">
@@ -68,11 +64,9 @@
             </div>
         </form>
         <div>
-            <p class="card__cuentaCreada"
-                id="cuentaCreada">
+            <p class="card__cuentaCreada">
                 ¡Cuenta creada con exito!</p>
-            <p class="card__errorExtra"
-                id="errorExtra">Este es un aviso que esta de más</p>
+            <p class="card__errorExtra">Este es un aviso que esta de más</p>
 
         </div>
     </div>
