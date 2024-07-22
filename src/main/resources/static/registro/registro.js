@@ -4,6 +4,9 @@ const username = document.getElementById("username");
 const password = document.getElementById("password");
 const verificacion = document.getElementById("verificacion");
 const submit = document.getElementById("submit")
+const errorCorreo = document.getElementById("errorCorreo");
+const cuentaCreada = document.getElementById("cuentaCreada");
+const errorExtra = document.querySelector(".card__errorExtra")
 
 const validarFormulario = (event) => {
     event.preventDefault();
@@ -13,7 +16,7 @@ const validarFormulario = (event) => {
 /*
     Verificar que el campo de nombre sea únicamente letras
 */
-nameUser.addEventListener("input", function (event) { 
+nameUser.addEventListener("input", function (event) {
     if (nameUser.validity.patternMismatch) {
         nameUser.setCustomValidity("Debe tener únicamente letras y entre (3 - 16) caracteres");
     } else {
@@ -37,7 +40,7 @@ lastname.addEventListener("input", function (event) {
 */
 username.addEventListener("input", function (event) { 
     if (username.validity.patternMismatch) {
-        username.setCustomValidity("Debe tener únicamente letras y/o números");
+        username.setCustomValidity("Debe tener únicamente letras y/o números (min 8 caracteres)");
     } else {
         username.setCustomValidity("");
     }
@@ -48,7 +51,8 @@ username.addEventListener("input", function (event) {
 */
 password.addEventListener("input", function (event) {
     if (password.validity.patternMismatch) {
-        password.setCustomValidity("Password debe contener mínimo 8 caracteres de los cuales deben haber al menos una letra en mayúscula, una en minuscula, un número y un caracter especial");
+        password.setCustomValidity("Password debe contener mínimo 8 caracteres de los cuales deben haber " +
+            "al menos una letra en mayúscula, una en minuscula, un número y un caracter especial");
     } else {
         password.setCustomValidity("");
     }
@@ -65,32 +69,38 @@ verificacion.addEventListener("input", function (event) {
     }
 });
 
-document.querySelector(".card__form").addEventListener("submit", validarFormulario);
-
-/*
- * Realizar solicitud post para registrar el usuario
- */
-submit.addEventListener("click", function (event) {
-    fetch("http://localhost:8080/registro",{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/JSON",
-            },
-            body: JSON.stringify({
-                nombre: nameUser.value,
-                apellido: lastname.value,
-                correo: username.value + "nuevo@learncode.local",
-                password: password.value
-            })
+document.querySelector(".card__form").addEventListener("submit",  event=> {
+    event.preventDefault();
+    errorCorreo.style.display = "none";
+    cuentaCreada.style.display = "none";
+    errorExtra.style.display = "none";
+    fetch("/registro",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/JSON",
+        },
+        body: JSON.stringify({
+            nombre: nameUser.value,
+            apellido: lastname.value,
+            correo: username.value + "@learncode.local",
+            password: password.value
+        })
     })
-            .then(response => {
-                if (response.ok) {
-                    //La respuesta http tiene un codigo 2xx y es considerada existosa
-                } else {
-                    //Crear logica para codigo de estado 409,es decir, el correo ya existe
-                }
-                return response.json()
-            })
-            .then(json => console.log(json));
-    }
-    );
+        .then(response => {
+            if (response.ok) {
+                //La respuesta http tiene un codigo 2xx y es considerada existosa
+                cuentaCreada.style.display = "block";
+            } else if (response.status === 409) {
+                //El correo ya existe
+                errorCorreo.style.display = "block";
+            } else {
+                /*
+                 * En caso de presentarse algún error diferente del 409 se pondrá en pantalla
+                 */
+                response.json().then((data) => {
+                    errorExtra.style.display = "block";
+                    errorExtra.textContent = JSON.stringify(data, null, 2);
+                });
+            }
+        })
+});

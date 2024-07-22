@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,16 +41,16 @@ public class AuthController {
 
     @PostMapping(value = "registro")
     public ResponseEntity<AuthResponse> registro(
-            @RequestBody RegisterRequest request
+            @RequestBody @Validated RegisterRequest request
     ) {
         /*
          * En caso de que el correo que se ingresa exista, se devolverá un código de error 409
          * de lo contrario se creará el usuario en la base de datos
          */
         if (authService.buscarUsuario(request.correo()).isPresent()) {
-            return ResponseEntity.ok(authService.registro(request));
-        } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } else {
+            return ResponseEntity.ok(authService.registro(request));
         }
     }
     //Controlar errores en el metodo post de registro

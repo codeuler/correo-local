@@ -24,10 +24,10 @@ public record RegisterRequest(
                 message = "El nombre debe tener como mínimo 2 letras y como máximo 15"
         )
         String apellido,
-        @Email(
-                regexp = "^[a-zA-Z0-9]{5,30}@learncode.local$",
-                message = "El nombre del usuario solo puede contener letras y/o números, con un tamaño de entre 5 y 30 " +
-                        "caracteres, a demás se debe agregar el arroba junto con el dominio \"@learncode.local\""
+        @Pattern(
+                regexp = "^[a-zA-Z0-9]{8,30}@learncode\\.local$",
+                message = "El nombre del usuario solo puede contener letras y/o números, con un tamaño de entre 8 y 30 " +
+                        "caracteres, a demás se debe agregar el arroba junto con el dominio '@learncode.local'"
         )
         String correo,
         @Pattern(

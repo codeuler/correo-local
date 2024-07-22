@@ -10,7 +10,9 @@
 <body>
     <div class="card">
         <h1 class="card__title">LearnCode</h1>
-        <p class="card__info">Ingresa a continuación tus datos para crear satisfactoriamente tu cuenta</p>
+        <p class="card__info">
+            Ingresa a continuación tus datos para crear satisfactoriamente tu cuenta o ve al <a class="card__inicio" href="login">inicio</a>
+        </p>
         <form class="card__form">
             <div class="card__separador">
                 <input placeholder="Nombre" 
@@ -34,10 +36,15 @@
                 type="text" 
                 class="card__input input--username" 
                 id="username"
-                pattern="[A-Za-z0-9]{3,16}" 
+                pattern="[A-Za-z0-9]{8,30}"
                 required>
                 <label for="username" class="card__label">@learncode.local</label>
             </div>
+            <p class="card__errorCorreo"
+                id="errorCorreo">
+                ¡Ups! parece que el correo ya existe
+            </p>
+
             <div class="card__separador">
                 <input placeholder="Password" 
                 type="password" 
@@ -57,9 +64,17 @@
                 required>
             </div>
             <div class="card__separador">
-                <button  class="card__submit" id="submit">Registrar</button>
+                <button type="submit" class="card__submit" id="submit">Registrar</button>
             </div>
         </form>
+        <div>
+            <p class="card__cuentaCreada"
+                id="cuentaCreada">
+                ¡Cuenta creada con exito!</p>
+            <p class="card__errorExtra"
+                id="errorExtra">Este es un aviso que esta de más</p>
+
+        </div>
     </div>
 </body>
 </html>

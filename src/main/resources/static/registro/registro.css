@@ -39,6 +39,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: auto;
 }
 
 .card__input {
@@ -120,4 +121,20 @@ body {
 }
 .card:hover {
     box-shadow: 0 0 10px 0 #000;
+}
+.card__errorCorreo, .card__errorExtra{
+    color: crimson;
+    margin: 10px 0 3px 0;
+    text-align: left;
+    display: none;
+}
+
+.card__cuentaCreada {
+    color: #116a2b;
+    margin: 10px 0 3px 0;
+    display: none;
+}
+.card__inicio {
+    color: #6370c6;
+    text-decoration: underline;
 }
