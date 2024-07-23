@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/login/login.css">
+    <script defer src="/login/login.js"></script>
+    <title>Login</title>
+</head>
+<body>
+    <div class="card">
+        <h1 class="card__title">LearnCode</h1>
+        <p class="card__info">Ingresa a continuación tus datos para crear satisfactoriamente tu cuenta</p>
+        <form class="card__form">
+            <div class="card__separador">
+                <input
+                        placeholder="email@learncode.local"
+                        class="card__input"
+                        id="email"
+                        pattern="^[A-Za-z0-9]{8,30}@learncode\.local$"
+                        required>
+            </div>
+            <div class="card__separador">
+                <input placeholder="Password" type="password" id="password" class="card__input">
+            </div>
+            <div class="card__separador">
+                <button type="submit" class="card__submit">Ingresar</button>
+            </div>
+        </form>
+        <p class="card__error"></p>
+        <p class="card__text-registro">¿Aún no tienes un correo? <a href="/registro" class="card__link-registro">Crealo aquí</a></p>
+    </div>
+</body>
+</html>

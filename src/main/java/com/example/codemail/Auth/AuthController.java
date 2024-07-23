@@ -2,6 +2,7 @@ package com.example.codemail.Auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -33,10 +34,17 @@ public class AuthController {
     }
 
     @PostMapping(value = "login")
-    public ResponseEntity<AuthResponse> login(
+    public ResponseEntity<?> login(
             @RequestBody LoginRequest request
     ) {
-        return ResponseEntity.ok(authService.login(request));
+        try {
+            AuthResponse autenticacion = authService.login(request);
+            return ResponseEntity.ok(autenticacion);
+        } catch (AuthenticationException authenticationManager) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    authenticationManager.getMessage()
+            );
+        }
     }
 
     @PostMapping(value = "registro")

@@ -32,7 +32,7 @@ public class WebSecurityConfig {
         http.
                 authorizeHttpRequests(
                     (requests) -> requests
-                            .requestMatchers("/registro","/registro/**","/usuarios","login"
+                            .requestMatchers("/registro","/registro/**","/usuarios","/login/**"
                                     ).permitAll()
                             .anyRequest().authenticated()
                 )//Deshabilitar las sesiones

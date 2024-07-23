@@ -1,0 +1,96 @@
+body{
+    margin: 0;
+    background-image: linear-gradient(#BDCCF0, #A4B3E9);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+    width: 400px;
+    background-color: #BDCCF0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 0 #0005;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid transparent;
+    transition: box-shadow .5s;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+.card__title{
+    margin: 0;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+.card__info{
+    font-size: 16px;
+    font-weight: 100;
+}
+
+.card__separador{
+    margin: 15px 0;
+}
+
+.card__input{
+    font-size: 20px;
+    color: #000a;
+    padding: 5px;
+    padding-left: 15px;
+    border-radius: 8px;
+    border: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    border: transparent 2px solid;
+}
+
+.card__input:hover {
+    border: #8a9ae1 2px solid;
+}
+
+.card__submit{
+    background-color: black;
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    color: #fff;
+    border: transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px transparent solid;
+    transition: background-color .5s ;
+}
+
+.card__submit:hover {
+    background-color: #fff;
+    color: #000;
+    border: 1px black solid;
+}
+.card__form{
+    width: 100%;
+}
+
+.card__link-registro{
+    color: #6370c6;
+    text-decoration: underline;
+}
+
+.card__link-registro:link, .card__link-registro:visited{
+    color: #5661ac;
+}
+
+.card__link-registro:active, .card__link-registro:hover{
+    color: #6572cc;
+}
+
+.card:hover {
+    box-shadow: 0 0 10px 0 #000;
+}
+
+.card__error {
+    color: crimson;
+    display: none;
+}
