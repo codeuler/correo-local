@@ -84,6 +84,11 @@ document.querySelector(".card__form").addEventListener("submit",  event=> {
             if (response.ok) {
                 //La respuesta http tiene un codigo 2xx y es considerada existosa
                 cuentaCreada.style.display = "block";
+                response.json().then(data => {
+                    const {token} = data;
+                    //Guardar jwt
+                    localStorage.setItem("token",token)
+                });
             } else if (response.status === 409) {
                 //El correo ya existe
                 errorCorreo.style.display = "block";

@@ -27,6 +27,12 @@ form.addEventListener("submit", e => {
         })
     }).then(response => {
         if (response.ok) {
+            response.json().then((data) => {
+                //Guardar jwt
+                const {token} = data;
+                localStorage.setItem("token", token);
+                console.log(token)
+            })
             console.log("Ya se pudo loguear");
         } else if (response.status === 401) {
             console.log("Credenciales no validas");
