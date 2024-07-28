@@ -33,6 +33,11 @@ public class AuthController {
         return "login/login";
     }
 
+    @GetMapping("/correo")
+    public String correoTemplate() {
+        return "correo/correo";
+    }
+
     @PostMapping(value = "login")
     public ResponseEntity<?> login(
             @RequestBody LoginRequest request

@@ -1,0 +1,202 @@
+body {
+    margin: 0;
+    background-image: linear-gradient(#BDCCF0, #A4B3E9);
+    min-height: 100vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 2em;
+    box-sizing: border-box;
+    color: #1e1e1e;
+}
+
+.principal {
+    display: flex;
+    margin: 0;
+    height: 100vh;
+    align-items: start;
+    justify-content: space-evenly;
+    box-sizing: border-box;
+}
+
+.aside {
+    width: 20%;
+    min-width: 210px;
+    display: flex;
+    flex-direction: column;
+    background-color: #BDCCF0;
+    border: #1e1e1e solid 1px;
+    border-radius: 10px;
+    margin: 20px 10px;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+.aside__carpetas {
+    display: flex;
+    flex-direction: column;
+    font-size: 17px;
+}
+
+.aside__crearCarpetas {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.aside__boton {
+    background: #aaa0;
+    border: 1px solid transparent;
+    align-items: flex-start;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: left;
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: 0 20px;
+    margin: 0;
+    height: 40px;
+    cursor: pointer;
+}
+
+.aside__boton:active{
+    text-align: center;
+    background-color: transparent;
+}
+
+.crearCarpetas--texto {
+    background: #aaa0;
+    border: 1px solid transparent;
+    text-align: left;
+    font-size: 1rem;
+    margin: 15px 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+.redactar--boton {
+    color:#1e1e1e;
+    background-color: #FEFBFF;
+    margin: 20px 0;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    padding: 10px 15px;
+    border-color: transparent;
+    cursor: pointer;
+}
+
+.redactar--boton:hover {
+    border-color: #1e1e1e;
+}
+
+.main {
+    width: 65%;
+    min-width: 800px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    background-color: #BDCCF0;
+    border: #1e1e1e solid 1px;
+    border-radius: 10px;
+    margin: 20px 0;
+    padding: 30px;
+}
+
+.aside__boton:hover {
+    background-color: #FEFBFF;
+}
+
+.main__mensaje {
+    display: flex;
+    background-color: #FEFBFF;
+    color: #1e1e1e;
+    font-size: 1rem;
+    justify-content: space-around;
+    align-items: center;
+    flex-basis: 40px;
+    width: 100%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
+}
+.main__mensaje > p {
+    margin: 0;
+    padding: 0;
+    height: 50%;
+}
+
+.main__remitente {
+    flex-basis: 20%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main__contenido {
+    flex-basis: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main__fecha {
+    flex-basis: 7%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main__guardar, .main__eliminar{
+    flex-basis: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+.crearCarpetas--contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: 100%;
+    width: 40px;
+    padding: 8px 0;
+}
+.main__guardar:hover, .main__eliminar:hover {
+    background-color: #1e1e1e58;
+    border-radius: 50%;
+}
+.crearCarpetas--contenedor:hover {
+    background-color: white;
+    border-radius: 50%;
+}
+.fa-pen-to-square {
+    margin-left: 5px;
+}
+.fa-folder-plus {
+    cursor: pointer;
+
+}
+
+.asideDerecho {
+    min-width: 32px;
+    margin: 20px 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.fa-user, .fa-right-from-bracket {
+}
+
+.asideDerecho__contenedor {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.asideDerecho__contenedor:hover {
+    background-color: #FEFBFF;
+}
+
+p {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
