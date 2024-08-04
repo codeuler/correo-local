@@ -1,9 +1,12 @@
 package com.example.codemail.mensaje;
 
+import com.example.codemail.folder.Folder;
 import com.example.codemail.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Mensaje {
@@ -24,13 +27,19 @@ public class Mensaje {
     private Date fechaEnvio;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="remitente_id")
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="folder_id")
+    private Folder folder;
+
+    @ManyToMany(mappedBy = "mensajesDestinatario")
+    private Set<Usuario> usuarios = new HashSet<>();
 
     public Mensaje() {}
 
-    public Mensaje(Long id, String asunto, String cuerpo, Date fechaEnvio) {
-        this.id = id;
+    public Mensaje(String asunto, String cuerpo, Date fechaEnvio) {
         this.asunto = asunto;
         this.cuerpo = cuerpo;
         this.fechaEnvio = fechaEnvio;
