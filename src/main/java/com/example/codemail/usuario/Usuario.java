@@ -1,12 +1,16 @@
 package com.example.codemail.usuario;
 
+import com.example.codemail.folder.Folder;
+import com.example.codemail.mensaje.Mensaje;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Usuario implements UserDetails {
@@ -36,6 +40,19 @@ public class Usuario implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Rol rol;
+
+    @OneToMany(mappedBy = "propietario",cascade = CascadeType.ALL)
+    Set<Folder> folders = new HashSet<>();
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    Set<Mensaje> mensajesEnviados = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name="Mensajes_Destinatarios",
+                joinColumns = @JoinColumn(name="usuario_id"),
+                inverseJoinColumns = @JoinColumn(name="mensaje_id"))
+    Set<Mensaje> mensajesDestinatario = new HashSet<>();
+
     public Usuario () {
 
     }

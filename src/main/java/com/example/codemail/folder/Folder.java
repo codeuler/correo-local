@@ -1,9 +1,10 @@
 package com.example.codemail.folder;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.example.codemail.mensaje.Mensaje;
+import com.example.codemail.usuario.Usuario;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 
 @Entity
 public class Folder {
@@ -12,22 +13,29 @@ public class Folder {
     private Integer id;
 
     @Column(nullable = false)
-    private String name;
+    private String nombre;
 
-    public Folder(String name) {
-        this.name = name;
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
+    private ArrayList<Mensaje> mensajes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "propietario_id")
+    private Usuario propietario;
+
+    public Folder(String nombre) {
+        this.nombre = nombre;
     }
 
     public Folder() {
 
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String name) {
+        this.nombre = name;
     }
 
     public void setId(Integer id) {
