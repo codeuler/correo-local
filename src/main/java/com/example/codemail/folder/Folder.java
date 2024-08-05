@@ -5,6 +5,7 @@ import com.example.codemail.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Folder {
@@ -16,7 +17,7 @@ public class Folder {
     private String nombre;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
-    private ArrayList<Mensaje> mensajes = new ArrayList<>();
+    private List<Mensaje> mensajes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "propietario_id")
@@ -24,13 +25,14 @@ public class Folder {
 
     public Folder(String nombre, Usuario propietario) {
         this.nombre = nombre;
+        this.propietario = propietario;
     }
 
     public Folder() {
 
     }
 
-    public ArrayList<Mensaje> getMensajes() {
+    public List<Mensaje> getMensajes() {
         return mensajes;
     }
 
