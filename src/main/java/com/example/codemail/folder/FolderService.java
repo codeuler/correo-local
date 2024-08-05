@@ -15,14 +15,12 @@ import java.util.Set;
 @Service
 public class FolderService implements RequestTokenExtractor {
     private final FolderRepository folderRepository;
-    private final UsuarioService usuarioService;
     private final JwtService jwtService;
     private final UsuarioRepository usuarioRepository;
     private final FolderMapper folderMapper;
 
-    public FolderService(FolderRepository folderRepository, UsuarioService usuarioService, JwtService jwtService, UsuarioRepository usuarioRepository, FolderMapper folderMapper) {
+    public FolderService(FolderRepository folderRepository, JwtService jwtService, UsuarioRepository usuarioRepository, FolderMapper folderMapper) {
         this.folderRepository = folderRepository;
-        this.usuarioService = usuarioService;
         this.jwtService = jwtService;
         this.usuarioRepository = usuarioRepository;
         this.folderMapper = folderMapper;

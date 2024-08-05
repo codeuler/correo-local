@@ -13,14 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/folders")
 public class FolderControlador implements RequestTokenExtractor {
-    private final FolderRepository folderRepository;
     private final FolderService folderService;
-    private final UsuarioService usuarioService;
 
-    public FolderControlador(FolderRepository folderRepository, FolderService folderService, UsuarioService usuarioService) {
-        this.folderRepository = folderRepository;
+    public FolderControlador(FolderService folderService) {
         this.folderService = folderService;
-        this.usuarioService = usuarioService;
     }
 
     @GetMapping("/obtener/todos")

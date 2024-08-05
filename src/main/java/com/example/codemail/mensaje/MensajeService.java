@@ -65,7 +65,7 @@ public class MensajeService implements RequestTokenExtractor {
                 .stream()
                 .filter(folder -> folder.getNombre().equals(nombreFolder))
                 .toList()
-                .getFirst();
+                .get(0);
         if (carpeta == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder " + nombreFolder + " no existe");
         } else {
