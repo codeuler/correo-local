@@ -40,6 +40,10 @@ public class FolderService implements RequestTokenExtractor {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    public void crearFolder(Usuario usuario, String nombreFolder) {
+        folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
+    }
+
     private Usuario getUsuario(HttpServletRequest request) {
         //Buscar el username del usuario que envio la petición
         String username = jwtService.getUsernameFromToken(getTokenFromRequest(request));
