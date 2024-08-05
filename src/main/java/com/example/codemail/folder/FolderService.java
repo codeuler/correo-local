@@ -1,12 +1,39 @@
 package com.example.codemail.folder;
 
+import com.example.codemail.Jwt.JwtService;
+import com.example.codemail.Jwt.RequestTokenExtractor;
+import com.example.codemail.usuario.Usuario;
+import com.example.codemail.usuario.UsuarioRepository;
+import com.example.codemail.usuario.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service
-public class FolderService {
-    private final FolderRepository folderRepository;
+import java.util.Set;
 
-    public FolderService(FolderRepository folderRepository) {
+@Service
+public class FolderService implements RequestTokenExtractor {
+    private final FolderRepository folderRepository;
+    private final UsuarioService usuarioService;
+    private final JwtService jwtService;
+    private final UsuarioRepository usuarioRepository;
+
+    public FolderService(FolderRepository folderRepository, UsuarioService usuarioService, JwtService jwtService, UsuarioRepository usuarioRepository) {
         this.folderRepository = folderRepository;
+        this.usuarioService = usuarioService;
+        this.jwtService = jwtService;
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public ResponseEntity<?> getTodos(HttpServletRequest request) {
+        Usuario usuario = getUsuario(request);
+        Set<Folder> folders = usuario.getFolders();
+        return ResponseEntity.ok(folders);
+    }
+
+    private Usuario getUsuario(HttpServletRequest request) {
+        //Buscar el username del usuario que envio la petición
+        String username = jwtService.getUsernameFromToken(getTokenFromRequest(request));
+        return usuarioRepository.findByEmail(username).orElse(null);
     }
 }
