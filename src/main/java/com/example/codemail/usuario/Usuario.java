@@ -65,6 +65,30 @@ public class Usuario implements UserDetails {
         this.rol = rol;
     }
 
+    public Set<Folder> getFolders() {
+        return folders;
+    }
+
+    public void setFolders(Set<Folder> folders) {
+        this.folders = folders;
+    }
+
+    public Set<Mensaje> getMensajesEnviados() {
+        return mensajesEnviados;
+    }
+
+    public void setMensajesEnviados(Set<Mensaje> mensajesEnviados) {
+        this.mensajesEnviados = mensajesEnviados;
+    }
+
+    public Set<Mensaje> getMensajesDestinatario() {
+        return mensajesDestinatario;
+    }
+
+    public void setMensajesDestinatario(Set<Mensaje> mensajesDestinatario) {
+        this.mensajesDestinatario = mensajesDestinatario;
+    }
+
     public Integer getId() {
         return id;
     }

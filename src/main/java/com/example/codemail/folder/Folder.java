@@ -30,6 +30,22 @@ public class Folder {
 
     }
 
+    public ArrayList<Mensaje> getMensajes() {
+        return mensajes;
+    }
+
+    public void setMensajes(ArrayList<Mensaje> mensajes) {
+        this.mensajes = mensajes;
+    }
+
+    public Usuario getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(Usuario propietario) {
+        this.propietario = propietario;
+    }
+
     public String getNombre() {
         return nombre;
     }
