@@ -22,7 +22,7 @@ public class Folder {
     @JoinColumn(name = "propietario_id")
     private Usuario propietario;
 
-    public Folder(String nombre) {
+    public Folder(String nombre, Usuario propietario) {
         this.nombre = nombre;
     }
 
