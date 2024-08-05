@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -34,8 +35,22 @@ public class FolderService implements RequestTokenExtractor {
 
     public ResponseEntity<?> crearFolder(HttpServletRequest request, String nombreFolder) {
         Usuario usuario = getUsuario(request);
-        folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        if (buscarFolderRepetido(usuario,nombreFolder)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder ya existe");
+        } else {
+            folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+    }
+
+    private boolean buscarFolderRepetido(Usuario usuario, String nombreFolder) {
+        Set<Folder> folders = usuario.getFolders();
+        Optional<Folder> carpeta = folders
+                .stream()
+                .filter(
+                        folder -> folder.getNombre().equals(nombreFolder)
+                ).findFirst();
+        return carpeta.isPresent();
     }
 
     public void crearFolder(Usuario usuario, String nombreFolder) {
