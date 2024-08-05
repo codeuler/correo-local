@@ -3,6 +3,7 @@ package com.example.codemail.mensaje;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -35,14 +36,53 @@ public class Mensaje {
     private Folder folder;
 
     @ManyToMany(mappedBy = "mensajesDestinatario")
-    private Set<Usuario> usuarios = new HashSet<>();
+    private Set<Usuario> destinatarios = new HashSet<>();
+
+    @NotNull
+    private boolean revisado;
 
     public Mensaje() {}
 
-    public Mensaje(String asunto, String cuerpo, Date fechaEnvio) {
+    public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Folder folder, Usuario usuario, Set<Usuario> destinatarios, boolean revisado) {
         this.asunto = asunto;
         this.cuerpo = cuerpo;
         this.fechaEnvio = fechaEnvio;
+        this.folder = folder;
+        this.usuario = usuario;
+        this.destinatarios = destinatarios;
+        this.revisado = revisado;
+    }
+
+    public boolean isRevisado() {
+        return revisado;
+    }
+
+    public void setRevisado(boolean revisado) {
+        this.revisado = revisado;
+    }
+
+    public Set<Usuario> getDestinatarios() {
+        return destinatarios;
+    }
+
+    public void setDestinatarios(Set<Usuario> destinatarios) {
+        this.destinatarios = destinatarios;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 
     public Date getFechaEnvio() {
