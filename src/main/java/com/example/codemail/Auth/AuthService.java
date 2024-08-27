@@ -1,6 +1,7 @@
 package com.example.codemail.Auth;
 
 import com.example.codemail.Jwt.JwtService;
+import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.FolderService;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioMapper;
@@ -60,8 +61,8 @@ public class AuthService {
         Usuario usuario = usuarioMapper.toUsuario(request);
         usuarioRepository.save(usuario);
         // A todos los usuarios se les crea una carpeta de Entrada y Enviados
-        folderService.crearFolder(usuario,"Entrada");
-        folderService.crearFolder(usuario,"Enviados");
+        folderService.crearFolder(usuario, CarpetasDefecto.ENTRADA.getNombreCarpeta());
+        folderService.crearFolder(usuario, CarpetasDefecto.ENVIADOS.getNombreCarpeta());
         return new AuthResponse(jwtService.getToken(usuario));
     }
 

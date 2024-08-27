@@ -2,88 +2,87 @@ package com.example.codemail.mensaje;
 
 import com.example.codemail.Jwt.JwtService;
 import com.example.codemail.Jwt.RequestTokenExtractor;
+import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.folder.FolderRepository;
+import com.example.codemail.mensajepropietario.MensajePropietario;
+import com.example.codemail.mensajepropietario.MensajePropietarioService;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
+import com.example.codemail.usuario.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
-public class MensajeService implements RequestTokenExtractor {
-    private final JwtService jwtService;
-    private final UsuarioRepository usuarioRepository;
+public class MensajeService extends UsuarioService implements RequestTokenExtractor {
     private final FolderRepository folderRepository;
     private final MensajeRepository mensajeRepository;
     private final MensajeMapper mensajeMapper;
+    private final MensajePropietarioService mensajePropietarioService;
 
-    public MensajeService(JwtService jwtService, UsuarioRepository usuarioRepository, FolderRepository folderRepository, MensajeRepository mensajeRepository, MensajeMapper mensajeMapper) {
-        this.jwtService = jwtService;
-        this.usuarioRepository = usuarioRepository;
+    public MensajeService(JwtService jwtService, UsuarioRepository usuarioRepository, FolderRepository folderRepository,
+                          MensajeRepository mensajeRepository, MensajeMapper mensajeMapper,
+                          MensajePropietarioService mensajePropietarioService) {
+        super(jwtService, usuarioRepository);
         this.folderRepository = folderRepository;
         this.mensajeRepository = mensajeRepository;
         this.mensajeMapper = mensajeMapper;
+        this.mensajePropietarioService = mensajePropietarioService;
     }
 
     public ResponseEntity<?> enviarMensaje(MensajeEnviado mensajeEnviado, HttpServletRequest request) {
         Usuario usuario = getUsuario(request);
-
         // Encontrar todos los usuarios que tengan por id el correo que se ha enviado en MensajeEnviado
         Set<Usuario> destinatarios = mensajeEnviado
                 .correoDestinatarios()
                 .stream()
-                .map(correo -> usuarioRepository.findByEmail(correo).orElse(null))
-                .filter(Objects::nonNull)
+                .map(usuarioRepository::findByEmail)
+                .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
-
-        // Hallar el folder Entrada del usuario
-        Folder folder = getFolder(usuario,"Entrada");
-
+        // Buscar todos los folder de entrada de los detinarios
+        Set<Folder> folderEntrada = destinatarios
+                .stream()
+                .map(user -> getFolder(user, CarpetasDefecto.ENTRADA.getNombreCarpeta()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toSet());
+        // Hallar el folder Envio del usuario
+        Optional<Folder> folder = getFolder(usuario, CarpetasDefecto.ENVIADOS.getNombreCarpeta());
+        //En caso de que no exista ningún correo de destinatario
         if (destinatarios.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El/los correos no son válidos");
-        } else if (folder == null) {
+        } else if (folder.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder no existe");
-        } else {
-            mensajeRepository.save(mensajeMapper.toMensaje(mensajeEnviado,usuario,folder,destinatarios));
-            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
+        Mensaje mensaje = mensajeMapper.toMensaje(mensajeEnviado,usuario,folderEntrada);
+        // Agregar el mensaje a cada folder
+        folderEntrada.forEach(carpeta -> carpeta.getMensajes().add(mensaje));
+        // Agregar el mensaje al folder enviados del dueño
+        folder.get().getMensajes().add(mensaje);
+        // Guardar el mensaje en la base de datos
+        mensajeRepository.save(mensaje);
+        // Guardar cada relación en la base de datos
+        destinatarios.forEach(
+                user -> mensajePropietarioService.
+                        guardarMensajePropietario(
+                                new MensajePropietario(user,mensaje,false)
+                        )
+        );
+        // Se agrega porque se va a guardar dentro del folder de enviados, además, como fue él quién lo envió se puede
+        // decir que ya está en <<revisado>> el mensaje
+        mensajePropietarioService.guardarMensajePropietario(
+                new MensajePropietario(usuario,mensaje,true)
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, String nombreFolder) {
-        Usuario usuario = getUsuario(request);
-        Folder carpeta = usuario.getFolders()
-                .stream()
-                .filter(folder -> folder.getNombre().equals(nombreFolder))
-                .toList()
-                .get(0);
-        if (carpeta == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder " + nombreFolder + " no existe");
-        } else {
-            return ResponseEntity.ok(carpeta.getMensajes());
-        }
-    }
-
-
-
-    private Folder getFolder(Usuario usuario,String nombre) {
+    private Optional<Folder> getFolder(Usuario usuario,String nombre) {
         return folderRepository
-                .findByNombreAndPropietario(nombre, usuario)
-                .orElse(null);
+                .findByNombreAndPropietario(nombre, usuario);
     }
 
-    private Usuario getUsuario(HttpServletRequest request) {
-        //Buscar el username del usuario que envio la petición
-        String username = jwtService.getUsernameFromToken(getTokenFromRequest(request));
-        return usuarioRepository.findByEmail(username).orElse(null);
-    }
 }

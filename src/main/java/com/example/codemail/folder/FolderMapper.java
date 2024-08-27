@@ -8,4 +8,7 @@ public class FolderMapper {
     public Folder toFolder(Usuario usuario, String nombre){
         return new Folder(nombre, usuario);
     }
+    public FolderRespuesta toFolderRespuesta(Folder folder) {
+        return new FolderRespuesta(folder.getId(), folder.getNombre());
+    }
 }

@@ -1,9 +1,11 @@
 package com.example.codemail.folder;
 
-import com.example.codemail.usuario.Usuario;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 public record FolderGuardar(
-        String nombre,
-        Usuario propietario
+        @NotEmpty
+        @Size(min = 5, max = 255,message = "El nombre debe tener una tamaño entre 5 y 255 carácteres")
+        String nombre
 ) {
 }

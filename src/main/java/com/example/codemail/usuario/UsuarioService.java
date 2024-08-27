@@ -1,35 +1,23 @@
 package com.example.codemail.usuario;
 
-import com.example.codemail.folder.FolderService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.codemail.Jwt.JwtService;
+import com.example.codemail.Jwt.RequestTokenExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioService {
-    private final UsuarioRepository usuarioRepository;
-    private final UsuarioMapper usuarioMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final FolderService folderService;
+public class UsuarioService implements RequestTokenExtractor {
+    protected final JwtService jwtService;
+    protected final UsuarioRepository usuarioRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper, PasswordEncoder passwordEncoder, FolderService folderService) {
+    public UsuarioService(JwtService jwtService, UsuarioRepository usuarioRepository) {
+        this.jwtService = jwtService;
         this.usuarioRepository = usuarioRepository;
-        this.usuarioMapper = usuarioMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.folderService = folderService;
     }
 
-    public UsuarioDto create(UsuarioDto usuarioDto) {
-        var usuario = usuarioMapper.toUsuario(usuarioDto);
-        //Encriptar password
-        usuario.setPassword(
-                passwordEncoder.encode(usuario.getPassword())
-        );
-        usuarioRepository.save(usuario);
-
-        // A todos los usuarios se les crea una carpeta de Entrada y Enviados
-        folderService.crearFolder(usuario,"Entrada");
-        folderService.crearFolder(usuario,"Enviados");
-        return usuarioDto;
+    protected Usuario getUsuario(HttpServletRequest request) {
+        //Buscar el username del usuario que envio la petición
+        String username = jwtService.getUsernameFromToken(getTokenFromRequest(request));
+        return usuarioRepository.findByEmail(username).orElse(null);
     }
-
 }

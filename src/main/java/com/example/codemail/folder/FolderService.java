@@ -12,40 +12,44 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-public class FolderService implements RequestTokenExtractor {
+public class FolderService extends UsuarioService implements RequestTokenExtractor {
     private final FolderRepository folderRepository;
-    private final JwtService jwtService;
-    private final UsuarioRepository usuarioRepository;
     private final FolderMapper folderMapper;
 
     public FolderService(FolderRepository folderRepository, JwtService jwtService, UsuarioRepository usuarioRepository, FolderMapper folderMapper) {
+        super(jwtService, usuarioRepository);
         this.folderRepository = folderRepository;
-        this.jwtService = jwtService;
-        this.usuarioRepository = usuarioRepository;
         this.folderMapper = folderMapper;
     }
 
-    public ResponseEntity<?> getTodos(HttpServletRequest request) {
+    public ResponseEntity<?> getAll(HttpServletRequest request) {
         Usuario usuario = getUsuario(request);
-        Set<Folder> folders = usuario.getFolders();
+        Set<FolderRespuesta> folders = usuario.getFolders()
+                .stream()
+                .map(folderMapper::toFolderRespuesta)
+                .collect(Collectors.toSet());
         return ResponseEntity.ok(folders);
     }
 
-    public ResponseEntity<?> crearFolder(HttpServletRequest request, String nombreFolder) {
+    public Optional<Folder> getFolder(HttpServletRequest request, String folder) {
+        return folderRepository.findByNombreAndPropietario(folder,getUsuario(request));
+    }
+
+    public ResponseEntity<?> crearFolder(HttpServletRequest request, FolderGuardar folderGuardar) {
         Usuario usuario = getUsuario(request);
-        if (buscarFolderRepetido(usuario,nombreFolder)) {
+        if (buscarFolderRepetido(usuario,folderGuardar.nombre())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder ya existe");
         } else {
-            folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
+            folderRepository.save(folderMapper.toFolder(usuario, folderGuardar.nombre()));
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
     }
 
     private boolean buscarFolderRepetido(Usuario usuario, String nombreFolder) {
-        Set<Folder> folders = usuario.getFolders();
-        Optional<Folder> carpeta = folders
+        Optional<Folder> carpeta = usuario.getFolders()
                 .stream()
                 .filter(
                         folder -> folder.getNombre().equals(nombreFolder)
@@ -57,9 +61,17 @@ public class FolderService implements RequestTokenExtractor {
         folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
     }
 
-    private Usuario getUsuario(HttpServletRequest request) {
-        //Buscar el username del usuario que envio la petición
-        String username = jwtService.getUsernameFromToken(getTokenFromRequest(request));
-        return usuarioRepository.findByEmail(username).orElse(null);
+    public ResponseEntity<?> actualizarFolder(HttpServletRequest request, String nombreCarpeta, FolderGuardar folderGuardar) {
+        Optional<Folder> optionalFolder = getFolder(request, nombreCarpeta);
+        if (optionalFolder.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Folder folder = optionalFolder.get();
+        if (buscarFolderRepetido(getUsuario(request), folderGuardar.nombre())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder ya existe");
+        }
+        folder.setNombre(folderGuardar.nombre());
+        folderRepository.save(folder);
+        return ResponseEntity.ok().body(folderMapper.toFolderRespuesta(folder));
     }
 }

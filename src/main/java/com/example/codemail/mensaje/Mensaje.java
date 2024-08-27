@@ -1,9 +1,9 @@
 package com.example.codemail.mensaje;
 
 import com.example.codemail.folder.Folder;
+import com.example.codemail.mensajepropietario.MensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -31,42 +31,28 @@ public class Mensaje {
     @JoinColumn(name="remitente_id")
     private Usuario usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="folder_id")
-    private Folder folder;
+    @ManyToMany(mappedBy = "mensajes")
+    private Set<Folder> folder;
 
-    @ManyToMany(mappedBy = "mensajesDestinatario")
-    private Set<Usuario> destinatarios = new HashSet<>();
-
-    @NotNull
-    private boolean revisado;
+    @OneToMany(mappedBy = "mensaje")
+    private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
     public Mensaje() {}
 
-    public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Folder folder, Usuario usuario, Set<Usuario> destinatarios, boolean revisado) {
+    public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Set<Folder> folder, Usuario usuario) {
         this.asunto = asunto;
         this.cuerpo = cuerpo;
         this.fechaEnvio = fechaEnvio;
         this.folder = folder;
         this.usuario = usuario;
-        this.destinatarios = destinatarios;
-        this.revisado = revisado;
     }
 
-    public boolean isRevisado() {
-        return revisado;
+    public Set<MensajePropietario> getMensajeDestinatario() {
+        return mensajeDestinatario;
     }
 
-    public void setRevisado(boolean revisado) {
-        this.revisado = revisado;
-    }
-
-    public Set<Usuario> getDestinatarios() {
-        return destinatarios;
-    }
-
-    public void setDestinatarios(Set<Usuario> destinatarios) {
-        this.destinatarios = destinatarios;
+    public void setMensajeDestinatario(Set<MensajePropietario> destinatarios) {
+        this.mensajeDestinatario = destinatarios;
     }
 
     public Usuario getUsuario() {
@@ -77,11 +63,11 @@ public class Mensaje {
         this.usuario = usuario;
     }
 
-    public Folder getFolder() {
+    public Set<Folder> getFolder() {
         return folder;
     }
 
-    public void setFolder(Folder folder) {
+    public void setFolder(Set<Folder> folder) {
         this.folder = folder;
     }
 

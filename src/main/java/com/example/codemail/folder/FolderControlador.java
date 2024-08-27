@@ -1,18 +1,16 @@
 package com.example.codemail.folder;
 
 import com.example.codemail.Jwt.RequestTokenExtractor;
-import com.example.codemail.usuario.UsuarioService;
+import com.example.codemail.errores.ManejadorDeErroresHttp;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/folders")
-public class FolderControlador implements RequestTokenExtractor {
+public class FolderControlador implements RequestTokenExtractor, ManejadorDeErroresHttp {
     private final FolderService folderService;
 
     public FolderControlador(FolderService folderService) {
@@ -21,12 +19,19 @@ public class FolderControlador implements RequestTokenExtractor {
 
     @GetMapping("/obtener/todos")
     public ResponseEntity<?> obtenerTodos(HttpServletRequest request) {
-        return folderService.getTodos(request);
+        return folderService.getAll(request);
     }
 
-    @PostMapping("crear/{nombreFolder}")
-    public ResponseEntity<?> crearFolder (HttpServletRequest request, @PathVariable String nombreFolder) {
-        return folderService.crearFolder(request, nombreFolder);
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearFolder (HttpServletRequest request, @RequestBody FolderGuardar folderGuardar) {
+        return folderService.crearFolder(request, folderGuardar);
+    }
+
+    @PutMapping("/{nombreCarpeta}/actualizar")
+    public ResponseEntity<?> actualizarFolder (HttpServletRequest request,
+                                               @PathVariable String nombreCarpeta,
+                                               @Validated @RequestBody FolderGuardar folderGuardar) {
+        return folderService.actualizarFolder(request, nombreCarpeta, folderGuardar);
     }
 
 }

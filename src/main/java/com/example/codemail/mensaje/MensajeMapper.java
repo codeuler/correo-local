@@ -8,15 +8,13 @@ import java.util.Set;
 
 @Service
 public class MensajeMapper {
-    public Mensaje toMensaje(MensajeEnviado mensajeEnviado, Usuario usuario, Folder folder, Set<Usuario> destinatarios) {
+    public Mensaje toMensaje(MensajeEnviado mensajeEnviado, Usuario usuario, Set<Folder> folder) {
         return new Mensaje(
                 mensajeEnviado.asunto(),
                 mensajeEnviado.cuerpo(),
                 mensajeEnviado.fecha(),
                 folder,
-                usuario,
-                destinatarios,
-                false
+                usuario
         );
     }
 }
