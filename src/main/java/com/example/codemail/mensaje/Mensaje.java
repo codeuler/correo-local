@@ -1,6 +1,7 @@
 package com.example.codemail.mensaje;
 
 import com.example.codemail.folder.Folder;
+import com.example.codemail.mensajepropietario.MensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import jakarta.persistence.*;
 
@@ -30,19 +31,44 @@ public class Mensaje {
     @JoinColumn(name="remitente_id")
     private Usuario usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="folder_id")
-    private Folder folder;
+    @ManyToMany(mappedBy = "mensajes")
+    private Set<Folder> folder;
 
-    @ManyToMany(mappedBy = "mensajesDestinatario")
-    private Set<Usuario> usuarios = new HashSet<>();
+    @OneToMany(mappedBy = "mensaje")
+    private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
     public Mensaje() {}
 
-    public Mensaje(String asunto, String cuerpo, Date fechaEnvio) {
+    public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Set<Folder> folder, Usuario usuario) {
         this.asunto = asunto;
         this.cuerpo = cuerpo;
         this.fechaEnvio = fechaEnvio;
+        this.folder = folder;
+        this.usuario = usuario;
+    }
+
+    public Set<MensajePropietario> getMensajeDestinatario() {
+        return mensajeDestinatario;
+    }
+
+    public void setMensajeDestinatario(Set<MensajePropietario> destinatarios) {
+        this.mensajeDestinatario = destinatarios;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Set<Folder> getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Set<Folder> folder) {
+        this.folder = folder;
     }
 
     public Date getFechaEnvio() {

@@ -1,21 +1,17 @@
 package com.example.codemail.Auth;
 
+import com.example.codemail.errores.ManejadorDeErroresHttp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.HashMap;
-
 @Controller
-public class AuthController {
+public class AuthController implements ManejadorDeErroresHttp {
 
     private final AuthService authService;
 
@@ -65,19 +61,6 @@ public class AuthController {
         } else {
             return ResponseEntity.ok(authService.registro(request));
         }
-    }
-    //Controlar errores en el metodo post de registro
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException ex
-    ) {
-        var errors = new HashMap<String,String>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            var fieldName = ((FieldError) error).getField();
-            var errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
 }

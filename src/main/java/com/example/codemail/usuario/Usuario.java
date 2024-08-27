@@ -2,6 +2,7 @@ package com.example.codemail.usuario;
 
 import com.example.codemail.folder.Folder;
 import com.example.codemail.mensaje.Mensaje;
+import com.example.codemail.mensajepropietario.MensajePropietario;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,21 +42,16 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    @OneToMany(mappedBy = "propietario",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "propietario",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<Folder> folders = new HashSet<>();
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<Mensaje> mensajesEnviados = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name="Mensajes_Destinatarios",
-                joinColumns = @JoinColumn(name="usuario_id"),
-                inverseJoinColumns = @JoinColumn(name="mensaje_id"))
-    Set<Mensaje> mensajesDestinatario = new HashSet<>();
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
-    public Usuario () {
-
-    }
+    public Usuario () {}
 
     public Usuario(String nombre, String apellido, String email, String password, Rol rol) {
         this.nombre = nombre;
@@ -63,6 +59,30 @@ public class Usuario implements UserDetails {
         this.email = email;
         this.password = password;
         this.rol = rol;
+    }
+
+    public Set<Folder> getFolders() {
+        return folders;
+    }
+
+    public void setFolders(Set<Folder> folders) {
+        this.folders = folders;
+    }
+
+    public Set<Mensaje> getMensajesEnviados() {
+        return mensajesEnviados;
+    }
+
+    public void setMensajeEnviados(Set<Mensaje> mensajesEnviados) {
+        this.mensajesEnviados = mensajesEnviados;
+    }
+
+    public Set<MensajePropietario> getMensajesDestinatario() {
+        return mensajeDestinatario;
+    }
+
+    public void setMensajeDestinatario(Set<MensajePropietario> mensajesDestinatario) {
+        this.mensajeDestinatario = mensajesDestinatario;
     }
 
     public Integer getId() {

@@ -35,7 +35,10 @@ public class WebSecurityConfig {
                             .requestMatchers("/registro","/registro/**","/usuarios","/login/**"
                                     ).permitAll()
                             .anyRequest().authenticated()
-                )//Deshabilitar las sesiones
+                )/*.formLogin(
+                        (form) -> form.loginPage("/login").permitAll()
+                )*/
+                //Deshabilitar las sesiones
                 .sessionManagement( sessionManger ->
                         sessionManger.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //Definir nuestro propio proveedor de autenticación

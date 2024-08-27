@@ -12,16 +12,6 @@ public class UsuarioMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Usuario toUsuario(UsuarioDto usuarioDto) {
-        return new Usuario(
-                usuarioDto.nombre(),
-                usuarioDto.apellido(),
-                usuarioDto.correo(),
-                usuarioDto.password(),
-                Rol.USUARIO
-        );
-    }
-
     public Usuario toUsuario(RegisterRequest registerRequest) {
         return new Usuario(
                 registerRequest.nombre(),
@@ -30,15 +20,6 @@ public class UsuarioMapper {
                 //Encriptar password
                 passwordEncoder.encode(registerRequest.password()),
                 Rol.USUARIO
-        );
-    }
-
-    public UsuarioDto usuarioDto(Usuario usuario) {
-        return new UsuarioDto(
-                usuario.getNombre(),
-                usuario.getApellido(),
-                usuario.getEmail(),
-                usuario.getPassword()
         );
     }
 

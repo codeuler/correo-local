@@ -1,6 +1,8 @@
 package com.example.codemail.Auth;
 
 import com.example.codemail.Jwt.JwtService;
+import com.example.codemail.folder.CarpetasDefecto;
+import com.example.codemail.folder.FolderService;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioMapper;
 import com.example.codemail.usuario.UsuarioRepository;
@@ -17,12 +19,14 @@ public class AuthService {
     private final UsuarioRepository usuarioRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final FolderService folderService;
 
-    public AuthService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager, FolderService folderService) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.folderService = folderService;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -56,6 +60,9 @@ public class AuthService {
     public AuthResponse registro(RegisterRequest request) {
         Usuario usuario = usuarioMapper.toUsuario(request);
         usuarioRepository.save(usuario);
+        // A todos los usuarios se les crea una carpeta de Entrada y Enviados
+        folderService.crearFolder(usuario, CarpetasDefecto.ENTRADA.getNombreCarpeta());
+        folderService.crearFolder(usuario, CarpetasDefecto.ENVIADOS.getNombreCarpeta());
         return new AuthResponse(jwtService.getToken(usuario));
     }
 
