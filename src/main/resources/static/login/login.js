@@ -32,8 +32,8 @@ form.addEventListener("submit", e => {
                 const {token} = data;
                 localStorage.setItem("token", token);
                 console.log(token)
+                window.location.replace("/inbox")
             })
-            console.log("Ya se pudo loguear");
         } else if (response.status === 401) {
             console.log("Credenciales no validas");
             console.log(response.json());

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MensajePropietarioService extends UsuarioService implements RequestTokenExtractor {
@@ -47,7 +48,9 @@ public class MensajePropietarioService extends UsuarioService implements Request
                 .stream()
                 .map(mensaje -> mensajePropietarioRepository.findByUsuarioAndMensaje(usuario,mensaje))
                 .flatMap(Optional::stream)
-                .map(mensajePropietarioMapper::toMensajePropietarioEntrega));
+                .map(mensajePropietarioMapper::toMensajePropietarioEntrega)
+                .collect(Collectors.toSet())
+        );
     }
 
 }

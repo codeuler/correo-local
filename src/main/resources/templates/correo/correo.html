@@ -4,56 +4,35 @@
     <meta charset="UTF-8">
     <title>Correo</title>
     <link rel="stylesheet" href="/correo/correo.css">
-    <script defer src="/correo/correo.js"></script>
     <script src="https://kit.fontawesome.com/9d1bdc5260.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="principal">
-        <aside class="aside">
-            <div class="aside__redactar">
-                <button class="aside__redactar redactar--boton">Redactar
-                    <i class="fa-solid fa-pen-to-square" style="color: #1e1e1e;"></i>
-                </button>
+<div class="principal">
+    <aside class="aside">
+        <div class="aside__redactar">
+            <button class="aside__redactar redactar--boton">Redactar
+                <i class="fa-solid fa-pen-to-square" style="color: #1e1e1e;"></i>
+            </button>
+        </div>
+        <div class="aside__carpetas">
+        </div>
+        <div class="aside__crearCarpetas">
+            <p class="aside__crearCarpetas crearCarpetas--texto">Nueva carpeta</p>
+            <div class="aside__crearCarpetas crearCarpetas--contenedor">
+                <i class="fa-solid fa-folder-plus fa-xs" style="color: #1e1e1e;"></i>
             </div>
-            <div class="aside__carpetas">
-                <button class="aside__boton boton--recibidos">Recibidos</button>
-                <button class="aside__boton boton--enviados">Enviados</button>
-            </div>
-            <div class="aside__crearCarpetas">
-                <p class="aside__crearCarpetas crearCarpetas--texto">Nueva carpeta</p>
-                <div class="aside__crearCarpetas crearCarpetas--contenedor">
-                    <i class="fa-solid fa-folder-plus fa-xs" style="color: #1e1e1e;"></i>
-                </div>
-            </div>
-        </aside>
-        <main class="main">
-            <div class="main__mensaje">
-                <p class="main__remitente">
-                    username-remitente
-                </p>
-                <p class="main__contenido">
-                    Asunto-correo: Cuerpo del correo
-                </p>
-                <div class="main__guardar">
-                    <i class="fa-solid fa-folder-open fa-lg" style="color: #1e1e1e;"></i>
-                </div>
-                <div class="main__eliminar">
-                    <i class="fa-solid fa-trash-can fa-lg" style="color: #1e1e1e;"></i>
-                </div>
-                <p class="main__fecha">
-                    26 dic
-                </p>
-            </div>
-
-        </main>
-        <aside class="asideDerecho">
-            <div class="asideDerecho__contenedor">
-                <i class="fa-solid fa-user" style="color: #1e1e1e;"></i>
-            </div>
-            <div class="asideDerecho__contenedor">
-                <i class="fa-solid fa-right-from-bracket" style="color: #1e1e1e;"></i>
-            </div>
-        </aside>
-    </div>
+        </div>
+    </aside>
+    <main class="main"></main>
+    <aside class="asideDerecho">
+        <div class="asideDerecho__contenedor">
+            <i class="fa-solid fa-user" style="color: #1e1e1e;"></i>
+        </div>
+        <div class="asideDerecho__contenedor">
+            <i class="fa-solid fa-right-from-bracket" style="color: #1e1e1e;"></i>
+        </div>
+    </aside>
+</div>
+<script defer src="/correo/correo.js"></script>
 </body>
 </html>

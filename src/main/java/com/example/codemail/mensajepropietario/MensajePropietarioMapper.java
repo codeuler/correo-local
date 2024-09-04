@@ -9,7 +9,7 @@ public class MensajePropietarioMapper {
                 mensajePropietario.mensaje.getAsunto(),
                 mensajePropietario.mensaje.getCuerpo(),
                 mensajePropietario.mensaje.getFechaEnvio(),
-                mensajePropietario.mensaje.getUsuario().getEmail(),
+                mensajePropietario.mensaje.getUsuario().getNombre() + " " + mensajePropietario.mensaje.getUsuario().getApellido(),
                 mensajePropietario.getRevisado()
         );
     }
