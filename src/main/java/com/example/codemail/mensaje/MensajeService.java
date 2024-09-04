@@ -7,6 +7,7 @@ import com.example.codemail.folder.Folder;
 import com.example.codemail.folder.FolderRepository;
 import com.example.codemail.mensajepropietario.MensajePropietario;
 import com.example.codemail.mensajepropietario.MensajePropietarioService;
+import com.example.codemail.mensajepropietario.RolMensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
 import com.example.codemail.usuario.UsuarioService;
@@ -58,24 +59,30 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
         } else if (folder.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder no existe");
         }
-        Mensaje mensaje = mensajeMapper.toMensaje(mensajeEnviado,usuario,folderEntrada);
+        Mensaje mensaje = mensajeMapper.toMensaje(mensajeEnviado, usuario, folderEntrada);
         // Agregar el mensaje a cada folder
         folderEntrada.forEach(carpeta -> carpeta.getMensajes().add(mensaje));
         // Agregar el mensaje al folder enviados del dueño
         folder.get().getMensajes().add(mensaje);
         // Guardar el mensaje en la base de datos
         mensajeRepository.save(mensaje);
+        // Revisar se se hizo un autoenvio
+        boolean existeAutoenvio = destinatarios.stream()
+                .anyMatch(
+                        user -> user.getId().equals(usuario.getId())
+                );
         // Guardar cada relación en la base de datos
-        destinatarios.forEach(
-                user -> mensajePropietarioService.
+        destinatarios.stream()
+                // Eliminar al usuario que realizo el autoenvio
+                .filter(user -> !user.getId().equals(usuario.getId()))
+                .forEach( user -> mensajePropietarioService.
                         guardarMensajePropietario(
-                                new MensajePropietario(user,mensaje,false)
+                                new MensajePropietario(user, mensaje, false, RolMensajePropietario.DESTINATARIO)
                         )
-        );
-        // Se agrega porque se va a guardar dentro del folder de enviados, además, como fue él quién lo envió se puede
-        // decir que ya está en <<revisado>> el mensaje
+                );
+        // Se agrega porque se va a guardar dentro del folder de enviados, si el usuario que envía se hizo un autoenvio, es marcado con el rol de ambos
         mensajePropietarioService.guardarMensajePropietario(
-                new MensajePropietario(usuario,mensaje,true)
+                new MensajePropietario(usuario, mensaje, false, (existeAutoenvio) ? RolMensajePropietario.AMBOS : RolMensajePropietario.REMITENTE)
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

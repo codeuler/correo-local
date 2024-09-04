@@ -155,6 +155,27 @@ body {
 .main__asunto {
     font-weight: 900;
 }
+.main__correoAbierto {
+    width: 100%;
+    box-sizing: border-box;
+}
+.main__headerMensajeAbierto {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.main__fechaMensajeAbierto {
+    font-size: .8rem;
+}
+.main__tituloCorreo {
+    margin: 10px 0;
+}
+.main__correoAbierto>p {
+    font-size: 1rem;
+}
+.main__tituloCorreo {
+    font-size: 1.5rem;
+}
 .main__redaccion{
     position: absolute;
     right: 0;
@@ -262,6 +283,9 @@ body {
 .main__guardar:hover, .main__eliminar:hover {
     background-color: #1e1e1e58;
     border-radius: 50%;
+}
+.main__volver:hover {
+    background-color: white;
 }
 .crearCarpetas--contenedor:hover {
     background-color: white;

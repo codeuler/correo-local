@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 public class MensajePropietarioMapper {
     public MensajePropietarioEntrega toMensajePropietarioEntrega(MensajePropietario mensajePropietario){
         return new MensajePropietarioEntrega(
+                mensajePropietario.getId(),
                 mensajePropietario.mensaje.getAsunto(),
                 mensajePropietario.mensaje.getCuerpo(),
                 mensajePropietario.mensaje.getFechaEnvio(),

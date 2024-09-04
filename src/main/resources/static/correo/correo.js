@@ -1,7 +1,46 @@
 const divAsideCarpetas = document.querySelector(".aside__carpetas");
 const divMain = document.querySelector(".main");
 let botonAsideSeleccionado = null;
+function agregarFuncionAbrir(event) {
+    let divMensaje = event.target;
+    if(!divMensaje.classList.contains("main__mensaje")) {
+        divMensaje = event.target.closest(".main__mensaje");
+    }
+    const remitente = divMensaje.querySelector(".main__remitente").textContent;
+    const asunto = divMensaje.querySelector(".main__asunto").textContent.replace(/:$/,"");
+    const fecha = divMensaje.querySelector(".main__fecha").textContent;
+    const contenido = divMensaje.querySelector(".main__contenido").textContent.replace(/^.*: /,"");
+    const id = divMensaje.id;
+    divMain.innerHTML = `<header class="main__headerMensajeAbierto">
+                            <div class="main__volver"><i class="fa-solid fa-arrow-left fa-2xs"></i></div>
+                            <p class="main__fechaMensajeAbierto">${fecha}</p>
+                        </header>
+                        <div class="main__correoAbierto">
+                            <h2 class="main__tituloCorreo">${asunto}</h2>
+                            <p class="main__remitenteCorreoAbierto">Remitente: ${remitente}</p>
+                            <p class="main__contenidoCorreoAbierto">${contenido}</p>
+                        </div>`;
+    fetch(`mensajes/complejos/revisar`,  {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        },
+        body: JSON.stringify({
+            idMensajePropietario: id
+        })
+    }).then(response => {
+        if (response.ok) {
+            console.log("Mensaje marcado como leído");
+        } else {
+            console.log("El mensaje no ha logrado ser marcado como leído");
+        }
+    });
+    divMain.querySelector(".main__volver").addEventListener("click", (e) => {
+        agregarMensajesDiv(botonAsideSeleccionado);
+    })
 
+}
 function obtenerMensajes(nombreCarpeta) {
     fetch(`mensajes/complejos/obtener/${nombreCarpeta}`,  {
         method: "GET",
@@ -15,24 +54,23 @@ function obtenerMensajes(nombreCarpeta) {
         data => {
             data.forEach(el => {
                 const nuevoElemento = document.createElement("div");
-                nuevoElemento.innerHTML = `<div class="main__mensaje">
-                    <p class="main__remitente"></p>
-                    <p class="main__contenido"></p>
+                const {id, asunto, cuerpo, fechaEnvio, emailRemitente, revisado} = el;
+                nuevoElemento.innerHTML = `<p class="main__remitente">${emailRemitente}</p>
+                    <p class="main__contenido"><span class="main__asunto">${asunto}:</span> ${cuerpo}</p>
                     <div class="main__guardar">
-                    <i class="fa-solid fa-folder-open fa-lg" style="color: #1e1e1e;"></i>
+                        <i class="fa-solid fa-folder-open fa-lg" style="color: #1e1e1e;"></i>
                     </div>
                     <div class="main__eliminar">
-                    <i class="fa-solid fa-trash-can fa-lg" style="color: #1e1e1e;"></i>
+                        <i class="fa-solid fa-trash-can fa-lg" style="color: #1e1e1e;"></i>
                     </div>
-                    <p class="main__fecha"></p>`;
-                const {asunto, cuerpo, fechaEnvio, emailRemitente, revisado} = el;
-                nuevoElemento.querySelector(".main__remitente").textContent = emailRemitente;
-                nuevoElemento.querySelector(".main__contenido").innerHTML += `<span class="main__asunto">${asunto}:</span> ${cuerpo};`
-                nuevoElemento.querySelector(".main__fecha").textContent = new Date(fechaEnvio).toLocaleDateString('en-us');
+                    <p class="main__fecha">${new Date(fechaEnvio).toLocaleDateString('en-us')}</p>`;
+                nuevoElemento.id = id;
+                nuevoElemento.classList.add("main__mensaje");
                 if(revisado) {
-                    nuevoElemento.querySelector(".main__mensaje").classList.add("mensaje--leido");
+                    nuevoElemento.classList.add("mensaje--leido");
                 }
                 divMain.appendChild(nuevoElemento);
+                nuevoElemento.addEventListener("click",(event) => agregarFuncionAbrir(event))
             })
         }
     );
@@ -101,7 +139,7 @@ botonRedactar.addEventListener("click", () => {
                                                placeholder="ejemplo@learncode.local, ejemplo2@learncode.local"
                                                pattern="^[A-Za-z0-9]{8,30}@learncode\.local(, [A-Za-z0-9]{8,30}@learncode\.local)*$"
                                                required>
-                                        <input class="main__input main__asunto"
+                                        <input class="main__input main__asuntoRedactar"
                                                placeholder="Asunto del correo"
                                                required>
                                         <textarea rows="15"
@@ -130,7 +168,7 @@ botonRedactar.addEventListener("click", () => {
     })
     formRedaccion.addEventListener("submit", event => {
         event.preventDefault();
-        const correos = divMain.querySelector(".main__destinatarios").value.split(",");
+        const correos = divMain.querySelector(".main__destinatarios").value.split(", ");
         fetch(`mensajes/crear`,  {
             method: "POST",
             headers: {
@@ -139,7 +177,7 @@ botonRedactar.addEventListener("click", () => {
             },
             body: JSON.stringify({
                 correoDestinatarios: correos,
-                asunto: divMain.querySelector(".main__asunto").value,
+                asunto: divMain.querySelector(".main__asuntoRedactar").value,
                 cuerpo: divMain.querySelector(".main__inputText").value,
                 fecha: new Date()
             })

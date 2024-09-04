@@ -12,7 +12,7 @@ public class MensajePropietario {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "destinatario_id")
     Usuario usuario;
 
     @ManyToOne
@@ -20,13 +20,23 @@ public class MensajePropietario {
     Mensaje mensaje;
 
     Boolean revisado;
+    @Enumerated(EnumType.STRING)
+    RolMensajePropietario rolMensajePropietario;
 
     public MensajePropietario() {}
 
-    public MensajePropietario(Usuario usuario, Mensaje mensaje, Boolean revisado) {
+    public MensajePropietario(Usuario usuario, Mensaje mensaje, Boolean revisado, RolMensajePropietario rolMensajePropietario) {
         this.usuario = usuario;
         this.mensaje = mensaje;
         this.revisado = revisado;
+        this.rolMensajePropietario = rolMensajePropietario;
+    }
+    public RolMensajePropietario getRolMensajePropietario() {
+        return rolMensajePropietario;
+    }
+
+    public void setRolMensajePropietario(RolMensajePropietario rolMensajePropietario) {
+        this.rolMensajePropietario = rolMensajePropietario;
     }
 
     public Usuario getUsuario() {

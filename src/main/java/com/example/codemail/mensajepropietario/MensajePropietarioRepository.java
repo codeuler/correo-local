@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface MensajePropietarioRepository extends JpaRepository<MensajePropietario,Long> {
     Optional<MensajePropietario> findByUsuarioAndMensaje(Usuario usuario, Mensaje mensaje);
+    Optional<MensajePropietario> findByIdAndUsuario(Long id, Usuario usuario);
 }

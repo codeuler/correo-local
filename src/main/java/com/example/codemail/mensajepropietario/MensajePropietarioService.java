@@ -53,4 +53,13 @@ public class MensajePropietarioService extends UsuarioService implements Request
         );
     }
 
+    public ResponseEntity<?> revisarMensaje(HttpServletRequest request, MensajePropietarioRevisar mensajePropietarioRevisar) {
+        Usuario usuario = getUsuario(request);
+        return mensajePropietarioRepository.findByIdAndUsuario(mensajePropietarioRevisar.idMensajePropietario(),usuario)
+                .map(mensajePropietario -> {
+                    mensajePropietario.setRevisado(true);
+                    mensajePropietarioRepository.save(mensajePropietario);
+                    return ResponseEntity.ok("Mensaje revisado con exito");
+                }).orElseGet(()->ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje"));
+    }
 }
