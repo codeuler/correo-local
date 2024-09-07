@@ -12,7 +12,7 @@ function agregarFuncionAbrir(event) {
     const asunto = divMensaje.querySelector(".main__asunto").textContent.replace(/:$/,"");
     const fecha = divMensaje.querySelector(".main__fecha").textContent;
     const contenido = divMensaje.querySelector(".main__contenido").textContent.replace(/^.*: /,"");
-    const id = divMensaje.id;
+    const mensajeId = divMensaje.dataset.mensajeId;
     divMain.innerHTML = `<header class="main__headerMensajeAbierto">
                             <div class="main__volver"><i class="fa-solid fa-arrow-left fa-2xs"></i></div>
                             <p class="main__fechaMensajeAbierto">${fecha}</p>
@@ -29,7 +29,7 @@ function agregarFuncionAbrir(event) {
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         },
         body: JSON.stringify({
-            idMensajePropietario: id
+            mensajeId: mensajeId
         })
     }).then(response => {
         if (response.ok) {
@@ -56,7 +56,7 @@ function obtenerMensajes(nombreCarpeta) {
         data => {
             data.forEach(el => {
                 const nuevoElemento = document.createElement("div");
-                const {id, asunto, cuerpo, fechaEnvio, emailRemitente, revisado} = el;
+                const {mensajeId, asunto, cuerpo, fechaEnvio, emailRemitente, revisado} = el;
                 nuevoElemento.innerHTML = `<p class="main__remitente">${emailRemitente}</p>
                     <p class="main__contenido"><span class="main__asunto">${asunto}:</span> ${cuerpo}</p>
                     <div class="main__guardar">
@@ -66,7 +66,7 @@ function obtenerMensajes(nombreCarpeta) {
                         <i class="fa-solid fa-trash-can fa-lg" style="color: #1e1e1e;"></i>
                     </div>
                     <p class="main__fecha">${new Date(fechaEnvio).toLocaleDateString('en-us')}</p>`;
-                nuevoElemento.id = id;
+                nuevoElemento.dataset.mensajeId = mensajeId;
                 nuevoElemento.classList.add("main__mensaje");
                 if(revisado) {
                     nuevoElemento.classList.add("mensaje--leido");

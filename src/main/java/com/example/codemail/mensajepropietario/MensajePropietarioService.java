@@ -3,6 +3,9 @@ package com.example.codemail.mensajepropietario;
 import com.example.codemail.Jwt.JwtService;
 import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.folder.Folder;
+import com.example.codemail.mensaje.Mensaje;
+import com.example.codemail.mensaje.MensajeRepository;
+import com.example.codemail.mensaje.MensajeService;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
 import com.example.codemail.usuario.UsuarioService;
@@ -18,11 +21,13 @@ import java.util.stream.Collectors;
 public class MensajePropietarioService extends UsuarioService implements RequestTokenExtractor {
     private final MensajePropietarioRepository mensajePropietarioRepository;
     private final MensajePropietarioMapper mensajePropietarioMapper;
+    private final MensajeRepository mensajeRepository;
 
-    public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, JwtService jwtService, UsuarioRepository usuarioRepository) {
+    public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, JwtService jwtService, UsuarioRepository usuarioRepository, MensajeRepository mensajeRepository) {
         super(jwtService, usuarioRepository);
         this.mensajePropietarioRepository = mensajePropietarioRepository;
         this.mensajePropietarioMapper = mensajePropietarioMapper;
+        this.mensajeRepository = mensajeRepository;
     }
 
     public void guardarMensajePropietario(MensajePropietario mensajePropietario) {
@@ -46,7 +51,7 @@ public class MensajePropietarioService extends UsuarioService implements Request
         return ResponseEntity.ok(carpeta
                 .getMensajes()
                 .stream()
-                .map(mensaje -> mensajePropietarioRepository.findByUsuarioAndMensaje(usuario,mensaje))
+                .map(mensaje -> mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje))
                 .flatMap(Optional::stream)
                 .map(mensajePropietarioMapper::toMensajePropietarioEntrega)
                 .collect(Collectors.toSet())
@@ -55,11 +60,17 @@ public class MensajePropietarioService extends UsuarioService implements Request
 
     public ResponseEntity<?> revisarMensaje(HttpServletRequest request, MensajePropietarioRevisar mensajePropietarioRevisar) {
         Usuario usuario = getUsuario(request);
-        return mensajePropietarioRepository.findByIdAndUsuario(mensajePropietarioRevisar.idMensajePropietario(),usuario)
-                .map(mensajePropietario -> {
-                    mensajePropietario.setRevisado(true);
-                    mensajePropietarioRepository.save(mensajePropietario);
-                    return ResponseEntity.ok("Mensaje revisado con exito");
-                }).orElseGet(()->ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje"));
+        Optional<Mensaje> mensaje = mensajeRepository.findById(mensajePropietarioRevisar.mensajeId());
+        if (mensaje.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje");
+        }
+        Optional<MensajePropietario> mensajePropietario = mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje.get());
+        if (mensajePropietario.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje asociado al usuario");
+        }
+        MensajePropietario mensajePropietarioEntregar = mensajePropietario.get();
+        mensajePropietarioEntregar.setRevisado(true);
+        mensajePropietarioRepository.save(mensajePropietarioEntregar);
+        return ResponseEntity.ok("Mensaje revisado con exito");
     }
 }
