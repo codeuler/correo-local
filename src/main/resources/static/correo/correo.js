@@ -1,6 +1,8 @@
 const divAsideCarpetas = document.querySelector(".aside__carpetas");
 const divMain = document.querySelector(".main");
 let botonAsideSeleccionado = null;
+let asideCrearCarpetas = document.querySelector(".aside__crearCarpetas");
+let asideCrearCarpetasContenedor = document.querySelector(".crearCarpetas--contenedor");
 function agregarFuncionAbrir(event) {
     let divMensaje = event.target;
     if(!divMensaje.classList.contains("main__mensaje")) {
@@ -96,6 +98,30 @@ function crearBotonFolder(folder) {
         //history.pushState(`/${folder.name}`);
         agregarMensajesDiv(event.target);
     })
+}
+function crearFolder(folder) {
+    return fetch(`/folders/crear`,  {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        },
+        body: JSON.stringify({
+            nombre:folder
+        })
+    }).then(
+        response => {
+            if(!response.ok) {
+                response.json().then((data) => {
+                  alert(data.nombre);
+                })
+                return false;
+            } else {
+                alert("Folder creado con exito");
+                return true;
+            }
+        }
+    );
 }
 
 fetch("folders/obtener/todos", {
@@ -194,6 +220,19 @@ botonRedactar.addEventListener("click", () => {
     })
 })
 
-
-
-
+asideCrearCarpetasContenedor.addEventListener("click", event => {
+    asideCrearCarpetas.querySelector(".crearCarpetas--nuevaCarpeta").style.display = "none";
+    asideCrearCarpetas.querySelector(".crearCarpetas--contenedor").style.display = "none";
+    asideCrearCarpetas.querySelector(".crearCarpetas--input").style.display = 'block';
+    asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").style.display = 'flex';
+    asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").addEventListener("click", event => {
+        crearFolder(asideCrearCarpetas.querySelector(".crearCarpetas--input").value).then(boleano => {
+            if (boleano) {
+                asideCrearCarpetas.querySelector(".crearCarpetas--nuevaCarpeta").style.display = "block";
+                asideCrearCarpetas.querySelector(".crearCarpetas--contenedor").style.display = "flex";
+                asideCrearCarpetas.querySelector(".crearCarpetas--input").style.display = 'none';
+                asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").style.display = 'none';
+            }
+        })
+    })
+})

@@ -40,6 +40,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .aside__boton {
@@ -56,14 +58,30 @@ body {
     cursor: pointer;
 }
 
-.crearCarpetas--texto {
+.crearCarpetas--contenedor3 {
     background: #aaa0;
     border: 1px solid transparent;
-    text-align: left;
     font-size: 1rem;
     margin: 15px 0;
     padding: 0;
     font-weight: bold;
+    box-sizing: border-box;
+    width: 85%;
+}
+.crearCarpetas--nuevaCarpeta {
+    text-align: left;
+    margin: 0;
+}
+.crearCarpetas--input {
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    border-bottom: 2px solid #1e1e1e;
+    outline: transparent;
+    padding: 3px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-right: 10px;
+    display: none;
 }
 
 .redactar--boton {
@@ -235,13 +253,16 @@ body {
     outline: none;
 }
 
-.crearCarpetas--contenedor {
+.crearCarpetas--contenedor, .crearCarpetas--contenedor2 {
     display: flex;
     justify-content: center;
     align-items: end;
     height: 100%;
     width: 40px;
     padding: 8px 0;
+}
+.crearCarpetas--contenedor2 {
+    display: none;
 }
 .main__inputText{
     resize: none;
@@ -287,7 +308,7 @@ body {
 .main__volver:hover {
     background-color: white;
 }
-.crearCarpetas--contenedor:hover {
+.crearCarpetas--contenedor:hover, .crearCarpetas--contenedor2:hover {
     background-color: white;
     border-radius: 50%;
 }

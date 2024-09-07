@@ -23,7 +23,7 @@ public class FolderControlador implements RequestTokenExtractor, ManejadorDeErro
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearFolder (HttpServletRequest request, @RequestBody FolderGuardar folderGuardar) {
+    public ResponseEntity<?> crearFolder (HttpServletRequest request, @RequestBody @Validated FolderGuardar folderGuardar) {
         return folderService.crearFolder(request, folderGuardar);
     }
 
