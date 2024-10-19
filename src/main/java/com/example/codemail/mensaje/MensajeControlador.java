@@ -23,4 +23,10 @@ public class MensajeControlador implements RequestTokenExtractor, ManejadorDeErr
     ) {
         return mensajeService.enviarMensaje(mensajeEnviado, request);
     }
+    @PutMapping("/cambiarFolder")
+    public ResponseEntity<?> cambiarFolder(
+            @RequestBody MensajeCambiar mensajeCambiar
+    ) {
+        return mensajeService.cambiarFolder(mensajeCambiar);
+    }
 }

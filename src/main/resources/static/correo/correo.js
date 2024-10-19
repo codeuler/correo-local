@@ -43,8 +43,75 @@ function agregarFuncionAbrir(event) {
     })
 
 }
-function obtenerMensajes(nombreCarpeta) {
-    fetch(`mensajes/complejos/obtener/${nombreCarpeta}`,  {
+
+function llamarApiCambiarMensajeFolder(mensajeId, idFolderOrigen, idFolderDestino) {
+    return fetch("mensajes/cambiarFolder", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        },
+        body: JSON.stringify({
+            idMesajeCambiar: mensajeId,
+            idFolderOrigen: idFolderOrigen,
+            idFolderDestino: idFolderDestino
+        })
+    });
+}
+
+function cambiarMensajeFolder(e) {
+    e.stopPropagation();
+    const padre = e.target.closest(".main__mensaje");
+    let mensajeId = padre.dataset.mensajeId;
+    obtenerFolders()
+        .then(data => {
+            data = data.filter(folder => folder.nombre !== 'Entrada' && folder.nombre !== 'Enviados');
+            let opciones = ``;
+            for (const folder of data){
+                if (!(folder.id == botonAsideSeleccionado.dataset.folderId)){
+                    opciones += `<option value=${folder.id}>${folder.nombre}</option> data-folder-id=${folder.id}</option>`;
+                }
+            }
+            if (data.length === 0 || opciones.length === 0) {
+                alert("No existe alguna carpeta permitida con la cual se pueda realizar el cambio");
+                return;
+            }
+            const mainGuardar = e.target.closest(".main__guardar");
+
+            if (mainGuardar.querySelector(".main__seleccion")) {
+                mainGuardar.querySelector(".main__seleccion").remove();
+            }
+            mainGuardar.innerHTML += `<form class="main__seleccion">
+                                    <label for="carpetasElegir">Elige la carpeta destino: </label>
+                                        <select class="main__select" name="carpetasElegir" id="carpetasElegir"> 
+                                            <option>Selecciona una opcion</option>` +
+                                            opciones + `</form>`;
+            const selectFormulario = mainGuardar.querySelector(".main__select");
+            // Para que no se ejecute el evento de click del padre
+            selectFormulario.addEventListener("click", (eventoC) => {
+                    eventoC.stopPropagation();
+                }
+            );
+            selectFormulario.addEventListener("change", (evento) => {
+                evento.stopPropagation();
+                let eleccion = window.confirm("¿Estás seguro que quieres cambiar de ubicación el mensaje?");
+                if (eleccion) {
+                    const idFolderDestino = selectFormulario.value;
+                    llamarApiCambiarMensajeFolder(mensajeId, botonAsideSeleccionado.dataset.folderId, idFolderDestino).then(data => {
+                        mainGuardar.querySelector(".main__select").remove();
+                        agregarMensajesDiv(botonAsideSeleccionado);
+                    });
+                } else {
+                    mainGuardar.querySelector(".main__select").remove();
+                    agregarMensajesDiv(botonAsideSeleccionado);
+                }
+            })
+        });
+
+}
+
+function obtenerMensajes(folderId) {
+    fetch(`mensajes/complejos/obtener/${folderId}`,  {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",
@@ -72,7 +139,8 @@ function obtenerMensajes(nombreCarpeta) {
                     nuevoElemento.classList.add("mensaje--leido");
                 }
                 divMain.appendChild(nuevoElemento);
-                nuevoElemento.addEventListener("click",(event) => agregarFuncionAbrir(event))
+                nuevoElemento.addEventListener("click",(event) => agregarFuncionAbrir(event));
+                nuevoElemento.querySelector(".main__guardar").addEventListener("click", (e) => cambiarMensajeFolder(e));
             })
         }
     );
@@ -87,11 +155,12 @@ function agregarMensajesDiv(boton) {
     botonAsideSeleccionado = boton;
     //Se agrega la clase de boton seleccionado
     botonAsideSeleccionado.classList.toggle('boton__aside__seleccionado');
-    obtenerMensajes(boton.textContent)
+    obtenerMensajes(boton.dataset.folderId)
 }
 
 function crearBotonFolder(folder) {
     let nuevoBoton = divAsideCarpetas.appendChild(document.createElement('button'));
+    nuevoBoton.dataset.folderId = folder.id;
     nuevoBoton.textContent = folder.nombre;
     nuevoBoton.classList.add('aside__boton');
     nuevoBoton.addEventListener('click', (event) => {
@@ -123,31 +192,43 @@ function crearFolder(folder) {
         }
     );
 }
-
-fetch("folders/obtener/todos", {
-    method: "GET",
-    headers: {
-        "Content-Type": "application/JSON",
-        'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
-    }
-})
-    .then(response =>  response.json())
-    .then(
-        data => {
-            data = data.filter(folder =>
-                folder.nombre !== 'Entrada' && folder.nombre !== 'Enviados');
-            data.unshift({nombre:"Enviados"});
-            data.unshift({nombre:"Entrada"});
-            data.forEach(folder => {
-                crearBotonFolder(folder)
-            });
-            botonAsideSeleccionado = divAsideCarpetas.querySelector(".aside__boton");
-            botonAsideSeleccionado.classList.toggle("boton__aside__seleccionado");
-            agregarMensajesDiv(botonAsideSeleccionado);
+function obtenerFolders() {
+    return fetch("folders/obtener/todos", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         }
-    ).catch( (error) => {console.log(error.message);}
-);
+    })
+        .then(response =>  response.json())
+}
 
+function cambiarStyleDisplay(queryElemento, styleDisplay) {
+    asideCrearCarpetas.querySelector(queryElemento).style.display = styleDisplay;
+}
+
+function cargarFolders() {
+    obtenerFolders()
+        .then(
+            data => {
+                const entrada = data.find((elemento) => elemento.nombre === "Entrada");
+                const enviados = data.find((elemento) => elemento.nombre === "Enviados");
+                data = data.filter(folder =>
+                    folder.nombre !== 'Entrada' && folder.nombre !== 'Enviados');
+                data.unshift(enviados);
+                data.unshift(entrada);
+                data.forEach(folder => {
+                    crearBotonFolder(folder)
+                });
+                botonAsideSeleccionado = divAsideCarpetas.querySelector(".aside__boton");
+                botonAsideSeleccionado.classList.toggle("boton__aside__seleccionado");
+                agregarMensajesDiv(botonAsideSeleccionado);
+            }
+        ).catch( (error) => {console.log(error.message);}
+    );
+
+}
+cargarFolders();
 const botonRedactar = document.querySelector(".redactar--boton");
 botonRedactar.addEventListener("click", () => {
     for (const nodo of divMain.children) {
@@ -221,17 +302,19 @@ botonRedactar.addEventListener("click", () => {
 })
 
 asideCrearCarpetasContenedor.addEventListener("click", event => {
-    asideCrearCarpetas.querySelector(".crearCarpetas--nuevaCarpeta").style.display = "none";
-    asideCrearCarpetas.querySelector(".crearCarpetas--contenedor").style.display = "none";
-    asideCrearCarpetas.querySelector(".crearCarpetas--input").style.display = 'block';
-    asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").style.display = 'flex';
+    cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","none");
+    cambiarStyleDisplay(".crearCarpetas--contenedor","none");
+    cambiarStyleDisplay(".crearCarpetas--input","block");
+    cambiarStyleDisplay(".crearCarpetas--contenedor2","flex");
     asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").addEventListener("click", event => {
         crearFolder(asideCrearCarpetas.querySelector(".crearCarpetas--input").value).then(boleano => {
             if (boleano) {
-                asideCrearCarpetas.querySelector(".crearCarpetas--nuevaCarpeta").style.display = "block";
-                asideCrearCarpetas.querySelector(".crearCarpetas--contenedor").style.display = "flex";
-                asideCrearCarpetas.querySelector(".crearCarpetas--input").style.display = 'none';
-                asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").style.display = 'none';
+                cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","block");
+                cambiarStyleDisplay(".crearCarpetas--contenedor","flex");
+                cambiarStyleDisplay(".crearCarpetas--input","none");
+                cambiarStyleDisplay(".crearCarpetas--contenedor2","none");
+                divAsideCarpetas.innerHTML = "";
+                cargarFolders();
             }
         })
     })

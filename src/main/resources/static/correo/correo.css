@@ -170,6 +170,25 @@ body {
     height: 100%;
     width: 100%;
 }
+.main__guardar {
+    position: relative;
+}
+.main__seleccion {
+    border: 1px solid #1e1e1e;
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    min-width: 200px;
+    z-index: 2;
+    position: absolute;
+    top: 50px;
+}
+.main__select {
+    border-radius: 5px;
+    margin-top: 3px;
+    width: 100%;
+}
+
 .main__asunto {
     font-weight: 900;
 }

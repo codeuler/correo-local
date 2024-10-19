@@ -87,6 +87,32 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    public ResponseEntity<?> cambiarFolder(MensajeCambiar mensajeCambiar) {
+        Optional<Mensaje> mensajeOptional = mensajeRepository.findById(mensajeCambiar.idMesajeCambiar());
+        Optional<Folder> folderOptional = folderRepository.findById(mensajeCambiar.idFolderOrigen());
+        Optional<Folder> folderOptionalDeCambio = folderRepository.findById(mensajeCambiar.idFolderDestino());
+        if (!(mensajeOptional.isPresent() && folderOptional.isPresent() && folderOptionalDeCambio.isPresent())) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        Mensaje mensaje = mensajeOptional.get();
+        Folder folderBase = folderOptional.get();
+        Folder folderCambio = folderOptionalDeCambio.get();
+        if(folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede cambiar a folder de Enviados, Entrada o sí mismo");
+        }
+        // Se desvincula del folder anterior el mensaje
+        folderBase.getMensajes().remove(mensaje);
+        // Se desvincula del mensaje el folder anterior
+        mensaje.getFolder().remove(folderBase);
+        // Se vincula al folder nuevo el mensaje
+        folderCambio.getMensajes().add(mensaje);
+        // Se vincula al mensaje el nuevo folder
+        mensaje.getFolder().add(folderCambio);
+
+        mensajeRepository.save(mensaje);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
     private Optional<Folder> getFolder(Usuario usuario,String nombre) {
         return folderRepository
                 .findByNombreAndPropietario(nombre, usuario);

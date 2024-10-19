@@ -14,7 +14,7 @@ public class MensajePropietarioControlador {
     }
 
     @GetMapping("/obtener/{folder}")
-    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, @PathVariable String folder) {
+    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, @PathVariable Integer folder) {
         return mensajePropietarioService.obtenerMensajes(request,folder);
     }
     @PostMapping("/revisar")

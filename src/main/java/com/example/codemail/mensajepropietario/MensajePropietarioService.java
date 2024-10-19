@@ -34,17 +34,17 @@ public class MensajePropietarioService extends UsuarioService implements Request
         mensajePropietarioRepository.save(mensajePropietario);
     }
 
-    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, String nombreFolder) {
+    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, Integer folderId) {
         Usuario usuario = getUsuario(request);
 
         //Obtener el folder especifico del usuario
         Optional<Folder> carpetaOptional = usuario.getFolders()
                 .stream()
-                .filter(folder -> folder.getNombre().equals(nombreFolder))
+                .filter(folder -> folder.getId().equals(folderId))
                 .findFirst();
 
         if (carpetaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder " + nombreFolder + " no existe");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder con id" + folderId + " no existe");
         }
 
         Folder carpeta = carpetaOptional.get();
