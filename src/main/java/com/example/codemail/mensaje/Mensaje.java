@@ -27,7 +27,7 @@ public class Mensaje {
     )
     private Date fechaEnvio;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name="remitente_id")
     private Usuario usuario;
 

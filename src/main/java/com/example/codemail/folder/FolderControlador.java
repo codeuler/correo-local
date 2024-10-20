@@ -34,4 +34,10 @@ public class FolderControlador implements RequestTokenExtractor, ManejadorDeErro
         return folderService.actualizarFolder(request, nombreCarpeta, folderGuardar);
     }
 
+    @DeleteMapping("/eliminar")
+    public ResponseEntity<?> eliminarFolder(HttpServletRequest request,
+                                            @RequestBody @Validated FolderEliminar folderEliminar) {
+        return folderService.eliminarFolder(request, folderEliminar);
+    }
+
 }

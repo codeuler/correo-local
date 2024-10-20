@@ -5,7 +5,9 @@ import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.folder.FolderRepository;
+import com.example.codemail.folder.FolderService;
 import com.example.codemail.mensajepropietario.MensajePropietario;
+import com.example.codemail.mensajepropietario.MensajePropietarioRepository;
 import com.example.codemail.mensajepropietario.MensajePropietarioService;
 import com.example.codemail.mensajepropietario.RolMensajePropietario;
 import com.example.codemail.usuario.Usuario;
@@ -25,15 +27,18 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
     private final MensajeRepository mensajeRepository;
     private final MensajeMapper mensajeMapper;
     private final MensajePropietarioService mensajePropietarioService;
+    private final MensajePropietarioRepository mensajePropietarioRepository;
 
     public MensajeService(JwtService jwtService, UsuarioRepository usuarioRepository, FolderRepository folderRepository,
                           MensajeRepository mensajeRepository, MensajeMapper mensajeMapper,
-                          MensajePropietarioService mensajePropietarioService) {
+                          MensajePropietarioService mensajePropietarioService,
+                          MensajePropietarioRepository mensajePropietarioRepository) {
         super(jwtService, usuarioRepository);
         this.folderRepository = folderRepository;
         this.mensajeRepository = mensajeRepository;
         this.mensajeMapper = mensajeMapper;
         this.mensajePropietarioService = mensajePropietarioService;
+        this.mensajePropietarioRepository = mensajePropietarioRepository;
     }
 
     public ResponseEntity<?> enviarMensaje(MensajeEnviado mensajeEnviado, HttpServletRequest request) {
@@ -100,19 +105,24 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
         if(folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede cambiar a folder de Enviados, Entrada o sí mismo");
         }
-        // Se desvincula del folder anterior el mensaje
-        folderBase.getMensajes().remove(mensaje);
-        // Se desvincula del mensaje el folder anterior
-        mensaje.getFolder().remove(folderBase);
+        Usuario usuario = folderBase.getPropietario();
+        if(mensajePropietarioRepository.findByUsuarioAndMensaje(usuario,mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))) {
+            // Tengo que encontrar la bandeja de entrada y enviados del usuario, desvicular el mensaje de los folders y viceversa
+            usuario.getFolders().stream()
+                    .filter(folder -> folder.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folder.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))
+                    .forEach(folder -> FolderService.desvincularMensajeFolder(mensaje,folder));
+        } else {
+            // Se desvincula del folder anterior el mensaje
+            // Se desvincula del mensaje el folder anterior
+            FolderService.desvincularMensajeFolder(mensaje,folderBase);
+        }
         // Se vincula al folder nuevo el mensaje
-        folderCambio.getMensajes().add(mensaje);
         // Se vincula al mensaje el nuevo folder
-        mensaje.getFolder().add(folderCambio);
+        FolderService.vincularMensajeFolder(mensaje,folderCambio);
 
         mensajeRepository.save(mensaje);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
-
     private Optional<Folder> getFolder(Usuario usuario,String nombre) {
         return folderRepository
                 .findByNombreAndPropietario(nombre, usuario);

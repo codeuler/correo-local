@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface FolderRepository extends JpaRepository<Folder, Integer> {
     Optional<Folder> findByNombreAndPropietario(String nombre, Usuario propietario);
+    Optional<Folder> findByIdAndPropietario(Integer id, Usuario propietario);
 }
