@@ -45,18 +45,32 @@ body {
 }
 
 .aside__boton {
+    display: flex;
     background: #aaa0;
     border: 1px solid transparent;
-    align-items: flex-start;
+    align-items: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    text-align: left;
     font-size: 1rem;
     border-radius: 10px;
-    padding: 0 20px;
-    margin: 0;
+    padding: 0 10px 0 20px;
     height: 40px;
     cursor: pointer;
+    position: relative;
 }
+.aside__botonTexto {
+    width: 95%;
+}
+.aside__botonMenu {
+    align-items: center;
+    justify-content: center;
+    width: 5%;
+    border-radius: 50%;
+    display: none;
+}
+.aside__botonMenu:hover {
+    background-color: #aaaaaa;
+}
+
 
 .crearCarpetas--contenedor3 {
     background: #aaa0;
@@ -117,6 +131,9 @@ body {
 .aside__boton:hover {
     background-color: #FEFBFFAA;
 }
+.aside__boton:hover > .aside__botonMenu {
+    display: flex;
+}
 
 .main__mensaje {
     display: flex;
@@ -139,6 +156,9 @@ body {
     margin: 0;
     padding: 0;
     height: 50%;
+}
+.main__mensaje:hover > .main__guardar,.main__mensaje:hover > .main__eliminar {
+    display: flex;
 }
 .main__remitente {
     flex-basis: 20%;
@@ -164,11 +184,11 @@ body {
 
 .main__guardar, .main__eliminar{
     flex-basis: 5%;
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
+    display: flex;
 }
 .main__guardar {
     position: relative;
@@ -363,6 +383,12 @@ p {
 }
 
 .boton__aside__seleccionado {
-    text-align: center;
     background-color: #FEFBFF;
+    text-align: center;
+}
+.botonTexto__aside__seleccionado {
+    text-align: center;
+}
+option, select {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }

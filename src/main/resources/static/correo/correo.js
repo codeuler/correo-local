@@ -60,7 +60,6 @@ function llamarApiCambiarMensajeFolder(mensajeId, idFolderOrigen, idFolderDestin
 }
 
 function cambiarMensajeFolder(e) {
-    e.stopPropagation();
     const padre = e.target.closest(".main__mensaje");
     let mensajeId = padre.dataset.mensajeId;
     obtenerFolders()
@@ -78,14 +77,11 @@ function cambiarMensajeFolder(e) {
             }
             const mainGuardar = e.target.closest(".main__guardar");
 
-            if (mainGuardar.querySelector(".main__seleccion")) {
-                mainGuardar.querySelector(".main__seleccion").remove();
-            }
             mainGuardar.innerHTML += `<form class="main__seleccion">
                                     <label for="carpetasElegir">Elige la carpeta destino: </label>
                                         <select class="main__select" name="carpetasElegir" id="carpetasElegir"> 
                                             <option>Selecciona una opcion</option>` +
-                                            opciones + `</form>`;
+                                            opciones + `</select></form>`;
             const selectFormulario = mainGuardar.querySelector(".main__select");
             // Para que no se ejecute el evento de click del padre
             selectFormulario.addEventListener("click", (eventoC) => {
@@ -111,7 +107,7 @@ function cambiarMensajeFolder(e) {
 }
 
 function obtenerMensajes(folderId) {
-    fetch(`mensajes/complejos/obtener/${folderId}`,  {
+    fetch(`mensajes/complejos/obtener/${folderId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",
@@ -135,16 +131,26 @@ function obtenerMensajes(folderId) {
                     <p class="main__fecha">${new Date(fechaEnvio).toLocaleDateString('en-us')}</p>`;
                 nuevoElemento.dataset.mensajeId = mensajeId;
                 nuevoElemento.classList.add("main__mensaje");
-                if(revisado) {
+                if (revisado) {
                     nuevoElemento.classList.add("mensaje--leido");
                 }
                 divMain.appendChild(nuevoElemento);
-                nuevoElemento.addEventListener("click",(event) => agregarFuncionAbrir(event));
-                nuevoElemento.querySelector(".main__guardar").addEventListener("click", (e) => cambiarMensajeFolder(e));
-            })
-        }
-    );
-
+                nuevoElemento.addEventListener("click", (event) => agregarFuncionAbrir(event));
+                nuevoElemento.querySelector(".main__guardar").addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const formulario = nuevoElemento.querySelector(".main__seleccion");
+                    const formulario2 = divMain.querySelector(".main__seleccion");
+                    if (formulario == null) {
+                        if(formulario2 !== null) {
+                            divMain.querySelector(".main__seleccion").remove();
+                        }
+                        cambiarMensajeFolder(e);
+                    } else {
+                        formulario.remove();
+                    }
+                })
+            });
+        });
 }
 
 function agregarMensajesDiv(boton) {
@@ -158,31 +164,112 @@ function agregarMensajesDiv(boton) {
     obtenerMensajes(boton.dataset.folderId)
 }
 
-function crearBotonFolder(folder) {
-    let nuevoBoton = divAsideCarpetas.appendChild(document.createElement('button'));
-    nuevoBoton.dataset.folderId = folder.id;
-    nuevoBoton.textContent = folder.nombre;
-    nuevoBoton.classList.add('aside__boton');
-    nuevoBoton.addEventListener('click', (event) => {
-        //history.pushState(`/${folder.name}`);
-        agregarMensajesDiv(event.target);
+function crearOption(contenido, value) {
+    const elemento = document.createElement("option");
+    elemento.value = value;
+    elemento.textContent = contenido;
+    return elemento;
+}
+function eliminarCarpeta(folderId) {
+    fetch("/folders/eliminar",{
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        },
+        body: JSON.stringify({
+            folderId: folderId
+        })
+    }).then((respuesta)=>{
+        if (!respuesta.ok) {
+            respuesta.text().then(data => {
+                window.alert("El folder no pudo ser eliminado: " + data);
+            })
+        } else {
+            window.alert("El folder ha sido eliminado exitosamente");
+        }
+        cargarFolders();
     })
 }
+function eventosSelectorCarpetas(evento) {
+    const asideBoton = evento.target.closest(".aside__boton");
+    const valor = evento.target.value;
+    if(valor === "1") {
+        const nuevoNombre = window.prompt("Escribe el nuevo nombre que tendrá la carpeta");
+        window.confirm("El nuevo nombre será " + nuevoNombre);
+    } else if(valor === "2") {
+        const deseaCambiar = window.confirm(`¿Estás seguro de que quieres eliminar la carpeta? \nRecuerda que los mensajes dentro no se eliminaran sino que volveran a su carpeta de origen`);
+        if (deseaCambiar) {
+            eliminarCarpeta(asideBoton.dataset.folderId);
+        }
+    }
+    asideBoton.closest(".aside__carpetas").innerHTML = "";
+    cargarFolders();
+}
+
+function crearBotonFolder(folder) {
+    const nuevoCarpeta = divAsideCarpetas.appendChild(document.createElement('div'));
+    nuevoCarpeta.dataset.folderId = folder.id;
+    //nuevoBoton.textContent = folder.nombre;
+    nuevoCarpeta.classList.add('aside__boton');
+    const botonTexto = nuevoCarpeta.appendChild(document.createElement('p'));
+    botonTexto.classList.add('aside__botonTexto');
+    botonTexto.textContent = folder.nombre;
+    nuevoCarpeta.addEventListener('click', (event) => {
+        //history.pushState(`/${folder.name}`);
+        agregarMensajesDiv(event.currentTarget);
+    })
+    if ((folder.nombre === "Entrada" || folder.nombre === "Enviados")) {
+        return;
+    }
+    const botonMenu = nuevoCarpeta.appendChild(document.createElement('div'));
+    botonMenu.classList.add('aside__botonMenu');
+    const imagenMenu = botonMenu.appendChild(document.createElement('i'));
+    imagenMenu.classList.add('fa-solid','fa-ellipsis-vertical');
+    botonMenu.addEventListener("click", (event) => {
+        event.stopPropagation();
+        let formulario2 = divAsideCarpetas.querySelector(".main__seleccion");
+        let formulario = nuevoCarpeta.querySelector(".main__seleccion");
+        if (formulario != null) {
+            formulario.remove();
+        } else {
+            if (formulario2 != null) {
+                formulario2.remove();
+            }
+            const formulario = nuevoCarpeta.appendChild(document.createElement('form'));
+            formulario.classList.add('main__seleccion');
+            const etiqueta = formulario.appendChild(document.createElement('label'));
+            etiqueta.textContent = "¿Qué deseas hacer?";
+            etiqueta.htmlFor = "opcionElegir";
+            const selector = formulario.appendChild(document.createElement('select'));
+            selector.classList.add('main__select');
+            selector.name = "seleccion";
+            selector.id = "opcionElegir";
+            selector.options.add(crearOption("Selecciona una opcion", "0"));
+            selector.options.add(crearOption("Cambiar nombre", "1"));
+            selector.options.add(crearOption("Eliminar carpeta", "2"));
+            selector.addEventListener("change", ev => eventosSelectorCarpetas(ev));
+            formulario.addEventListener("click", evento1 => evento1.stopPropagation());
+        }
+    });
+
+}
+
 function crearFolder(folder) {
-    return fetch(`/folders/crear`,  {
+    return fetch(`/folders/crear`, {
         method: "POST",
         headers: {
             "Content-Type": "application/JSON",
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         },
         body: JSON.stringify({
-            nombre:folder
+            nombre: folder
         })
     }).then(
         response => {
-            if(!response.ok) {
+            if (!response.ok) {
                 response.json().then((data) => {
-                  alert(data.nombre);
+                    alert(data.nombre);
                 })
                 return false;
             } else {
@@ -192,6 +279,7 @@ function crearFolder(folder) {
         }
     );
 }
+
 function obtenerFolders() {
     return fetch("folders/obtener/todos", {
         method: "GET",
@@ -217,6 +305,7 @@ function cargarFolders() {
                     folder.nombre !== 'Entrada' && folder.nombre !== 'Enviados');
                 data.unshift(enviados);
                 data.unshift(entrada);
+                divAsideCarpetas.innerHTML = "";
                 data.forEach(folder => {
                     crearBotonFolder(folder)
                 });
@@ -224,10 +313,12 @@ function cargarFolders() {
                 botonAsideSeleccionado.classList.toggle("boton__aside__seleccionado");
                 agregarMensajesDiv(botonAsideSeleccionado);
             }
-        ).catch( (error) => {console.log(error.message);}
+        ).catch((error) => {
+            console.log(error.message);
+        }
     );
-
 }
+
 cargarFolders();
 const botonRedactar = document.querySelector(".redactar--boton");
 botonRedactar.addEventListener("click", () => {
