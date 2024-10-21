@@ -32,10 +32,8 @@ function agregarFuncionAbrir(event) {
             mensajeId: mensajeId
         })
     }).then(response => {
-        if (response.ok) {
-            console.log("Mensaje marcado como leído");
-        } else {
-            console.log("El mensaje no ha logrado ser marcado como leído");
+        if (!response.ok) {
+            window.alert("No se ha logrado marcar el mensaje como leído");
         }
     });
     divMain.querySelector(".main__volver").addEventListener("click", (e) => {
@@ -93,9 +91,15 @@ function cambiarMensajeFolder(e) {
                 let eleccion = window.confirm("¿Estás seguro que quieres cambiar de ubicación el mensaje?");
                 if (eleccion) {
                     const idFolderDestino = selectFormulario.value;
-                    llamarApiCambiarMensajeFolder(mensajeId, botonAsideSeleccionado.dataset.folderId, idFolderDestino).then(data => {
-                        mainGuardar.querySelector(".main__select").remove();
-                        agregarMensajesDiv(botonAsideSeleccionado);
+                    llamarApiCambiarMensajeFolder(mensajeId, botonAsideSeleccionado.dataset.folderId, idFolderDestino).then(respuesta => {
+                        if(respuesta.ok) {
+                            mainGuardar.querySelector(".main__select").remove();
+                            agregarMensajesDiv(botonAsideSeleccionado);
+                        } else {
+                            respuesta.text().then(cuerpo => {
+                                window.alert("No se ha podido cambiar el mensaje de ubicación: " + cuerpo)
+                            })
+                        }
                     });
                 } else {
                     mainGuardar.querySelector(".main__select").remove();
@@ -114,6 +118,9 @@ function obtenerMensajes(folderId) {
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         }
     }).then(response => {
+        if(!response.ok) {
+            window.alert("No se han podido cargar los mensajes desde el servidor");
+        }
         return response.json();
     }).then(
         data => {
@@ -170,6 +177,7 @@ function crearOption(contenido, value) {
     elemento.textContent = contenido;
     return elemento;
 }
+
 function eliminarCarpeta(folderId) {
     fetch("/folders/eliminar",{
         method: "DELETE",
@@ -186,6 +194,8 @@ function eliminarCarpeta(folderId) {
         } else {
             window.alert("El folder ha sido eliminado exitosamente");
         }
+        divAsideCarpetas.closest(".aside__carpetas").innerHTML = "";
+        cargarFolders();
     })
 }
 
@@ -311,8 +321,12 @@ function obtenerFolders() {
             "Content-Type": "application/JSON",
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         }
-    })
-        .then(response =>  response.json())
+    }).then(response => {
+        if(!response.ok) {
+            alert("No se han podido recuperar las carpetas");
+        }
+        return response.json();
+    });
 }
 
 function cambiarStyleDisplay(queryElemento, styleDisplay) {
@@ -410,7 +424,7 @@ botonRedactar.addEventListener("click", () => {
                         divMain.removeChild(divMain.lastElementChild);
                         alert("Mensaje enviado con exito");
                     } else if(response.status === 409) {
-                        alert("No se ha podido enviar el mensaje dado que ninguno de los correos detinatarios existe")
+                        alert("No se ha podido enviar el mensaje dado que ninguno de los correos detinatarios existe");
                     }
             })
     })
