@@ -182,29 +182,50 @@ function eliminarCarpeta(folderId) {
         })
     }).then((respuesta)=>{
         if (!respuesta.ok) {
-            respuesta.text().then(data => {
-                window.alert("El folder no pudo ser eliminado: " + data);
-            })
+            window.alert("El folder no pudo ser eliminado: ");
         } else {
             window.alert("El folder ha sido eliminado exitosamente");
         }
+    })
+}
+
+function actualizarNombreCarpeta(folderId, nuevoNombre) {
+    fetch(`/folders/${folderId}/actualizar`,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        },
+        body: JSON.stringify({
+            nombre: nuevoNombre
+        })
+    }).then(response => {
+        if(response.ok) {
+            window.alert("Se ha cambiado el nombre de la carpeta con éxito");
+        } else if (response.status === 409) {
+            window.alert("Ya existe una carpeta con dicho nombre");
+        } else {
+            response.json().then(data => {
+                window.alert("No se ha podido cambiar el nombre de la carpeta debido a un problema: " + (data.hasOwnProperty("nombre"))?data.nombre:"Problema interno");
+            })
+        }
+        divAsideCarpetas.closest(".aside__carpetas").innerHTML = "";
         cargarFolders();
     })
 }
+
 function eventosSelectorCarpetas(evento) {
     const asideBoton = evento.target.closest(".aside__boton");
     const valor = evento.target.value;
     if(valor === "1") {
         const nuevoNombre = window.prompt("Escribe el nuevo nombre que tendrá la carpeta");
-        window.confirm("El nuevo nombre será " + nuevoNombre);
+        actualizarNombreCarpeta(asideBoton.dataset.folderId, nuevoNombre);
     } else if(valor === "2") {
         const deseaCambiar = window.confirm(`¿Estás seguro de que quieres eliminar la carpeta? \nRecuerda que los mensajes dentro no se eliminaran sino que volveran a su carpeta de origen`);
         if (deseaCambiar) {
             eliminarCarpeta(asideBoton.dataset.folderId);
         }
     }
-    asideBoton.closest(".aside__carpetas").innerHTML = "";
-    cargarFolders();
 }
 
 function crearBotonFolder(folder) {
@@ -216,8 +237,11 @@ function crearBotonFolder(folder) {
     botonTexto.classList.add('aside__botonTexto');
     botonTexto.textContent = folder.nombre;
     nuevoCarpeta.addEventListener('click', (event) => {
-        //history.pushState(`/${folder.name}`);
         agregarMensajesDiv(event.currentTarget);
+        const formulario = divAsideCarpetas.querySelector(".main__seleccion");
+        if (formulario !== null) {
+            formulario.remove();
+        }
     })
     if ((folder.nombre === "Entrada" || folder.nombre === "Enviados")) {
         return;

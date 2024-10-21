@@ -27,11 +27,11 @@ public class FolderControlador implements RequestTokenExtractor, ManejadorDeErro
         return folderService.crearFolder(request, folderGuardar);
     }
 
-    @PutMapping("/{nombreCarpeta}/actualizar")
+    @PutMapping("/{idCarpeta}/actualizar")
     public ResponseEntity<?> actualizarFolder (HttpServletRequest request,
-                                               @PathVariable String nombreCarpeta,
+                                               @PathVariable Integer idCarpeta,
                                                @Validated @RequestBody FolderGuardar folderGuardar) {
-        return folderService.actualizarFolder(request, nombreCarpeta, folderGuardar);
+        return folderService.actualizarFolder(request, idCarpeta, folderGuardar);
     }
 
     @DeleteMapping("/eliminar")

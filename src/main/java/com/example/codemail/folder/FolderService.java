@@ -69,8 +69,8 @@ public class FolderService extends UsuarioService implements RequestTokenExtract
         folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
     }
 
-    public ResponseEntity<?> actualizarFolder(HttpServletRequest request, String nombreCarpeta, FolderGuardar folderGuardar) {
-        Optional<Folder> optionalFolder = getFolder(request, nombreCarpeta);
+    public ResponseEntity<?> actualizarFolder(HttpServletRequest request, Integer idCarpeta, FolderGuardar folderGuardar) {
+        Optional<Folder> optionalFolder = folderRepository.findById(idCarpeta);
         if (optionalFolder.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
