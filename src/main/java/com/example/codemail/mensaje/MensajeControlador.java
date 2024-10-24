@@ -29,4 +29,12 @@ public class MensajeControlador implements RequestTokenExtractor, ManejadorDeErr
     ) {
         return mensajeService.cambiarFolder(mensajeCambiar);
     }
+    @GetMapping("/{mensajeId}/validacionFolder")
+    public ResponseEntity<?> validacionFolder(
+            @PathVariable Integer mensajeId,
+            HttpServletRequest request
+    ) {
+        return mensajeService.validarFolder(mensajeId,request);
+    }
+
 }

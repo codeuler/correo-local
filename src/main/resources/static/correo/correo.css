@@ -392,3 +392,53 @@ p {
 option, select {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+.dialog__eliminar {
+    z-index: 1;
+    width: 30%;
+    padding: 10px;
+    border: 1px solid #1e1e1e;
+    top: 5px;
+    border-radius: 3px;
+    background-color: #f3efef;
+}
+.dialog__eliminar::backdrop {
+    background-color: #1e1e1e;
+    opacity: 0.5;
+}
+.dialog__texto {
+    font-size: 0.95rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 0 10px;
+    text-align: center;
+}
+.dialog__elecciones {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 10px;
+    box-sizing: border-box;
+}
+.dialog__boton {
+    padding: 12px 7px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #A4B3E9;
+    border: #8a9ae1 1px solid;
+    font-weight: 600;
+}
+.boton--cancelar {
+    border-color: transparent;
+    background-color: black;
+    color: white;
+}
+.dialog__boton:hover {
+    background-color: #fff;
+    border: #8a9ae1 1px solid;
+
+}
+.boton--cancelar:hover {
+    background-color: white;
+    border-color: #1e1e1e;
+    color: #1e1e1e;
+}

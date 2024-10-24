@@ -129,5 +129,11 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
     }
 
 
-
+    public ResponseEntity<?> validarFolder(Integer mensajeId, HttpServletRequest request) {
+        Usuario usuario = getUsuario(request);
+        return mensajeRepository.findByIdAndAndUsuario(mensajeId,usuario).map(mensaje -> (mensaje.getFolder()
+                .stream()
+                .anyMatch(folder -> Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta()).contains(folder.getNombre()) && folder.getPropietario().getId().equals(usuario.getId()))) ?
+                ResponseEntity.ok().build() : ResponseEntity.notFound().build()).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 }

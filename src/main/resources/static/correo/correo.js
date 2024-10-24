@@ -110,6 +110,74 @@ function cambiarMensajeFolder(e) {
 
 }
 
+function verificarFolder(mensajeId) {
+    return fetch(`mensajes/${mensajeId}/validacionFolder`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        }
+    }).then(respuesta => respuesta.ok);
+}
+function retornarRespuestaModal(modal) {
+    return new Promise(resolve => {
+        modal.querySelector(".boton--carpeta").addEventListener("click",()=> {
+            resolve(0); // Da como resuelta la promesa retornando un valor de 0
+            modal.close(); // Cierra el modal
+        });
+        modal.querySelector(".boton--completamente").addEventListener("click",()=> {
+            resolve(1);
+            modal.close();
+        });
+        modal.querySelector(".boton--cancelar").addEventListener("click",()=> {
+            resolve(2);
+            modal.close();
+        });
+    })
+}
+
+function mostrarQuitarFormulario(e, elementoHtml) {
+    e.stopPropagation();
+    const formulario = elementoHtml.querySelector(".main__seleccion");
+    const formulario2 = divMain.querySelector(".main__seleccion");
+    if (formulario !== null) {
+        formulario.remove();
+        return;
+    } else if (formulario2 !== null) {
+        divMain.querySelector(".main__seleccion").remove();
+    }
+    cambiarMensajeFolder(e);
+}
+
+function eliminarMensaje(e) {
+    e.stopPropagation();
+    verificarFolder(e.target.closest(".main__mensaje").dataset.mensajeId).then(boleano => {
+        if (boleano) {
+            const anuncio = "¿Estas seguro de que quieres eliminar completamente este mensaje?";
+            (window.confirm(anuncio))?console.log("Se elimina el mensaje completamente"):false;
+            //Llamar función eliminar mensaje
+            return;
+        }
+        const ventanaModal = document.querySelector(".dialog__eliminar");
+        ventanaModal.showModal();
+        retornarRespuestaModal(ventanaModal).then(eleccion => {
+            switch (eleccion) {
+                case 0:
+                    console.log("Se elimina el mensaje de la carpeta");
+                    //Llamar función eliminar mensaje de la carpeta
+                    break;
+                case 1:
+                    console.log("Se elimina el mensaje completamente");
+                    //Llamar función eliminar mensaje completamente
+                    break;
+                default:
+                    console.log("Cancelar");
+                    break;
+            }
+        })
+    });
+}
+
 function obtenerMensajes(folderId) {
     fetch(`mensajes/complejos/obtener/${folderId}`, {
         method: "GET",
@@ -118,7 +186,7 @@ function obtenerMensajes(folderId) {
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         }
     }).then(response => {
-        if(!response.ok) {
+        if (!response.ok) {
             window.alert("No se han podido cargar los mensajes desde el servidor");
         }
         return response.json();
@@ -143,21 +211,10 @@ function obtenerMensajes(folderId) {
                 }
                 divMain.appendChild(nuevoElemento);
                 nuevoElemento.addEventListener("click", (event) => agregarFuncionAbrir(event));
-                nuevoElemento.querySelector(".main__guardar").addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    const formulario = nuevoElemento.querySelector(".main__seleccion");
-                    const formulario2 = divMain.querySelector(".main__seleccion");
-                    if (formulario == null) {
-                        if(formulario2 !== null) {
-                            divMain.querySelector(".main__seleccion").remove();
-                        }
-                        cambiarMensajeFolder(e);
-                    } else {
-                        formulario.remove();
-                    }
-                })
+                nuevoElemento.querySelector(".main__guardar").addEventListener("click", (e) => mostrarQuitarFormulario(e,nuevoElemento))
+                nuevoElemento.querySelector(".main__eliminar").addEventListener("click", (e) => eliminarMensaje(e));
+                });
             });
-        });
 }
 
 function agregarMensajesDiv(boton) {
