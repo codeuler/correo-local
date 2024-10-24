@@ -37,4 +37,12 @@ public class MensajeControlador implements RequestTokenExtractor, ManejadorDeErr
         return mensajeService.validarFolder(mensajeId,request);
     }
 
+    @DeleteMapping("/eliminar/folder")
+    public ResponseEntity<?> eliminarFolder(@RequestBody MensajeEliminarFolder mensajeEliminarFolder, HttpServletRequest request) {
+        return mensajeService.eliminarMensajeFolder(mensajeEliminarFolder, request);
+    }
+    @DeleteMapping("/eliminar")
+    public ResponseEntity<?> eliminarMensaje(@RequestBody MensajeEliminar mensajeEliminar, HttpServletRequest request) {
+        return mensajeService.eliminarMensaje(mensajeEliminar, request);
+    }
 }
