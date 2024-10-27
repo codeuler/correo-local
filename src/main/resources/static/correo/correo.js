@@ -149,13 +149,68 @@ function mostrarQuitarFormulario(e, elementoHtml) {
     cambiarMensajeFolder(e);
 }
 
+function vaciarMainMensajes() {
+    document.querySelector(".main").innerHTML = "";
+}
+
+function eliminarMensajeCarpeta(mensajeId, folderId) {
+    return fetch("mensajes/eliminar/folder",{
+        method:"DELETE",
+        headers:{
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        },
+        body: JSON.stringify({
+            mensajeId: mensajeId,
+            folderId: folderId
+        })
+    }).then(response => {
+        switch (response.status) {
+            case 409:
+                response.text().then(data => {
+                    alert(data)
+                });
+                break;
+            case 404:
+                alert("No se ha encontrado la información ");
+                break;
+            default:
+                break;
+        }
+    });
+}
+
+function eliminarMensajeCompletamente(mensajeId) {
+    return fetch("mensajes/eliminar",{
+        method:"DELETE",
+        headers:{
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+            mensajeId: mensajeId
+        })
+    }).then(response => {
+        if (!response.ok) {
+            response.text().then(
+                data => console.log(data)
+            )
+        } else {
+            alert("Mensaje eliminado exitosamente");
+        }
+    })
+}
+
 function eliminarMensaje(e) {
     e.stopPropagation();
-    verificarFolder(e.target.closest(".main__mensaje").dataset.mensajeId).then(boleano => {
+    const mainMensaje = e.target.closest(".main__mensaje")
+    const mensajeId = mainMensaje.dataset.mensajeId;
+    verificarFolder(mensajeId).then(boleano => {
         if (boleano) {
             const anuncio = "¿Estas seguro de que quieres eliminar completamente este mensaje?";
-            (window.confirm(anuncio))?console.log("Se elimina el mensaje completamente"):false;
-            //Llamar función eliminar mensaje
+            if (window.confirm(anuncio)) {
+                eliminarMensajeCompletamente(mensajeId).then( () =>obtenerMensajes(botonAsideSeleccionado.dataset.folderId));
+            }
             return;
         }
         const ventanaModal = document.querySelector(".dialog__eliminar");
@@ -163,15 +218,14 @@ function eliminarMensaje(e) {
         retornarRespuestaModal(ventanaModal).then(eleccion => {
             switch (eleccion) {
                 case 0:
-                    console.log("Se elimina el mensaje de la carpeta");
-                    //Llamar función eliminar mensaje de la carpeta
+                    eliminarMensajeCarpeta(mensajeId, botonAsideSeleccionado.dataset.folderId).then(
+                        () => obtenerMensajes(botonAsideSeleccionado.dataset.folderId)
+                    )
                     break;
                 case 1:
-                    console.log("Se elimina el mensaje completamente");
-                    //Llamar función eliminar mensaje completamente
+                    eliminarMensajeCompletamente(mensajeId).then( () => obtenerMensajes(botonAsideSeleccionado.dataset.folderId));
                     break;
                 default:
-                    console.log("Cancelar");
                     break;
             }
         })
@@ -192,6 +246,7 @@ function obtenerMensajes(folderId) {
         return response.json();
     }).then(
         data => {
+            vaciarMainMensajes();
             data.forEach(el => {
                 const nuevoElemento = document.createElement("div");
                 const {mensajeId, asunto, cuerpo, fechaEnvio, emailRemitente, revisado} = el;

@@ -206,6 +206,11 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
         // Desvincular el mensaje de la carpeta y viceversa
         folders.forEach(folder -> FolderService.desvincularMensajeFolder(mensaje,folder));
         mensajeRepository.save(mensaje);
+        // Eliminar el registro que relaciona un mensaje con sus destinatario
+        mensajePropietarioRepository.delete(mensaje.getMensajeDestinatario().stream()
+                .filter(mensajesDestinatario -> mensajesDestinatario.getMensaje().getId().equals(mensaje.getId()) && mensajesDestinatario.getUsuario().getId().equals(usuario.getId()))
+                .findFirst()
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El mensaje no tiene relacion con destinatarios")));
         // Verificar si la carpeta actualmente pertenece a alguna carpeta de lo contrario será eliminado completamente de la base de datos
         if (mensaje.getFolder().isEmpty()) {
             mensajeRepository.delete(mensaje);

@@ -34,7 +34,7 @@ public class Mensaje {
     @ManyToMany(mappedBy = "mensajes")
     private Set<Folder> folder;
 
-    @OneToMany(mappedBy = "mensaje", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "mensaje")
     private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
     public Mensaje() {}
