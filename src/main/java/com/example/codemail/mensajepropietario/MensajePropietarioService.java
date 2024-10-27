@@ -1,7 +1,6 @@
 package com.example.codemail.mensajepropietario;
 
 import com.example.codemail.Jwt.JwtService;
-import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensaje.MensajeRepository;
@@ -15,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class MensajePropietarioService implements RequestTokenExtractor {
+public class MensajePropietarioService {
     private final MensajePropietarioRepository mensajePropietarioRepository;
     private final MensajePropietarioMapper mensajePropietarioMapper;
     private final MensajeRepository mensajeRepository;

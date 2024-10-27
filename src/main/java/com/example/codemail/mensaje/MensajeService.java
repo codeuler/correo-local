@@ -1,6 +1,5 @@
 package com.example.codemail.mensaje;
 
-import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.folder.FolderRepository;
@@ -20,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class MensajeService implements RequestTokenExtractor {
+public class MensajeService {
     private final FolderRepository folderRepository;
     private final MensajeRepository mensajeRepository;
     private final MensajeMapper mensajeMapper;

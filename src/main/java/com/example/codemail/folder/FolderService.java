@@ -1,13 +1,10 @@
 package com.example.codemail.folder;
 
-import com.example.codemail.Jwt.JwtService;
-import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.errores.ManejadorDeErroresHttp;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensajepropietario.MensajePropietarioRepository;
 import com.example.codemail.mensajepropietario.RolMensajePropietario;
 import com.example.codemail.usuario.Usuario;
-import com.example.codemail.usuario.UsuarioRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,12 +16,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class FolderService implements RequestTokenExtractor, ManejadorDeErroresHttp {
+public class FolderService implements ManejadorDeErroresHttp {
     private final FolderRepository folderRepository;
     private final FolderMapper folderMapper;
     private final MensajePropietarioRepository mensajePropietarioRepository;
 
-    public FolderService(FolderRepository folderRepository, JwtService jwtService, UsuarioRepository usuarioRepository, FolderMapper folderMapper, MensajePropietarioRepository mensajePropietarioRepository) {
+    public FolderService(FolderRepository folderRepository, FolderMapper folderMapper, MensajePropietarioRepository mensajePropietarioRepository) {
         this.folderRepository = folderRepository;
         this.folderMapper = folderMapper;
         this.mensajePropietarioRepository = mensajePropietarioRepository;

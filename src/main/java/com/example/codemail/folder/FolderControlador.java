@@ -1,6 +1,5 @@
 package com.example.codemail.folder;
 
-import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.errores.ManejadorDeErroresHttp;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/folders")
-public class FolderControlador implements RequestTokenExtractor, ManejadorDeErroresHttp {
+public class FolderControlador implements ManejadorDeErroresHttp {
     private final FolderService folderService;
 
     public FolderControlador(FolderService folderService) {

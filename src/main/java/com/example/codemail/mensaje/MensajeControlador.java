@@ -1,6 +1,5 @@
 package com.example.codemail.mensaje;
 
-import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.errores.ManejadorDeErroresHttp;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/mensajes")
-public class MensajeControlador implements RequestTokenExtractor, ManejadorDeErroresHttp {
+public class MensajeControlador implements ManejadorDeErroresHttp {
     private final MensajeService mensajeService;
 
     public MensajeControlador(MensajeService mensajeService) {
