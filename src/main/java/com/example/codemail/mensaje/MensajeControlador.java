@@ -2,8 +2,9 @@ package com.example.codemail.mensaje;
 
 import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.errores.ManejadorDeErroresHttp;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +20,9 @@ public class MensajeControlador implements RequestTokenExtractor, ManejadorDeErr
     @PostMapping("/crear")
     public ResponseEntity<?> enviarMensaje(
             @RequestBody MensajeEnviado mensajeEnviado,
-            HttpServletRequest request
+            @AuthenticationPrincipal Usuario usuario
     ) {
-        return mensajeService.enviarMensaje(mensajeEnviado, request);
+        return mensajeService.enviarMensaje(mensajeEnviado, usuario);
     }
     @PutMapping("/cambiarFolder")
     public ResponseEntity<?> cambiarFolder(
@@ -32,17 +33,17 @@ public class MensajeControlador implements RequestTokenExtractor, ManejadorDeErr
     @GetMapping("/{mensajeId}/validacionFolder")
     public ResponseEntity<?> validacionFolder(
             @PathVariable Integer mensajeId,
-            HttpServletRequest request
+            @AuthenticationPrincipal Usuario usuario
     ) {
-        return mensajeService.validarFolder(mensajeId,request);
+        return mensajeService.validarFolder(mensajeId, usuario);
     }
 
     @DeleteMapping("/eliminar/folder")
-    public ResponseEntity<?> eliminarFolder(@RequestBody MensajeEliminarFolder mensajeEliminarFolder, HttpServletRequest request) {
-        return mensajeService.eliminarMensajeFolder(mensajeEliminarFolder, request);
+    public ResponseEntity<?> eliminarFolder(@RequestBody MensajeEliminarFolder mensajeEliminarFolder, @AuthenticationPrincipal Usuario usuario) {
+        return mensajeService.eliminarMensajeFolder(mensajeEliminarFolder, usuario);
     }
     @DeleteMapping("/eliminar")
-    public ResponseEntity<?> eliminarMensaje(@RequestBody MensajeEliminar mensajeEliminar, HttpServletRequest request) {
-        return mensajeService.eliminarMensaje(mensajeEliminar, request);
+    public ResponseEntity<?> eliminarMensaje(@RequestBody MensajeEliminar mensajeEliminar, @AuthenticationPrincipal Usuario usuario) {
+        return mensajeService.eliminarMensaje(mensajeEliminar, usuario);
     }
 }

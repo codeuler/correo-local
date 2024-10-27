@@ -1,6 +1,5 @@
 package com.example.codemail.mensaje;
 
-import com.example.codemail.Jwt.JwtService;
 import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.Folder;
@@ -12,8 +11,6 @@ import com.example.codemail.mensajepropietario.MensajePropietarioService;
 import com.example.codemail.mensajepropietario.RolMensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
-import com.example.codemail.usuario.UsuarioService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,27 +20,27 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class MensajeService extends UsuarioService implements RequestTokenExtractor {
+public class MensajeService implements RequestTokenExtractor {
     private final FolderRepository folderRepository;
     private final MensajeRepository mensajeRepository;
     private final MensajeMapper mensajeMapper;
     private final MensajePropietarioService mensajePropietarioService;
     private final MensajePropietarioRepository mensajePropietarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public MensajeService(JwtService jwtService, UsuarioRepository usuarioRepository, FolderRepository folderRepository,
+    public MensajeService(UsuarioRepository usuarioRepository, FolderRepository folderRepository,
                           MensajeRepository mensajeRepository, MensajeMapper mensajeMapper,
                           MensajePropietarioService mensajePropietarioService,
                           MensajePropietarioRepository mensajePropietarioRepository) {
-        super(jwtService, usuarioRepository);
         this.folderRepository = folderRepository;
         this.mensajeRepository = mensajeRepository;
         this.mensajeMapper = mensajeMapper;
         this.mensajePropietarioService = mensajePropietarioService;
         this.mensajePropietarioRepository = mensajePropietarioRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
-    public ResponseEntity<?> enviarMensaje(MensajeEnviado mensajeEnviado, HttpServletRequest request) {
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> enviarMensaje(MensajeEnviado mensajeEnviado, Usuario usuario) {
         // Encontrar todos los usuarios que tengan por id el correo que se ha enviado en MensajeEnviado
         Set<Usuario> destinatarios = mensajeEnviado
                 .correoDestinatarios()
@@ -130,18 +127,14 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
     }
 
 
-    public ResponseEntity<?> validarFolder(Integer mensajeId, HttpServletRequest request) {
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> validarFolder(Integer mensajeId, Usuario usuario) {
         return mensajeRepository.findByIdAndAndUsuario(mensajeId,usuario).map(mensaje -> (mensaje.getFolder()
                 .stream()
                 .anyMatch(folder -> Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta()).contains(folder.getNombre()) && folder.getPropietario().getId().equals(usuario.getId()))) ?
                 ResponseEntity.ok().build() : ResponseEntity.notFound().build()).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    public ResponseEntity<?> eliminarMensajeFolder(MensajeEliminarFolder mensajeEliminarFolder, HttpServletRequest request) {
-        // Buscar el usuario
-        Usuario usuario = getUsuario(request);
-
+    public ResponseEntity<?> eliminarMensajeFolder(MensajeEliminarFolder mensajeEliminarFolder, Usuario usuario) {
         // Verificar si la carpeta existe
         Optional<Folder> optionalFolder = folderRepository.findByIdAndPropietario(mensajeEliminarFolder.folderId(),usuario);
         if(optionalFolder.isEmpty()) {
@@ -187,9 +180,7 @@ public class MensajeService extends UsuarioService implements RequestTokenExtrac
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    public ResponseEntity<?> eliminarMensaje(MensajeEliminar mensajeEliminar, HttpServletRequest request) {
-        // Buscar el usuario
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> eliminarMensaje(MensajeEliminar mensajeEliminar, Usuario usuario) {
         // Verificar si el mensaje existe
         Mensaje mensaje = mensajeRepository.findById(mensajeEliminar.mensajeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"El mensaje no existe"));

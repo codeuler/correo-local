@@ -2,8 +2,9 @@ package com.example.codemail.folder;
 
 import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.errores.ManejadorDeErroresHttp;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,26 +19,26 @@ public class FolderControlador implements RequestTokenExtractor, ManejadorDeErro
     }
 
     @GetMapping("/obtener/todos")
-    public ResponseEntity<?> obtenerTodos(HttpServletRequest request) {
-        return folderService.getAll(request);
+    public ResponseEntity<?> obtenerTodos(@AuthenticationPrincipal Usuario usuario) {
+        return folderService.getAll(usuario);
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearFolder (HttpServletRequest request, @RequestBody @Validated FolderGuardar folderGuardar) {
-        return folderService.crearFolder(request, folderGuardar);
+    public ResponseEntity<?> crearFolder (@AuthenticationPrincipal Usuario usuario, @RequestBody @Validated FolderGuardar folderGuardar) {
+        return folderService.crearFolder(usuario, folderGuardar);
     }
 
     @PutMapping("/{idCarpeta}/actualizar")
-    public ResponseEntity<?> actualizarFolder (HttpServletRequest request,
+    public ResponseEntity<?> actualizarFolder (@AuthenticationPrincipal Usuario usuario,
                                                @PathVariable Integer idCarpeta,
                                                @Validated @RequestBody FolderGuardar folderGuardar) {
-        return folderService.actualizarFolder(request, idCarpeta, folderGuardar);
+        return folderService.actualizarFolder(usuario, idCarpeta, folderGuardar);
     }
 
     @DeleteMapping("/eliminar")
-    public ResponseEntity<?> eliminarFolder(HttpServletRequest request,
+    public ResponseEntity<?> eliminarFolder(@AuthenticationPrincipal Usuario usuario,
                                             @RequestBody @Validated FolderEliminar folderEliminar) {
-        return folderService.eliminarFolder(request, folderEliminar);
+        return folderService.eliminarFolder(usuario, folderEliminar);
     }
 
 }

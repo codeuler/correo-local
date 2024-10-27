@@ -1,7 +1,8 @@
 package com.example.codemail.mensajepropietario;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,11 +15,11 @@ public class MensajePropietarioControlador {
     }
 
     @GetMapping("/obtener/{folder}")
-    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, @PathVariable Integer folder) {
-        return mensajePropietarioService.obtenerMensajes(request,folder);
+    public ResponseEntity<?> obtenerMensajes(@AuthenticationPrincipal Usuario usuario, @PathVariable Integer folder) {
+        return mensajePropietarioService.obtenerMensajes(usuario,folder);
     }
     @PostMapping("/revisar")
-    public ResponseEntity<?> revisarMensaje(HttpServletRequest request,@RequestBody MensajePropietarioRevisar mensajePropietarioRevisar) {
-        return mensajePropietarioService.revisarMensaje(request, mensajePropietarioRevisar);
+    public ResponseEntity<?> revisarMensaje(@AuthenticationPrincipal Usuario usuario, @RequestBody MensajePropietarioRevisar mensajePropietarioRevisar) {
+        return mensajePropietarioService.revisarMensaje(usuario, mensajePropietarioRevisar);
     }
 }

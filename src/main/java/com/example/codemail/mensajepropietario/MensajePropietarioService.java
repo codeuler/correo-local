@@ -5,11 +5,8 @@ import com.example.codemail.Jwt.RequestTokenExtractor;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensaje.MensajeRepository;
-import com.example.codemail.mensaje.MensajeService;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
-import com.example.codemail.usuario.UsuarioService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,13 +15,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class MensajePropietarioService extends UsuarioService implements RequestTokenExtractor {
+public class MensajePropietarioService implements RequestTokenExtractor {
     private final MensajePropietarioRepository mensajePropietarioRepository;
     private final MensajePropietarioMapper mensajePropietarioMapper;
     private final MensajeRepository mensajeRepository;
 
     public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, JwtService jwtService, UsuarioRepository usuarioRepository, MensajeRepository mensajeRepository) {
-        super(jwtService, usuarioRepository);
         this.mensajePropietarioRepository = mensajePropietarioRepository;
         this.mensajePropietarioMapper = mensajePropietarioMapper;
         this.mensajeRepository = mensajeRepository;
@@ -34,9 +30,7 @@ public class MensajePropietarioService extends UsuarioService implements Request
         mensajePropietarioRepository.save(mensajePropietario);
     }
 
-    public ResponseEntity<?> obtenerMensajes(HttpServletRequest request, Integer folderId) {
-        Usuario usuario = getUsuario(request);
-
+    public ResponseEntity<?> obtenerMensajes(Usuario usuario, Integer folderId) {
         //Obtener el folder especifico del usuario
         Optional<Folder> carpetaOptional = usuario.getFolders()
                 .stream()
@@ -58,8 +52,7 @@ public class MensajePropietarioService extends UsuarioService implements Request
         );
     }
 
-    public ResponseEntity<?> revisarMensaje(HttpServletRequest request, MensajePropietarioRevisar mensajePropietarioRevisar) {
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> revisarMensaje(Usuario usuario, MensajePropietarioRevisar mensajePropietarioRevisar) {
         Optional<Mensaje> mensaje = mensajeRepository.findById(mensajePropietarioRevisar.mensajeId());
         if (mensaje.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje");

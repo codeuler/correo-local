@@ -8,8 +8,6 @@ import com.example.codemail.mensajepropietario.MensajePropietarioRepository;
 import com.example.codemail.mensajepropietario.RolMensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
-import com.example.codemail.usuario.UsuarioService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,20 +19,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class FolderService extends UsuarioService implements RequestTokenExtractor, ManejadorDeErroresHttp {
+public class FolderService implements RequestTokenExtractor, ManejadorDeErroresHttp {
     private final FolderRepository folderRepository;
     private final FolderMapper folderMapper;
     private final MensajePropietarioRepository mensajePropietarioRepository;
 
     public FolderService(FolderRepository folderRepository, JwtService jwtService, UsuarioRepository usuarioRepository, FolderMapper folderMapper, MensajePropietarioRepository mensajePropietarioRepository) {
-        super(jwtService, usuarioRepository);
         this.folderRepository = folderRepository;
         this.folderMapper = folderMapper;
         this.mensajePropietarioRepository = mensajePropietarioRepository;
     }
 
-    public ResponseEntity<?> getAll(HttpServletRequest request) {
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> getAll(Usuario usuario) {
         Set<FolderRespuesta> folders = usuario.getFolders()
                 .stream()
                 .map(folderMapper::toFolderRespuesta)
@@ -42,12 +38,7 @@ public class FolderService extends UsuarioService implements RequestTokenExtract
         return ResponseEntity.ok(folders);
     }
 
-    public Optional<Folder> getFolder(HttpServletRequest request, String folder) {
-        return folderRepository.findByNombreAndPropietario(folder,getUsuario(request));
-    }
-
-    public ResponseEntity<?> crearFolder(HttpServletRequest request, FolderGuardar folderGuardar) {
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> crearFolder(Usuario usuario, FolderGuardar folderGuardar) {
         if (buscarFolderRepetido(usuario,folderGuardar.nombre())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder ya existe");
         } else {
@@ -69,13 +60,13 @@ public class FolderService extends UsuarioService implements RequestTokenExtract
         folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
     }
 
-    public ResponseEntity<?> actualizarFolder(HttpServletRequest request, Integer idCarpeta, FolderGuardar folderGuardar) {
+    public ResponseEntity<?> actualizarFolder(Usuario usuario, Integer idCarpeta, FolderGuardar folderGuardar) {
         Optional<Folder> optionalFolder = folderRepository.findById(idCarpeta);
         if (optionalFolder.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Folder folder = optionalFolder.get();
-        if (buscarFolderRepetido(getUsuario(request), folderGuardar.nombre())) {
+        if (buscarFolderRepetido(usuario, folderGuardar.nombre())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder ya existe");
         }
         folder.setNombre(folderGuardar.nombre());
@@ -83,8 +74,7 @@ public class FolderService extends UsuarioService implements RequestTokenExtract
         return ResponseEntity.ok().body(folderMapper.toFolderRespuesta(folder));
     }
 
-    public ResponseEntity<?> eliminarFolder(HttpServletRequest request, FolderEliminar folderEliminar) {
-        Usuario usuario = getUsuario(request);
+    public ResponseEntity<?> eliminarFolder(Usuario usuario, FolderEliminar folderEliminar) {
         Optional<Folder> folderOptional = folderRepository.findByIdAndPropietario(folderEliminar.folderId(),usuario);
         if (folderOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
