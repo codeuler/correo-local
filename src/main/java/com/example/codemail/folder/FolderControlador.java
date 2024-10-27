@@ -1,12 +1,15 @@
 package com.example.codemail.folder;
 
 import com.example.codemail.errores.ManejadorDeErroresHttp;
+import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @Controller
 @RequestMapping("/folders")
@@ -18,25 +21,25 @@ public class FolderControlador implements ManejadorDeErroresHttp {
     }
 
     @GetMapping("/obtener/todos")
-    public ResponseEntity<?> obtenerTodos(@AuthenticationPrincipal Usuario usuario) {
+    public ResponseEntity<Set<FolderRespuesta>> obtenerTodos(@AuthenticationPrincipal Usuario usuario) {
         return folderService.getAll(usuario);
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> crearFolder (@AuthenticationPrincipal Usuario usuario, @RequestBody @Validated FolderGuardar folderGuardar) {
+    public ResponseEntity<String> crearFolder(@AuthenticationPrincipal Usuario usuario, @RequestBody @Validated FolderGuardar folderGuardar) throws FolderYaExisteException {
         return folderService.crearFolder(usuario, folderGuardar);
     }
 
     @PutMapping("/{idCarpeta}/actualizar")
-    public ResponseEntity<?> actualizarFolder (@AuthenticationPrincipal Usuario usuario,
-                                               @PathVariable Integer idCarpeta,
-                                               @Validated @RequestBody FolderGuardar folderGuardar) {
+    public ResponseEntity<FolderRespuesta> actualizarFolder(@AuthenticationPrincipal Usuario usuario,
+                                                            @PathVariable Integer idCarpeta,
+                                                            @Validated @RequestBody FolderGuardar folderGuardar) throws FolderYaExisteException, FolderNoExisteException {
         return folderService.actualizarFolder(usuario, idCarpeta, folderGuardar);
     }
 
     @DeleteMapping("/eliminar")
-    public ResponseEntity<?> eliminarFolder(@AuthenticationPrincipal Usuario usuario,
-                                            @RequestBody @Validated FolderEliminar folderEliminar) {
+    public ResponseEntity<FolderRespuesta> eliminarFolder(@AuthenticationPrincipal Usuario usuario,
+                                                          @RequestBody @Validated FolderEliminar folderEliminar) throws FolderNoExisteException, MensajePropietarioNoExisteException, FolderImposibleEliminarException {
         return folderService.eliminarFolder(usuario, folderEliminar);
     }
 
