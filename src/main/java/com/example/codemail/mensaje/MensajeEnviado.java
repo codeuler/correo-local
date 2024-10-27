@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.Set;
 
-public record MensajeEnviado (
+public record MensajeEnviado(
         @NotEmpty(message = "Debe haber al menos un destinatario")
-    Set<String> correoDestinatarios,
+        Set<String> correoDestinatarios,
         @NotEmpty(message = "El asunto no puedes estar vacío")
         String asunto,
         @NotEmpty(message = "El Cuerpo no puedes estar vacío")

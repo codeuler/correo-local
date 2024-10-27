@@ -77,7 +77,7 @@ public class MensajeService {
         destinatarios.stream()
                 // Eliminar al usuario que realizo el autoenvio
                 .filter(user -> !user.getId().equals(usuario.getId()))
-                .forEach( user -> mensajePropietarioService.
+                .forEach(user -> mensajePropietarioService.
                         guardarMensajePropietario(
                                 new MensajePropietario(user, mensaje, false, RolMensajePropietario.DESTINATARIO)
                         )
@@ -99,35 +99,36 @@ public class MensajeService {
         Mensaje mensaje = mensajeOptional.get();
         Folder folderBase = folderOptional.get();
         Folder folderCambio = folderOptionalDeCambio.get();
-        if(folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
+        if (folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede cambiar a folder de Enviados, Entrada o sí mismo");
         }
         Usuario usuario = folderBase.getPropietario();
-        if(mensajePropietarioRepository.findByUsuarioAndMensaje(usuario,mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))) {
+        if (mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))) {
             // Tengo que encontrar la bandeja de entrada y enviados del usuario, desvicular el mensaje de los folders y viceversa
             usuario.getFolders().stream()
                     .filter(folder -> folder.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folder.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))
-                    .forEach(folder -> FolderService.desvincularMensajeFolder(mensaje,folder));
+                    .forEach(folder -> FolderService.desvincularMensajeFolder(mensaje, folder));
         } else {
             // Se desvincula del folder anterior el mensaje
             // Se desvincula del mensaje el folder anterior
-            FolderService.desvincularMensajeFolder(mensaje,folderBase);
+            FolderService.desvincularMensajeFolder(mensaje, folderBase);
         }
         // Se vincula al folder nuevo el mensaje
         // Se vincula al mensaje el nuevo folder
-        FolderService.vincularMensajeFolder(mensaje,folderCambio);
+        FolderService.vincularMensajeFolder(mensaje, folderCambio);
 
         mensajeRepository.save(mensaje);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
-    private Optional<Folder> getFolder(Usuario usuario,String nombre) {
+
+    private Optional<Folder> getFolder(Usuario usuario, String nombre) {
         return folderRepository
                 .findByNombreAndPropietario(nombre, usuario);
     }
 
 
     public ResponseEntity<?> validarFolder(Integer mensajeId, Usuario usuario) {
-        return mensajeRepository.findByIdAndAndUsuario(mensajeId,usuario).map(mensaje -> (mensaje.getFolder()
+        return mensajeRepository.findByIdAndAndUsuario(mensajeId, usuario).map(mensaje -> (mensaje.getFolder()
                 .stream()
                 .anyMatch(folder -> Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta()).contains(folder.getNombre()) && folder.getPropietario().getId().equals(usuario.getId()))) ?
                 ResponseEntity.ok().build() : ResponseEntity.notFound().build()).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -135,20 +136,20 @@ public class MensajeService {
 
     public ResponseEntity<?> eliminarMensajeFolder(MensajeEliminarFolder mensajeEliminarFolder, Usuario usuario) {
         // Verificar si la carpeta existe
-        Optional<Folder> optionalFolder = folderRepository.findByIdAndPropietario(mensajeEliminarFolder.folderId(),usuario);
-        if(optionalFolder.isEmpty()) {
+        Optional<Folder> optionalFolder = folderRepository.findByIdAndPropietario(mensajeEliminarFolder.folderId(), usuario);
+        if (optionalFolder.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Folder folder = optionalFolder.get();
 
         // Verificar si la carpeta no es de entrada o enviados
-        if(Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(),CarpetasDefecto.ENVIADOS.getNombreCarpeta()).contains(folder.getNombre())) {
+        if (Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta()).contains(folder.getNombre())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El mensaje pertenece a la carpeta Entrada o enviados");
         }
 
         // Verificar si el mensaje existe
         Optional<Mensaje> optionalMensaje = mensajeRepository.findById(mensajeEliminarFolder.mensajeId());
-        if(optionalMensaje.isEmpty()) {
+        if (optionalMensaje.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         Mensaje mensaje = optionalMensaje.get();
@@ -157,20 +158,20 @@ public class MensajeService {
         Optional<MensajePropietario> optionalMensajePropietario = usuario.getMensajesDestinatario().stream().filter(mensajeDestinatario -> mensajeDestinatario.getMensaje().getId().equals(mensajeEliminarFolder.mensajeId())).findFirst();
         Optional<Folder> optionalFolderEntrada = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENTRADA.getNombreCarpeta(), usuario);
         Optional<Folder> optinalFolderEnviados = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENVIADOS.getNombreCarpeta(), usuario);
-        if(optionalMensajePropietario.isEmpty() || optionalFolderEntrada.isEmpty() || optinalFolderEnviados.isEmpty()) {
+        if (optionalMensajePropietario.isEmpty() || optionalFolderEntrada.isEmpty() || optinalFolderEnviados.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         Folder folderEntrada = optionalFolderEntrada.get();
         Folder folderEnviados = optinalFolderEnviados.get();
-        FolderService.desvincularMensajeFolder(mensaje,folder);
+        FolderService.desvincularMensajeFolder(mensaje, folder);
 
         // Devolver el mensaje a su carpeta de origen
         switch (optionalMensajePropietario.get().getRolMensajePropietario()) {
-            case REMITENTE -> FolderService.vincularMensajeFolder(mensaje,folderEnviados);
-            case DESTINATARIO -> FolderService.vincularMensajeFolder(mensaje,folderEntrada);
+            case REMITENTE -> FolderService.vincularMensajeFolder(mensaje, folderEnviados);
+            case DESTINATARIO -> FolderService.vincularMensajeFolder(mensaje, folderEntrada);
             case AMBOS -> {
-                FolderService.vincularMensajeFolder(mensaje,folderEnviados);
-                FolderService.vincularMensajeFolder(mensaje,folderEntrada);
+                FolderService.vincularMensajeFolder(mensaje, folderEnviados);
+                FolderService.vincularMensajeFolder(mensaje, folderEntrada);
             }
             default -> {
             }
@@ -182,11 +183,11 @@ public class MensajeService {
     public ResponseEntity<?> eliminarMensaje(MensajeEliminar mensajeEliminar, Usuario usuario) {
         // Verificar si el mensaje existe
         Mensaje mensaje = mensajeRepository.findById(mensajeEliminar.mensajeId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"El mensaje no existe"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El mensaje no existe"));
         // Lista para agrupar las carpetas en caso de que un mensaje este la bandeja de entrada como la de salida
         Set<Folder> folders = new HashSet<>();
         mensaje.getFolder().forEach(folder -> {
-            if (folder.getPropietario().getId().equals(usuario.getId())){
+            if (folder.getPropietario().getId().equals(usuario.getId())) {
                 folders.add(folder);
             }
         });
@@ -194,13 +195,13 @@ public class MensajeService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El mensaje no existe dentro de ninguna carpeta del usuario");
         }
         // Desvincular el mensaje de la carpeta y viceversa
-        folders.forEach(folder -> FolderService.desvincularMensajeFolder(mensaje,folder));
+        folders.forEach(folder -> FolderService.desvincularMensajeFolder(mensaje, folder));
         mensajeRepository.save(mensaje);
         // Eliminar el registro que relaciona un mensaje con sus destinatario
         mensajePropietarioRepository.delete(mensaje.getMensajeDestinatario().stream()
                 .filter(mensajesDestinatario -> mensajesDestinatario.getMensaje().getId().equals(mensaje.getId()) && mensajesDestinatario.getUsuario().getId().equals(usuario.getId()))
                 .findFirst()
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"El mensaje no tiene relacion con destinatarios")));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El mensaje no tiene relacion con destinatarios")));
         // Verificar si la carpeta actualmente pertenece a alguna carpeta de lo contrario será eliminado completamente de la base de datos
         if (mensaje.getFolder().isEmpty()) {
             mensajeRepository.delete(mensaje);

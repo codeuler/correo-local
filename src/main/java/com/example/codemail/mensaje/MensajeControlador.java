@@ -23,12 +23,14 @@ public class MensajeControlador implements ManejadorDeErroresHttp {
     ) {
         return mensajeService.enviarMensaje(mensajeEnviado, usuario);
     }
+
     @PutMapping("/cambiarFolder")
     public ResponseEntity<?> cambiarFolder(
             @RequestBody MensajeCambiar mensajeCambiar
     ) {
         return mensajeService.cambiarFolder(mensajeCambiar);
     }
+
     @GetMapping("/{mensajeId}/validacionFolder")
     public ResponseEntity<?> validacionFolder(
             @PathVariable Integer mensajeId,
@@ -41,6 +43,7 @@ public class MensajeControlador implements ManejadorDeErroresHttp {
     public ResponseEntity<?> eliminarFolder(@RequestBody MensajeEliminarFolder mensajeEliminarFolder, @AuthenticationPrincipal Usuario usuario) {
         return mensajeService.eliminarMensajeFolder(mensajeEliminarFolder, usuario);
     }
+
     @DeleteMapping("/eliminar")
     public ResponseEntity<?> eliminarMensaje(@RequestBody MensajeEliminar mensajeEliminar, @AuthenticationPrincipal Usuario usuario) {
         return mensajeService.eliminarMensaje(mensajeEliminar, usuario);

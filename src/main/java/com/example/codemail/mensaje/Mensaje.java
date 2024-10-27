@@ -28,7 +28,7 @@ public class Mensaje {
     private Date fechaEnvio;
 
     @ManyToOne()
-    @JoinColumn(name="remitente_id")
+    @JoinColumn(name = "remitente_id")
     private Usuario usuario;
 
     @ManyToMany(mappedBy = "mensajes")
@@ -37,7 +37,8 @@ public class Mensaje {
     @OneToMany(mappedBy = "mensaje")
     private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
-    public Mensaje() {}
+    public Mensaje() {
+    }
 
     public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Set<Folder> folder, Usuario usuario) {
         this.asunto = asunto;
