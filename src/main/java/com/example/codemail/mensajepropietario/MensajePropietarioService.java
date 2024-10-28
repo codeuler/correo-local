@@ -3,14 +3,15 @@ package com.example.codemail.mensajepropietario;
 import com.example.codemail.Jwt.JwtService;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.mensaje.Mensaje;
+import com.example.codemail.mensaje.MensajeNoExisteException;
 import com.example.codemail.mensaje.MensajeRepository;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,18 +30,14 @@ public class MensajePropietarioService {
         mensajePropietarioRepository.save(mensajePropietario);
     }
 
-    public ResponseEntity<?> obtenerMensajes(Usuario usuario, Integer folderId) {
+    public ResponseEntity<Set<MensajePropietarioEntrega>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteException {
         //Obtener el folder especifico del usuario
-        Optional<Folder> carpetaOptional = usuario.getFolders()
+        Folder carpeta = usuario.getFolders()
                 .stream()
                 .filter(folder -> folder.getId().equals(folderId))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new MensajeNoExisteException("El folder con id" + folderId + " no existe"));
 
-        if (carpetaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("El folder con id" + folderId + " no existe");
-        }
-
-        Folder carpeta = carpetaOptional.get();
         return ResponseEntity.ok(carpeta
                 .getMensajes()
                 .stream()
@@ -51,16 +48,11 @@ public class MensajePropietarioService {
         );
     }
 
-    public ResponseEntity<?> revisarMensaje(Usuario usuario, MensajePropietarioRevisar mensajePropietarioRevisar) {
-        Optional<Mensaje> mensaje = mensajeRepository.findById(mensajePropietarioRevisar.mensajeId());
-        if (mensaje.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje");
-        }
-        Optional<MensajePropietario> mensajePropietario = mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje.get());
-        if (mensajePropietario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se ha encontrado dicho mensaje asociado al usuario");
-        }
-        MensajePropietario mensajePropietarioEntregar = mensajePropietario.get();
+    public ResponseEntity<String> revisarMensaje(Usuario usuario, MensajePropietarioRevisar mensajePropietarioRevisar) throws MensajeNoExisteException, MensajePropietarioNoExisteException {
+        // Revisar que el mensaje exista
+        Mensaje mensaje = mensajeRepository.findById(mensajePropietarioRevisar.mensajeId()).orElseThrow(() -> new MensajeNoExisteException("No existe el mensaje con id " + mensajePropietarioRevisar.mensajeId()));
+        // Revisar que el mensaje tenga relación con algún destinatario
+        MensajePropietario mensajePropietarioEntregar = mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow(() -> new MensajePropietarioNoExisteException("No se ha encontrado dicho mensaje asociado al usuario"));
         mensajePropietarioEntregar.setRevisado(true);
         mensajePropietarioRepository.save(mensajePropietarioEntregar);
         return ResponseEntity.ok("Mensaje revisado con exito");
