@@ -27,14 +27,14 @@ public class Mensaje {
     )
     private Date fechaEnvio;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "remitente_id")
     private Usuario usuario;
 
-    @ManyToMany(mappedBy = "mensajes")
+    @ManyToMany(mappedBy = "mensajes", fetch = FetchType.EAGER)
     private Set<Folder> folder;
 
-    @OneToMany(mappedBy = "mensaje")
+    @OneToMany(mappedBy = "mensaje", fetch = FetchType.EAGER)
     private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
     public Mensaje() {

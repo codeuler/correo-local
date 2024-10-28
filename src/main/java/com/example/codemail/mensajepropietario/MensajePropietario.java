@@ -11,11 +11,11 @@ public class MensajePropietario {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "destinatario_id")
     Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mensaje_id")
     Mensaje mensaje;
 
