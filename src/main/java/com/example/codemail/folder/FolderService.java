@@ -1,6 +1,5 @@
 package com.example.codemail.folder;
 
-import com.example.codemail.errores.ManejadorDeErroresHttp;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
 import com.example.codemail.mensajepropietario.MensajePropietario;
@@ -17,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class FolderService implements ManejadorDeErroresHttp {
+public class FolderService {
     private final FolderRepository folderRepository;
     private final FolderMapper folderMapper;
     private final MensajePropietarioRepository mensajePropietarioRepository;

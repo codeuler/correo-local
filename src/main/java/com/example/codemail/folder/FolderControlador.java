@@ -1,6 +1,5 @@
 package com.example.codemail.folder;
 
-import com.example.codemail.errores.ManejadorDeErroresHttp;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/folders")
-public class FolderControlador implements ManejadorDeErroresHttp {
+public class FolderControlador {
     private final FolderService folderService;
 
     public FolderControlador(FolderService folderService) {

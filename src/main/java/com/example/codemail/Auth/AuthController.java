@@ -1,6 +1,5 @@
 package com.example.codemail.Auth;
 
-import com.example.codemail.errores.ManejadorDeErroresHttp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-public class AuthController implements ManejadorDeErroresHttp {
+public class AuthController {
     public final AuthService authService;
 
     public AuthController(AuthService authService) {

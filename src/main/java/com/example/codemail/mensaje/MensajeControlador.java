@@ -1,6 +1,5 @@
 package com.example.codemail.mensaje;
 
-import com.example.codemail.errores.ManejadorDeErroresHttp;
 import com.example.codemail.folder.FolderNoExisteException;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
 import com.example.codemail.usuario.Usuario;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/mensajes")
-public class MensajeControlador implements ManejadorDeErroresHttp {
+public class MensajeControlador {
     private final MensajeService mensajeService;
 
     public MensajeControlador(MensajeService mensajeService) {
