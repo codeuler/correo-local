@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,11 +25,13 @@ public class FolderService {
         this.mensajePropietarioRepository = mensajePropietarioRepository;
     }
 
-    public ResponseEntity<Set<FolderRespuesta>> getAll(Usuario usuario) {
-        Set<FolderRespuesta> folders = usuario.getFolders()
+    public ResponseEntity<List<FolderRespuesta>> getAll(Usuario usuario) {
+        List<FolderRespuesta> folders = usuario.getFolders()
                 .stream()
                 .map(folderMapper::toFolderRespuesta)
-                .collect(Collectors.toSet());
+                .sorted(
+                        (folder1, folder2) -> folder1.nombre().compareToIgnoreCase(folder2.nombre())
+                ).collect(Collectors.toList());
         return ResponseEntity.ok(folders);
     }
 

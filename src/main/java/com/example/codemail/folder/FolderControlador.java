@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Controller
 @RequestMapping("/folders")
@@ -20,7 +20,7 @@ public class FolderControlador {
     }
 
     @GetMapping("/obtener/todos")
-    public ResponseEntity<Set<FolderRespuesta>> obtenerTodos(@AuthenticationPrincipal Usuario usuario) {
+    public ResponseEntity<List<FolderRespuesta>> obtenerTodos(@AuthenticationPrincipal Usuario usuario) {
         return folderService.getAll(usuario);
     }
 
