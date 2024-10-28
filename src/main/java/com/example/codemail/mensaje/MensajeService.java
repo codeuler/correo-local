@@ -88,14 +88,14 @@ public class MensajeService {
         Mensaje mensaje = mensajeRepository.findById(mensajeCambiar.idMesajeCambiar()).orElseThrow(() -> new MensajeNoExisteException("El mensaje no existe"));
         Folder folderBase = folderRepository.findById(mensajeCambiar.idFolderOrigen()).orElseThrow(() -> new MensajeNoExisteException("El folder " + mensajeCambiar.idFolderOrigen() + " no existe"));
         Folder folderCambio = folderRepository.findById(mensajeCambiar.idFolderDestino()).orElseThrow(() -> new MensajeNoExisteException("El folder " + mensajeCambiar.idFolderDestino() + " no existe"));
-        if (folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.toString()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.toString()) || folderCambio.getId().equals(folderBase.getId())) {
+        if (folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
             throw new MensajeErrorCambioFolderException("No se puede cambiar a carpeta: Entrada, Enviados o sí mismo");
         }
         Usuario usuario = folderBase.getPropietario();
-        if (mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.toString()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.toString()))) {
+        if (mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))) {
             // Se encuentra la bandeja de entrada y enviados del usuario, desvicular el mensaje de los folders y viceversa
             usuario.getFolders().stream()
-                    .filter(folder -> folder.getNombre().equals(CarpetasDefecto.ENTRADA.toString()) || folder.getNombre().equals(CarpetasDefecto.ENVIADOS.toString()))
+                    .filter(folder -> folder.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folder.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))
                     .forEach(folder -> FolderService.desvincularMensajeFolder(mensaje, folder));
         } else {
             // Se desvincula del folder anterior el mensaje
@@ -119,7 +119,7 @@ public class MensajeService {
         return mensajeRepository.findByIdAndAndUsuario(mensajeId, usuario).filter(
                 mensaje -> (
                         mensaje.getFolder().stream().anyMatch(
-                                folder -> Arrays.asList(CarpetasDefecto.ENTRADA.toString(), CarpetasDefecto.ENVIADOS.toString())
+                                folder -> Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta())
                                         .contains(folder.getNombre()) && folder.getPropietario().getId().equals(usuario.getId())
                         )
                 )

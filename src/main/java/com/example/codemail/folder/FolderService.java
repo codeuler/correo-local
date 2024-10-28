@@ -70,8 +70,8 @@ public class FolderService implements ManejadorDeErroresHttp {
 
     public ResponseEntity<FolderRespuesta> eliminarFolder(Usuario usuario, FolderEliminar folderEliminar) throws FolderNoExisteException, FolderImposibleEliminarException, MensajePropietarioNoExisteException {
         Folder folder = folderRepository.findByIdAndPropietario(folderEliminar.folderId(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta solicitada no existe dentro de las carpetas almacenadas"));
-        Folder folderEntrada = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENTRADA.toString(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Entrada' no existe dentro de las carpetas almacenadas"));
-        Folder folderEnviados = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENVIADOS.toString(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Enviados' solicitada no existe dentro de las carpetas almacenadas"));
+        Folder folderEntrada = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENTRADA.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Entrada' no existe dentro de las carpetas almacenadas"));
+        Folder folderEnviados = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENVIADOS.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Enviados' solicitada no existe dentro de las carpetas almacenadas"));
         if (folder.getId().equals(folderEntrada.getId()) || folder.getId().equals(folderEnviados.getId())) {
             throw new FolderImposibleEliminarException("Los folder de Entrada y enviados no se puede eliminar");
         }
