@@ -28,14 +28,15 @@ public class MensajeControlador {
 
     @PutMapping("/cambiarFolder")
     public ResponseEntity<String> cambiarFolder(
-            @RequestBody MensajeCambiar mensajeCambiar
+            @RequestBody MensajeCambiar mensajeCambiar,
+            @AuthenticationPrincipal Usuario usuario
     ) throws MensajeNoExisteException, MensajeErrorCambioFolderException {
-        return mensajeService.cambiarFolder(mensajeCambiar);
+        return mensajeService.cambiarFolder(mensajeCambiar, usuario);
     }
 
     @GetMapping("/{mensajeId}/validacionFolder")
     public ResponseEntity<String> validacionFolder(
-            @PathVariable Integer mensajeId,
+            @PathVariable Long mensajeId,
             @AuthenticationPrincipal Usuario usuario
     ) {
         return mensajeService.validarFolder(mensajeId, usuario);

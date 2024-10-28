@@ -32,13 +32,15 @@ public class FolderControlador {
     @PutMapping("/{idCarpeta}/actualizar")
     public ResponseEntity<FolderRespuesta> actualizarFolder(@AuthenticationPrincipal Usuario usuario,
                                                             @PathVariable Integer idCarpeta,
-                                                            @Validated @RequestBody FolderGuardar folderGuardar) throws FolderYaExisteException, FolderNoExisteException {
+                                                            @Validated @RequestBody FolderGuardar folderGuardar
+    ) throws FolderYaExisteException, FolderNoExisteException {
         return folderService.actualizarFolder(usuario, idCarpeta, folderGuardar);
     }
 
     @DeleteMapping("/eliminar")
     public ResponseEntity<FolderRespuesta> eliminarFolder(@AuthenticationPrincipal Usuario usuario,
-                                                          @RequestBody @Validated FolderEliminar folderEliminar) throws FolderNoExisteException, MensajePropietarioNoExisteException, FolderImposibleEliminarException {
+                                                          @RequestBody @Validated FolderEliminar folderEliminar
+    ) throws FolderNoExisteException, MensajePropietarioNoExisteException, FolderImposibleEliminarException {
         return folderService.eliminarFolder(usuario, folderEliminar);
     }
 

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface MensajeRepository extends JpaRepository<Mensaje, Long> {
-    Optional<Mensaje> findByIdAndAndUsuario(Integer id, Usuario usuario);
+    Optional<Mensaje> findByIdAndUsuario(Long id, Usuario usuario);
 }
