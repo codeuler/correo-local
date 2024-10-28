@@ -11,7 +11,6 @@ public record MensajeEnviado(
         @NotEmpty(message = "El asunto no puedes estar vacío")
         String asunto,
         @NotEmpty(message = "El Cuerpo no puedes estar vacío")
-        String cuerpo,
-        Date fecha
+        String cuerpo
 ) {
 }
