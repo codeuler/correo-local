@@ -22,21 +22,18 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final FolderService folderService;
-    private final AuthService authService;
 
-    public AuthService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager, FolderService folderService, AuthService authService) {
+    public AuthService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager, FolderService folderService) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.folderService = folderService;
-        this.authService = authService;
     }
 
     public ResponseEntity<AuthResponse> tryLogin(LoginRequest loginRequest) throws AuthNoValidException {
         try {
-            AuthResponse autenticacion = authService.login(loginRequest);
-            return ResponseEntity.ok(autenticacion);
+            return ResponseEntity.ok(login(loginRequest));
         } catch (AuthenticationException authenticationManager) {
             throw new AuthNoValidException("No se ha podido loguear");
         }
@@ -47,10 +44,10 @@ public class AuthService {
          * En caso de que el correo que se ingresa exista, se devolverá un código de error 409
          * de lo contrario se creará el usuario en la base de datos
          */
-        if (authService.buscarUsuario(registerRequest.correo()).isPresent()) {
+        if (buscarUsuario(registerRequest.correo()).isPresent()) {
             throw new AuthRegistrerException("El usuario ya existe");
         } else {
-            return ResponseEntity.ok(authService.registro(registerRequest));
+            return ResponseEntity.ok(registro(registerRequest));
         }
 
     }
