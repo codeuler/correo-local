@@ -42,7 +42,7 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    @OneToMany(mappedBy = "propietario",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     Set<Folder> folders = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -51,7 +51,8 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
-    public Usuario () {}
+    public Usuario() {
+    }
 
     public Usuario(String nombre, String apellido, String email, String password, Rol rol) {
         this.nombre = nombre;
@@ -88,6 +89,7 @@ public class Usuario implements UserDetails {
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -127,6 +129,7 @@ public class Usuario implements UserDetails {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
+
     //Metodos implementados de la interfaz
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
