@@ -1,7 +1,10 @@
 package com.example.codemail.mensaje;
 
 import com.example.codemail.errores.ManejadorDeErroresHttp;
+import com.example.codemail.folder.FolderNoExisteException;
+import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
 import com.example.codemail.usuario.Usuario;
+import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,22 +20,22 @@ public class MensajeControlador implements ManejadorDeErroresHttp {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<?> enviarMensaje(
+    public ResponseEntity<String> enviarMensaje(
             @RequestBody MensajeEnviado mensajeEnviado,
             @AuthenticationPrincipal Usuario usuario
-    ) {
+    ) throws UsuarioCorreoNoValidoException, FolderNoExisteException {
         return mensajeService.enviarMensaje(mensajeEnviado, usuario);
     }
 
     @PutMapping("/cambiarFolder")
-    public ResponseEntity<?> cambiarFolder(
+    public ResponseEntity<String> cambiarFolder(
             @RequestBody MensajeCambiar mensajeCambiar
-    ) {
+    ) throws MensajeNoExisteException, MensajeErrorCambioFolderException {
         return mensajeService.cambiarFolder(mensajeCambiar);
     }
 
     @GetMapping("/{mensajeId}/validacionFolder")
-    public ResponseEntity<?> validacionFolder(
+    public ResponseEntity<String> validacionFolder(
             @PathVariable Integer mensajeId,
             @AuthenticationPrincipal Usuario usuario
     ) {
@@ -40,12 +43,18 @@ public class MensajeControlador implements ManejadorDeErroresHttp {
     }
 
     @DeleteMapping("/eliminar/folder")
-    public ResponseEntity<?> eliminarFolder(@RequestBody MensajeEliminarFolder mensajeEliminarFolder, @AuthenticationPrincipal Usuario usuario) {
+    public ResponseEntity<String> eliminarFolder(
+            @RequestBody MensajeEliminarFolder mensajeEliminarFolder,
+            @AuthenticationPrincipal Usuario usuario
+    ) throws FolderNoExisteException, MensajePerteneceCarpetaOrigenException, MensajePropietarioNoExisteException, MensajeNoExisteException {
         return mensajeService.eliminarMensajeFolder(mensajeEliminarFolder, usuario);
     }
 
     @DeleteMapping("/eliminar")
-    public ResponseEntity<?> eliminarMensaje(@RequestBody MensajeEliminar mensajeEliminar, @AuthenticationPrincipal Usuario usuario) {
+    public ResponseEntity<String> eliminarMensaje(
+            @RequestBody MensajeEliminar mensajeEliminar,
+            @AuthenticationPrincipal Usuario usuario
+    ) throws MensajeNoExisteException {
         return mensajeService.eliminarMensaje(mensajeEliminar, usuario);
     }
 }
