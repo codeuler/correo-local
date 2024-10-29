@@ -5,7 +5,10 @@ import com.example.codemail.usuario.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
-public interface MensajePropietarioRepository extends JpaRepository<MensajePropietario,Long> {
+public interface MensajePropietarioRepository extends JpaRepository<MensajePropietario, Long> {
     Optional<MensajePropietario> findByUsuarioAndMensaje(Usuario usuario, Mensaje mensaje);
+
+    Set<MensajePropietario> findByUsuario(Usuario usuario);
 }

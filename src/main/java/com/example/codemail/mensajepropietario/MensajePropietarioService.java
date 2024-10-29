@@ -1,15 +1,15 @@
 package com.example.codemail.mensajepropietario;
 
-import com.example.codemail.Jwt.JwtService;
 import com.example.codemail.folder.Folder;
+import com.example.codemail.folder.FolderRepository;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensaje.MensajeNoExisteException;
 import com.example.codemail.mensaje.MensajeRepository;
 import com.example.codemail.usuario.Usuario;
-import com.example.codemail.usuario.UsuarioRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,32 +19,31 @@ public class MensajePropietarioService {
     private final MensajePropietarioRepository mensajePropietarioRepository;
     private final MensajePropietarioMapper mensajePropietarioMapper;
     private final MensajeRepository mensajeRepository;
+    private final FolderRepository folderRepository;
 
-    public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, JwtService jwtService, UsuarioRepository usuarioRepository, MensajeRepository mensajeRepository) {
+    public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, MensajeRepository mensajeRepository, FolderRepository folderRepository) {
         this.mensajePropietarioRepository = mensajePropietarioRepository;
         this.mensajePropietarioMapper = mensajePropietarioMapper;
         this.mensajeRepository = mensajeRepository;
+        this.folderRepository = folderRepository;
     }
 
     public void guardarMensajePropietario(MensajePropietario mensajePropietario) {
         mensajePropietarioRepository.save(mensajePropietario);
     }
 
-    public ResponseEntity<Set<MensajePropietarioEntrega>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteException {
+    public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteException {
         //Obtener el folder especifico del usuario
-        Folder carpeta = usuario.getFolders()
-                .stream()
-                .filter(folder -> folder.getId().equals(folderId))
-                .findFirst()
+        Folder carpeta = folderRepository.findById(folderId)
                 .orElseThrow(() -> new MensajeNoExisteException("El folder con id" + folderId + " no existe"));
 
-        return ResponseEntity.ok(carpeta
-                .getMensajes()
+        return ResponseEntity.ok(mensajeRepository.findAllByUsuarioAndFolder(usuario,Set.of(carpeta))
                 .stream()
                 .map(mensaje -> mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje))
                 .flatMap(Optional::stream)
                 .map(mensajePropietarioMapper::toMensajePropietarioEntrega)
-                .collect(Collectors.toSet())
+                .sorted((mensajePropitarioA, mensajePropitarioB) -> mensajePropitarioA.fechaEnvio().compareTo(mensajePropitarioB.fechaEnvio()) * -1)
+                .collect(Collectors.toList())
         );
     }
 

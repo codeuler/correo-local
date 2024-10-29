@@ -15,7 +15,7 @@ public class Folder {
     @Column(nullable = false)
     private String nombre;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     /*
      * Esta es la entidad que va a controlar la union de las tablas, cada uno de los nombres indica como se van a llamar las columnas de la tabla intermedia
      * JuoinColumns es para el id de esta entidad y el inverse es para el id de la otra entidad
@@ -27,7 +27,7 @@ public class Folder {
     )
     private Set<Mensaje> mensajes;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "propietario_id")
     private Usuario propietario;
 
@@ -39,7 +39,6 @@ public class Folder {
     public Folder() {
 
     }
-
     public Set<Mensaje> getMensajes() {
         return mensajes;
     }

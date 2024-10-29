@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 @RestController
 @RequestMapping("/mensajes/complejos")
@@ -18,7 +18,7 @@ public class MensajePropietarioControlador {
     }
 
     @GetMapping("/obtener/{folder}")
-    public ResponseEntity<Set<MensajePropietarioEntrega>> obtenerMensajes(
+    public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(
             @AuthenticationPrincipal Usuario usuario,
             @PathVariable Integer folder
     ) throws MensajeNoExisteException {

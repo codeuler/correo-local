@@ -26,7 +26,7 @@ public class FolderService {
     }
 
     public ResponseEntity<List<FolderRespuesta>> getAll(Usuario usuario) {
-        List<FolderRespuesta> folders = usuario.getFolders()
+        List<FolderRespuesta> folders = folderRepository.findAllByPropietario(usuario)
                 .stream()
                 .map(folderMapper::toFolderRespuesta)
                 .sorted(
@@ -45,19 +45,19 @@ public class FolderService {
     }
 
     private boolean buscarFolderRepetido(Usuario usuario, String nombreFolder) {
-        Optional<Folder> carpeta = usuario.getFolders()
+
+        return folderRepository.findAllByPropietario(usuario)
                 .stream()
-                .filter(
-                        folder -> folder.getNombre().equals(nombreFolder)
-                ).findFirst();
-        return carpeta.isPresent();
+                .anyMatch(folder -> folder.getNombre().equals(nombreFolder));
     }
 
     public void crearFolder(Usuario usuario, String nombreFolder) {
         folderRepository.save(folderMapper.toFolder(usuario, nombreFolder));
     }
 
-    public ResponseEntity<FolderRespuesta> actualizarFolder(Usuario usuario, Integer idCarpeta, FolderGuardar folderGuardar) throws FolderNoExisteException, FolderYaExisteException {
+    public ResponseEntity<FolderRespuesta> actualizarFolder(
+            Usuario usuario, Integer idCarpeta, FolderGuardar folderGuardar
+    ) throws FolderNoExisteException, FolderYaExisteException {
         Folder folder = folderRepository.findById(idCarpeta).orElseThrow(() -> new FolderNoExisteException("La carpeta solicitada no existe dentro de las carpetas almacenadas"));
         if (buscarFolderRepetido(usuario, folderGuardar.nombre())) {
             throw new FolderYaExisteException("El nombre " + folderGuardar.nombre() + " ya está siendo usado para otra carpeta");
@@ -71,6 +71,7 @@ public class FolderService {
         Folder folder = folderRepository.findByIdAndPropietario(folderEliminar.folderId(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta solicitada no existe dentro de las carpetas almacenadas"));
         Folder folderEntrada = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENTRADA.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Entrada' no existe dentro de las carpetas almacenadas"));
         Folder folderEnviados = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENVIADOS.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Enviados' solicitada no existe dentro de las carpetas almacenadas"));
+        // Verificar que el folder a eliminar no sea el de Entrada o Enviados.
         if (folder.getId().equals(folderEntrada.getId()) || folder.getId().equals(folderEnviados.getId())) {
             throw new FolderImposibleEliminarException("Los folder de Entrada y enviados no se puede eliminar");
         }

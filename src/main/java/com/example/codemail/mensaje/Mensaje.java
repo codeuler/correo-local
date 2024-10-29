@@ -27,14 +27,14 @@ public class Mensaje {
     )
     private Date fechaEnvio;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "remitente_id")
     private Usuario usuario;
 
-    @ManyToMany(mappedBy = "mensajes", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "mensajes")
     private Set<Folder> folder;
 
-    @OneToMany(mappedBy = "mensaje", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "mensaje")
     private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
 
     public Mensaje() {
@@ -63,7 +63,6 @@ public class Mensaje {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
     public Set<Folder> getFolder() {
         return folder;
     }
