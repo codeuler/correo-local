@@ -560,3 +560,9 @@ asideCrearCarpetasContenedor.addEventListener("click", event => {
         })
     })
 })
+
+document.querySelector(".asideDerecho__logout").addEventListener("click", (evento) => {
+  window.localStorage.removeItem("token");
+  window.location.replace("/login");
+  console.log("Logout existoso");
+})

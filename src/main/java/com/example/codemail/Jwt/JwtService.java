@@ -33,7 +33,7 @@ public class JwtService {
                 //Fecha de emision
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 //Fecha de expiración
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*24))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*15))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
