@@ -547,6 +547,7 @@ asideCrearCarpetasContenedor.addEventListener("click", event => {
     cambiarStyleDisplay(".crearCarpetas--contenedor","none");
     cambiarStyleDisplay(".crearCarpetas--input","block");
     cambiarStyleDisplay(".crearCarpetas--contenedor2","flex");
+    cambiarStyleDisplay(".crearCarpetas--contenedorCancelar","flex");
     asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").addEventListener("click", event => {
         crearFolder(asideCrearCarpetas.querySelector(".crearCarpetas--input").value).then(boleano => {
             if (boleano) {
@@ -558,6 +559,13 @@ asideCrearCarpetasContenedor.addEventListener("click", event => {
                 cargarFolders();
             }
         })
+    })
+    asideCrearCarpetas.querySelector(".crearCarpetas--contenedorCancelar").addEventListener("click",evento => {
+        cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","block");
+        cambiarStyleDisplay(".crearCarpetas--contenedor","flex");
+        cambiarStyleDisplay(".crearCarpetas--input","none");
+        cambiarStyleDisplay(".crearCarpetas--contenedor2","none");
+        cambiarStyleDisplay(".crearCarpetas--contenedorCancelar","none");
     })
 })
 

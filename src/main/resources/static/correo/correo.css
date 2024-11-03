@@ -87,15 +87,15 @@ body {
     margin: 0;
 }
 .crearCarpetas--input {
-    font-size: 1rem;
+    font-size: 0.9rem;
     border-radius: 5px;
-    border: none;
-    border-bottom: 2px solid #1e1e1e;
+    border: 2px solid #1e1e1e;
     outline: transparent;
     padding: 3px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin-right: 10px;
     display: none;
+    color: #7e7e7e;
 }
 
 .redactar--boton {
@@ -291,6 +291,15 @@ body {
     background-color: #ddd;
     outline: none;
 }
+.crearCarpetas--contenedorCancelar {
+    cursor: pointer;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 40px;
+    padding: 8px 0;
+}
 
 .crearCarpetas--contenedor, .crearCarpetas--contenedor2 {
     display: flex;
@@ -299,6 +308,7 @@ body {
     height: 100%;
     width: 40px;
     padding: 8px 0;
+    cursor: pointer;
 }
 .crearCarpetas--contenedor2 {
     display: none;
@@ -347,7 +357,7 @@ body {
 .main__volver:hover {
     background-color: white;
 }
-.crearCarpetas--contenedor:hover, .crearCarpetas--contenedor2:hover {
+.crearCarpetas--contenedor:hover, .crearCarpetas--contenedor2:hover, .crearCarpetas--contenedorCancelar:hover {
     background-color: white;
     border-radius: 50%;
 }
@@ -356,7 +366,6 @@ body {
 }
 .fa-folder-plus {
     cursor: pointer;
-
 }
 .asideDerecho {
     min-width: 32px;
