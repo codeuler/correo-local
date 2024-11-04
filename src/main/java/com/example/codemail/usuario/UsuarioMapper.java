@@ -23,4 +23,12 @@ public class UsuarioMapper {
         );
     }
 
+    public UsuarioInformacion toUsuarioInformacion(Usuario usuario) {
+        return new UsuarioInformacion(
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getEmail()
+        );
+    }
+
 }
