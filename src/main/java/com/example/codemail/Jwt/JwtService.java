@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,16 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
+    private final String SECRET_KEY;
 
-    private static final String SECRET_KEY = Base64.getEncoder().encodeToString("llavesecretaqueseusaenjwtafasfadfadfafadfdd".getBytes());
+    public JwtService(@Value("${semilla-encriptar.semilla}") String semilla) {
+        this.SECRET_KEY = Base64.getEncoder().encodeToString(semilla.getBytes());
+    }
 
     public String getToken(UserDetails usuario) {
         return getToken(new HashMap<>(), usuario);
     }
+
     //Genera un JSON web token para un usuario autenticado
     private String getToken(Map<String, Object> claims, UserDetails usuario) {
         //Utiliza el builder de Jwts para construir un JWT (json web token)
@@ -33,7 +38,7 @@ public class JwtService {
                 //Fecha de emision
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 //Fecha de expiración
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*15))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -55,7 +60,7 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        return !isTokenExpired(token)  &&
+        return !isTokenExpired(token) &&
                 // Evalua sin el username del token es el mismo
                 username.equals(userDetails.getUsername());
     }
@@ -73,7 +78,7 @@ public class JwtService {
      * }
      */
     private Claims getClaimsFromToken(String token) {
-        return  Jwts
+        return Jwts
                 /*
                  * Llama a un método estático de la clase Jwts (de la biblioteca jjwt), que devuelve un
                  * JwtParserBuilder, un objeto utilizado para configurar y construir un parser de JWT.
@@ -104,7 +109,7 @@ public class JwtService {
      * Recibe el token y una función con una parametro de entrada que es un Claims y retorna un objeto generico
      * (Function<Claims,T> claimsResolver)
      */
-    public <T> T getClaimsFromToken(String token, Function<Claims,T> claimsResolver) {
+    public <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getClaimsFromToken(token);
         //Hace que se ejecute la función que se pasó por parametro, pasadole la misma claims
         return claimsResolver.apply(claims);

@@ -1,8 +1,10 @@
 spring:
+  config:
+    import: optional:file:env.properties
   datasource:
-    url: jdbc:postgresql://localhost:5432/codemail
-    username: postgres
-    password: euler
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -13,3 +15,6 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+# Encriptar
+semilla-encriptar:
+  semilla: ${LLAVE_ENCRIPTAR}
