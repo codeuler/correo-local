@@ -7,12 +7,24 @@
     <script src="https://kit.fontawesome.com/9d1bdc5260.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<dialog class="dialog__eliminar" >
-    <p class="dialog__texto">¿Deseas eliminar el mensaje solo de la carpeta en la que se encuentra (el mensaje estará de vuelta en la carpeta de Entrada o Enviados, cualquiera que sea su origen) o eliminarlo completamente?</p>
+<dialog class="dialog__eliminar">
+    <p class="dialog__texto">¿Deseas eliminar el mensaje solo de la carpeta en la que se encuentra (el mensaje estará de
+        vuelta en la carpeta de Entrada o Enviados, cualquiera que sea su origen) o eliminarlo completamente?</p>
     <div class="dialog__elecciones">
-        <button class="dialog__boton boton--carpeta" >Carpeta</button>
+        <button class="dialog__boton boton--carpeta">Carpeta</button>
         <button class="dialog__boton boton--completamente">Completamente</button>
         <button class="dialog__boton boton--cancelar" autofocus>Cancelar</button>
+    </div>
+</dialog>
+<dialog class="dialog__informacionUsuario">
+    <p class="dialog__texto">A continuación, tus datos de usuario:</p>
+    <ul class="dialog__lista">
+        <li class="dialog__itemLista">Nombre: <span class="dialog__itemLista itemLista--nombre"></span></li>
+        <li class="dialog__itemLista">Apellido: <span class="dialog__itemLista itemLista--apellido"></span></li>
+        <li class="dialog__itemLista">Correo: <span class="dialog__itemLista itemLista--correo"></span></li>
+    </ul>
+    <div class="dialog__contenedorBoton">
+        <button class="dialog__boton boton--aceptar" autofocus>Aceptar</button>
     </div>
 </dialog>
 <div class="principal">
@@ -42,7 +54,7 @@
     </aside>
     <main class="main"></main>
     <aside class="asideDerecho">
-        <div class="asideDerecho__contenedor">
+        <div class="asideDerecho__contenedor contenedor--infoUsuario">
             <i class="fa-solid fa-user" style="color: #1e1e1e;"></i>
         </div>
         <div class="asideDerecho__contenedor asideDerecho__logout">

@@ -542,6 +542,23 @@ botonRedactar.addEventListener("click", () => {
     })
 })
 
+function getInfoUsuario() {
+    return fetch("/usuarios/informacion", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
+        }
+    }).then(data => {
+        if(data.ok){
+            return data.json();
+        } else {
+            alert("No se ha podido recuperar la información del usuario");
+            throw new Error();
+        }
+    });
+}
+
 asideCrearCarpetasContenedor.addEventListener("click", event => {
     cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","none");
     cambiarStyleDisplay(".crearCarpetas--contenedor","none");
@@ -573,4 +590,21 @@ document.querySelector(".asideDerecho__logout").addEventListener("click", (event
   window.localStorage.removeItem("token");
   window.location.replace("/login");
   console.log("Logout existoso");
+})
+const contenedorInfoUsuario = document.querySelector(".contenedor--infoUsuario");
+const dialogInfoUsuario = document.querySelector(".dialog__informacionUsuario");
+contenedorInfoUsuario.addEventListener("click", evento => {
+    const nombre = dialogInfoUsuario.querySelector(".itemLista--nombre");
+    const apellido = dialogInfoUsuario.querySelector(".itemLista--apellido");
+    const correo = dialogInfoUsuario.querySelector(".itemLista--correo");
+    getInfoUsuario().then(data => {
+        dialogInfoUsuario.showModal();
+        nombre.textContent = data.nombre;
+        apellido.textContent = data.apellido;
+        correo.textContent = data.email;
+    });
+
+})
+document.querySelector(".boton--aceptar").addEventListener("click", evento => {
+    dialogInfoUsuario.close();
 })

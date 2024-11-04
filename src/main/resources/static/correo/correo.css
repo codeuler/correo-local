@@ -401,7 +401,7 @@ p {
 option, select {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
-.dialog__eliminar {
+.dialog__eliminar, .dialog__informacionUsuario {
     z-index: 1;
     width: 30%;
     padding: 10px;
@@ -450,4 +450,22 @@ option, select {
     background-color: white;
     border-color: #1e1e1e;
     color: #1e1e1e;
+}
+
+.dialog__lista {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.95rem;
+}
+
+.dialog__contenedorBoton {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.dialog__informacionUsuario::backdrop, .dialog__eliminar::backdrop {
+    background-color: #1e1e1e;
+    opacity: 0.5;
 }
