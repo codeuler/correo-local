@@ -31,14 +31,12 @@ form.addEventListener("submit", e => {
                 //Guardar jwt
                 const {token} = data;
                 localStorage.setItem("token", token);
-                console.log(token)
                 window.location.replace("/inbox")
             })
         } else if (response.status === 401) {
-            console.log("Credenciales no validas");
-            console.log(response.json());
+            errorOutput.textContent = "Error de credenciales";
+            errorOutput.style.display = "block";
         } else {
-            console.log("Sabrá dios que pasó");
             console.log(response.json());
         }
     });
