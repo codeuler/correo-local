@@ -1,0 +1,17 @@
+services:
+  java_app:
+    container_name: java_app
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - java_db
+  java_db:
+    container_name: java_db
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+
