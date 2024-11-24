@@ -1,15 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/codemail
-    username: postgres
-    password: euler
+    url: jdbc:postgresql://java_db:5432/codemail
+    username: euler
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
