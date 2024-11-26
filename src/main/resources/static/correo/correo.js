@@ -413,11 +413,13 @@ function crearFolder(folder) {
         })
     }).then(
         response => {
-            if (!response.ok) {
+            if (response.status === 409) {
+                alert("Ya existe un folder con dicho nombre");
+                return false;
+            } else if (!response.ok) {
                 response.json().then((data) => {
                     alert(data.nombre);
                 })
-                return false;
             } else {
                 alert("Folder creado con exito");
                 return true;
@@ -559,31 +561,20 @@ function getInfoUsuario() {
     });
 }
 
-asideCrearCarpetasContenedor.addEventListener("click", event => {
+function ocultarOpcionesNuevaCarpeta() {
+    cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","block");
+    cambiarStyleDisplay(".crearCarpetas--contenedor","flex");
+    cambiarStyleDisplay(".crearCarpetas--input","none");
+    cambiarStyleDisplay(".crearCarpetas--contenedor2","none");
+    cambiarStyleDisplay(".crearCarpetas--contenedorCancelar","none");
+}
+
+asideCrearCarpetasContenedor.addEventListener("click", () => {
     cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","none");
     cambiarStyleDisplay(".crearCarpetas--contenedor","none");
     cambiarStyleDisplay(".crearCarpetas--input","block");
     cambiarStyleDisplay(".crearCarpetas--contenedor2","flex");
     cambiarStyleDisplay(".crearCarpetas--contenedorCancelar","flex");
-    asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").addEventListener("click", event => {
-        crearFolder(asideCrearCarpetas.querySelector(".crearCarpetas--input").value).then(boleano => {
-            if (boleano) {
-                cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","block");
-                cambiarStyleDisplay(".crearCarpetas--contenedor","flex");
-                cambiarStyleDisplay(".crearCarpetas--input","none");
-                cambiarStyleDisplay(".crearCarpetas--contenedor2","none");
-                divAsideCarpetas.innerHTML = "";
-                cargarFolders();
-            }
-        })
-    })
-    asideCrearCarpetas.querySelector(".crearCarpetas--contenedorCancelar").addEventListener("click",evento => {
-        cambiarStyleDisplay(".crearCarpetas--nuevaCarpeta","block");
-        cambiarStyleDisplay(".crearCarpetas--contenedor","flex");
-        cambiarStyleDisplay(".crearCarpetas--input","none");
-        cambiarStyleDisplay(".crearCarpetas--contenedor2","none");
-        cambiarStyleDisplay(".crearCarpetas--contenedorCancelar","none");
-    })
 })
 
 document.querySelector(".asideDerecho__logout").addEventListener("click", (evento) => {
@@ -604,7 +595,21 @@ contenedorInfoUsuario.addEventListener("click", evento => {
         correo.textContent = data.email;
     });
 
-})
+});
 document.querySelector(".boton--aceptar").addEventListener("click", evento => {
     dialogInfoUsuario.close();
-})
+});
+
+asideCrearCarpetas.querySelector(".crearCarpetas--contenedor2").addEventListener("click", event => {
+    crearFolder(asideCrearCarpetas.querySelector(".crearCarpetas--input").value).then(boleano => {
+        if (boleano) {
+            ocultarOpcionesNuevaCarpeta();
+            divAsideCarpetas.innerHTML = "";
+            cargarFolders();
+        }
+    });
+});
+
+asideCrearCarpetas.querySelector(".crearCarpetas--contenedorCancelar").addEventListener("click",evento => {
+    ocultarOpcionesNuevaCarpeta()
+});
