@@ -1,6 +1,7 @@
 package com.example.codemail.errores;
 
 import com.example.codemail.auth.AuthNoValidException;
+import com.example.codemail.auth.AuthRegistrerException;
 import com.example.codemail.folder.FolderImposibleEliminarException;
 import com.example.codemail.folder.FolderNoExisteException;
 import com.example.codemail.folder.FolderYaExisteException;
@@ -39,7 +40,8 @@ public class ManejadorDeErroresHttp {
             FolderYaExisteException.class,
             MensajeErrorCambioFolderException.class,
             MensajePerteneceCarpetaOrigenException.class,
-            UsuarioCorreoNoValidoException.class
+            UsuarioCorreoNoValidoException.class,
+            AuthRegistrerException.class
     })
     public ResponseEntity<String> handleConflictException(
             Exception e
