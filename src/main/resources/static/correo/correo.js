@@ -471,6 +471,16 @@ function cargarFolders() {
     );
 }
 
+function buscarCarpeta(nombreCarpeta) {
+    return fetch(`/folders/${nombreCarpeta}/id`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/JSON",
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+}
+
 cargarFolders();
 const botonRedactar = document.querySelector(".redactar--boton");
 botonRedactar.addEventListener("click", () => {
@@ -537,6 +547,22 @@ botonRedactar.addEventListener("click", () => {
                     if(response.ok) {
                         divMain.removeChild(divMain.lastElementChild);
                         alert("Mensaje enviado con exito");
+                        buscarCarpeta("Enviados").then(
+                            response => {
+                                if (!response.ok) {
+                                    alert("No existe la carpeta de enviados");
+                                    return;
+                                }
+                                response.json().then(
+                                    data => {
+                                        const {id} = data;
+                                        let myArray = Array.from(divAsideCarpetas.children);
+                                        let myArray2 = myArray.find(hijo => hijo.dataset.folderId == id);
+                                        agregarMensajesDiv(myArray2);
+                                    }
+                                )
+                            }
+                        )
                     } else if(response.status === 409) {
                         alert("No se ha podido enviar el mensaje dado que ninguno de los correos detinatarios existe");
                     }

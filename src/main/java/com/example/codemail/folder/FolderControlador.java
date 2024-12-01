@@ -44,4 +44,11 @@ public class FolderControlador {
         return folderService.eliminarFolder(usuario, folderEliminar);
     }
 
+    @GetMapping("/{nombreCarpeta}/id")
+    public ResponseEntity<FolderRespuesta> obtenerFolder(@PathVariable String nombreCarpeta,
+                                                         @AuthenticationPrincipal Usuario usuario
+    ) throws FolderNoExisteException {
+        return folderService.buscarIdFolder(nombreCarpeta, usuario);
+    }
+
 }

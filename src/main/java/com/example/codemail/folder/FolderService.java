@@ -109,4 +109,9 @@ public class FolderService {
         folder.getMensajes().add(mensaje);
         mensaje.getFolder().add(folder);
     }
+
+    public ResponseEntity<FolderRespuesta> buscarIdFolder(String nombreCarpeta, Usuario usuario) throws FolderNoExisteException {
+        return ResponseEntity.ok(folderMapper.toFolderRespuesta(folderRepository.findByNombreAndPropietario(nombreCarpeta, usuario)
+                .orElseThrow(() -> new FolderNoExisteException("El folder con nombre: " + nombreCarpeta + " no existe"))));
+    }
 }
