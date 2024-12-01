@@ -1,4 +1,4 @@
-package com.example.codemail.Jwt;
+package com.example.codemail.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

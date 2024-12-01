@@ -1,4 +1,4 @@
-package com.example.codemail.Auth;
+package com.example.codemail.auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

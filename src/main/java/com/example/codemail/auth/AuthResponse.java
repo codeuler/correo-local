@@ -1,4 +1,4 @@
-package com.example.codemail.Auth;
+package com.example.codemail.auth;
 
 public record AuthResponse(
         String token

@@ -1,6 +1,6 @@
 package com.example.codemail.seguridad;
 
-import com.example.codemail.Jwt.JwtAuthenticationFilter;
+import com.example.codemail.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

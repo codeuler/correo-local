@@ -1,4 +1,4 @@
-package com.example.codemail.Auth;
+package com.example.codemail.auth;
 
 public class AuthRegistrerException extends Exception{
     public AuthRegistrerException(String mensaje){

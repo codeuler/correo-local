@@ -1,6 +1,6 @@
 package com.example.codemail.errores;
 
-import com.example.codemail.Auth.AuthNoValidException;
+import com.example.codemail.auth.AuthNoValidException;
 import com.example.codemail.folder.FolderImposibleEliminarException;
 import com.example.codemail.folder.FolderNoExisteException;
 import com.example.codemail.folder.FolderYaExisteException;

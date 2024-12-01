@@ -1,4 +1,4 @@
-package com.example.codemail.Jwt;
+package com.example.codemail.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

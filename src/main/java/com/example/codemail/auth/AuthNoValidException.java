@@ -1,4 +1,4 @@
-package com.example.codemail.Auth;
+package com.example.codemail.auth;
 
 public class AuthNoValidException extends Exception{
     public AuthNoValidException(String mensaje){

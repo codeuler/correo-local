@@ -1,6 +1,6 @@
-package com.example.codemail.Auth;
+package com.example.codemail.auth;
 
-import com.example.codemail.Jwt.JwtService;
+import com.example.codemail.jwt.JwtService;
 import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.FolderService;
 import com.example.codemail.usuario.Usuario;
