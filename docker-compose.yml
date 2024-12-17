@@ -4,7 +4,11 @@ services:
     build: .
     ports:
       - "8080:8080"
-    links:
+# Evitar llamar al comando build cada vez que haya cambios en el .jar
+    volumes:
+      - ./target:/app
+      - ./env.properties:/app/env.properties
+    depends_on:
       - java_db
   java_db:
     container_name: java_db
@@ -13,5 +17,8 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-
+    volumes:
+      - postgres_volumen:/var/lib/postgresql/data
+volumes:
+  postgres_volumen:
 
