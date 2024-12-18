@@ -38,7 +38,7 @@ public class MensajeControlador {
     public ResponseEntity<String> validacionFolder(
             @PathVariable Long mensajeId,
             @AuthenticationPrincipal Usuario usuario
-    ) {
+    ) throws MensajeNoExisteException {
         return mensajeService.validarFolder(mensajeId, usuario);
     }
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +33,10 @@ public class MensajePropietarioService {
 
     public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteException {
         //Obtener el folder especifico del usuario
-        Folder carpeta = folderRepository.findById(folderId)
+        Folder carpeta = folderRepository.findByIdAndPropietario(folderId,usuario)
                 .orElseThrow(() -> new MensajeNoExisteException("El folder con id" + folderId + " no existe"));
 
-        return ResponseEntity.ok(mensajeRepository.findAllByUsuarioAndFolder(usuario,Set.of(carpeta))
+        return ResponseEntity.ok(carpeta.getMensajes()
                 .stream()
                 .map(mensaje -> mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje))
                 .flatMap(Optional::stream)

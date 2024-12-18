@@ -85,9 +85,9 @@ public class MensajeService {
 
     public ResponseEntity<String> cambiarFolder(MensajeCambiar mensajeCambiar, Usuario usuario)
             throws MensajeNoExisteException, MensajeErrorCambioFolderException {
-        Mensaje mensaje = mensajeRepository.findByIdAndUsuario(mensajeCambiar.idMesajeCambiar(),usuario).orElseThrow(() -> new MensajeNoExisteException("El mensaje no existe"));
         Folder folderBase = folderRepository.findById(mensajeCambiar.idFolderOrigen()).orElseThrow(() -> new MensajeNoExisteException("El folder " + mensajeCambiar.idFolderOrigen() + " no existe"));
         Folder folderCambio = folderRepository.findById(mensajeCambiar.idFolderDestino()).orElseThrow(() -> new MensajeNoExisteException("El folder " + mensajeCambiar.idFolderDestino() + " no existe"));
+        Mensaje mensaje = mensajeRepository.findByIdAndFolder(mensajeCambiar.idMesajeCambiar(), Set.of(folderBase)).orElseThrow(() -> new MensajeNoExisteException("El mensaje no existe"));
         if (folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
             throw new MensajeErrorCambioFolderException("No se puede cambiar a carpeta: Entrada, Enviados o sí mismo");
         }
@@ -114,16 +114,13 @@ public class MensajeService {
                 .findByNombreAndPropietario(nombre, usuario);
     }
 
-    public ResponseEntity<String> validarFolder(Long mensajeId, Usuario usuario) {
-        return mensajeRepository.findByIdAndUsuario(mensajeId, usuario).filter(
-                mensaje -> (
-                        mensaje.getFolder().stream().anyMatch(
-                                folder -> Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta())
-                                        .contains(folder.getNombre()) && folder.getPropietario().getId().equals(usuario.getId())
-                        )
-                )
-        ).map(mensaje -> ResponseEntity.status(HttpStatus.OK).body("Pertenece a la Carpeta de Entrada/Enviados")).orElseGet(
-                () -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Pertenece a la Carpeta de Entrada/Enviados"));
+    public ResponseEntity<String> validarFolder(Long mensajeId, Usuario usuario) throws MensajeNoExisteException {
+        Mensaje mensajeRevisar = mensajeRepository.findById(mensajeId).orElseThrow(() -> new MensajeNoExisteException("El mensaje no existe"));
+        return mensajeRevisar.getFolder().stream().anyMatch(
+                folder -> Arrays.asList(CarpetasDefecto.ENTRADA.getNombreCarpeta(), CarpetasDefecto.ENVIADOS.getNombreCarpeta())
+                        .contains(folder.getNombre()) && folder.getPropietario().getId().equals(usuario.getId())) ?
+                ResponseEntity.status(HttpStatus.OK).body("Pertenece a la Carpeta de Entrada/Enviados") :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Pertenece a la Carpeta de Entrada/Enviados");
     }
 
     public ResponseEntity<String> eliminarMensajeFolder(MensajeEliminarFolder mensajeEliminarFolder, Usuario usuario)
@@ -137,7 +134,9 @@ public class MensajeService {
         }
 
         // Verificar si el mensaje existe
-        Mensaje mensaje = mensajeRepository.findByIdAndUsuario(mensajeEliminarFolder.mensajeId(),usuario).orElseThrow(() -> new MensajeNoExisteException("El mensaje con id " + mensajeEliminarFolder.mensajeId() + " no existe"));
+        Mensaje mensaje = folder.getMensajes().stream().filter(
+                mensajes -> mensajes.getId().equals(mensajeEliminarFolder.mensajeId())
+        ).findFirst().orElseThrow(() -> new MensajeNoExisteException("El mensaje con id " + mensajeEliminarFolder.mensajeId() + " no existe"));
 
         // Verificar si el mensaje corresponde a un envio o recibido del usuario
         MensajePropietario MensajePropietario = mensajePropietarioRepository.findByUsuario(usuario).stream().filter(mensajeDestinatario -> mensajeDestinatario.getMensaje().getId().equals(mensajeEliminarFolder.mensajeId())).findFirst().orElseThrow(() -> new MensajePropietarioNoExisteException("No Existe una relación entre el mensaje y un usuario"));
