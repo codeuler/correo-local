@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/mensajes")
 public class MensajeControlador {
-    private final MensajeService mensajeService;
+    private final ServicioMensaje servicioMensaje;
 
-    public MensajeControlador(MensajeService mensajeService) {
-        this.mensajeService = mensajeService;
+    public MensajeControlador(ServicioMensaje servicioMensaje) {
+        this.servicioMensaje = servicioMensaje;
     }
 
     @PostMapping("/crear")
@@ -23,7 +23,7 @@ public class MensajeControlador {
             @RequestBody MensajeEnviado mensajeEnviado,
             @AuthenticationPrincipal Usuario usuario
     ) throws CorreoNoValidoExcepcion, CarpetaNoExisteExcepcion {
-        return mensajeService.enviarMensaje(mensajeEnviado, usuario);
+        return servicioMensaje.enviarMensaje(mensajeEnviado, usuario);
     }
 
     @PutMapping("/cambiarFolder")
@@ -31,7 +31,7 @@ public class MensajeControlador {
             @RequestBody MensajeAActualizar mensajeAActualizar,
             @AuthenticationPrincipal Usuario usuario
     ) throws MensajeNoExisteExcepcion, ErrorCambioCarpetaExcepcion {
-        return mensajeService.cambiarFolder(mensajeAActualizar, usuario);
+        return servicioMensaje.cambiarFolder(mensajeAActualizar, usuario);
     }
 
     @GetMapping("/{mensajeId}/validacionFolder")
@@ -39,7 +39,7 @@ public class MensajeControlador {
             @PathVariable Long mensajeId,
             @AuthenticationPrincipal Usuario usuario
     ) throws MensajeNoExisteExcepcion {
-        return mensajeService.validarFolder(mensajeId, usuario);
+        return servicioMensaje.validarFolder(mensajeId, usuario);
     }
 
     @DeleteMapping("/eliminar/folder")
@@ -47,7 +47,7 @@ public class MensajeControlador {
             @RequestBody MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta,
             @AuthenticationPrincipal Usuario usuario
     ) throws CarpetaNoExisteExcepcion, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
-        return mensajeService.eliminarMensajeFolder(mensajeAEliminarDeCarpeta, usuario);
+        return servicioMensaje.eliminarMensajeFolder(mensajeAEliminarDeCarpeta, usuario);
     }
 
     @DeleteMapping("/eliminar")
@@ -55,6 +55,6 @@ public class MensajeControlador {
             @RequestBody MensajeAEliminar mensajeAEliminar,
             @AuthenticationPrincipal Usuario usuario
     ) throws MensajeNoExisteExcepcion {
-        return mensajeService.eliminarMensaje(mensajeAEliminar, usuario);
+        return servicioMensaje.eliminarMensaje(mensajeAEliminar, usuario);
     }
 }

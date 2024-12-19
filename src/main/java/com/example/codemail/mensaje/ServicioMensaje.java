@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class MensajeService {
+public class ServicioMensaje {
     private final RepositorioCarpeta repositorioCarpeta;
     private final RepositorioMensaje repositorioMensaje;
     private final MensajeMapeador mensajeMapeador;
@@ -22,10 +22,10 @@ public class MensajeService {
     private final RepositorioMensajePropietario repositorioMensajePropietario;
     private final RepositorioUsuario repositorioUsuario;
 
-    public MensajeService(RepositorioUsuario repositorioUsuario, RepositorioCarpeta repositorioCarpeta,
-                          RepositorioMensaje repositorioMensaje, MensajeMapeador mensajeMapeador,
-                          ServicioMensajePropietario servicioMensajePropietario,
-                          RepositorioMensajePropietario repositorioMensajePropietario) {
+    public ServicioMensaje(RepositorioUsuario repositorioUsuario, RepositorioCarpeta repositorioCarpeta,
+                           RepositorioMensaje repositorioMensaje, MensajeMapeador mensajeMapeador,
+                           ServicioMensajePropietario servicioMensajePropietario,
+                           RepositorioMensajePropietario repositorioMensajePropietario) {
         this.repositorioCarpeta = repositorioCarpeta;
         this.repositorioMensaje = repositorioMensaje;
         this.mensajeMapeador = mensajeMapeador;
