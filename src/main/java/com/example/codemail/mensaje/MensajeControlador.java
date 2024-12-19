@@ -1,6 +1,6 @@
 package com.example.codemail.mensaje;
 
-import com.example.codemail.folder.FolderNoExisteException;
+import com.example.codemail.carpeta.CarpetaNoExisteExcepcion;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
@@ -22,7 +22,7 @@ public class MensajeControlador {
     public ResponseEntity<String> enviarMensaje(
             @RequestBody MensajeEnviado mensajeEnviado,
             @AuthenticationPrincipal Usuario usuario
-    ) throws UsuarioCorreoNoValidoException, FolderNoExisteException {
+    ) throws UsuarioCorreoNoValidoException, CarpetaNoExisteExcepcion {
         return mensajeService.enviarMensaje(mensajeEnviado, usuario);
     }
 
@@ -46,7 +46,7 @@ public class MensajeControlador {
     public ResponseEntity<String> eliminarFolder(
             @RequestBody MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta,
             @AuthenticationPrincipal Usuario usuario
-    ) throws FolderNoExisteException, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
+    ) throws CarpetaNoExisteExcepcion, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
         return mensajeService.eliminarMensajeFolder(mensajeAEliminarDeCarpeta, usuario);
     }
 

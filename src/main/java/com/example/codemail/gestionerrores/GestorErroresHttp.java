@@ -2,9 +2,9 @@ package com.example.codemail.gestionerrores;
 
 import com.example.codemail.autenticacion.AutenticacionNoValidaExcepcion;
 import com.example.codemail.autenticacion.ErrorRegistroExcepcion;
-import com.example.codemail.folder.FolderImposibleEliminarException;
-import com.example.codemail.folder.FolderNoExisteException;
-import com.example.codemail.folder.FolderYaExisteException;
+import com.example.codemail.carpeta.CarpetaImposibleEliminarExcepcion;
+import com.example.codemail.carpeta.CarpetaNoExisteExcepcion;
+import com.example.codemail.carpeta.FolderYaExisteException;
 import com.example.codemail.mensaje.ErrorCambioCarpetaExcepcion;
 import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
 import com.example.codemail.mensaje.MensajePerteneceCarpetaOrigenExcepcion;
@@ -36,7 +36,7 @@ public class GestorErroresHttp {
     }
 
     @ExceptionHandler(value = {
-            FolderImposibleEliminarException.class,
+            CarpetaImposibleEliminarExcepcion.class,
             FolderYaExisteException.class,
             ErrorCambioCarpetaExcepcion.class,
             MensajePerteneceCarpetaOrigenExcepcion.class,
@@ -50,7 +50,7 @@ public class GestorErroresHttp {
     }
 
     @ExceptionHandler(value = {
-            FolderNoExisteException.class,
+            CarpetaNoExisteExcepcion.class,
             MensajeNoExisteExcepcion.class,
             MensajePropietarioNoExisteExcepcion.class
     })

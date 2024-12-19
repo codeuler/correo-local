@@ -1,6 +1,6 @@
 package com.example.codemail.mensaje;
 
-import com.example.codemail.folder.Folder;
+import com.example.codemail.carpeta.Carpeta;
 import com.example.codemail.mensajepropietario.MensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import jakarta.persistence.*;
@@ -32,7 +32,7 @@ public class Mensaje {
     private Usuario usuario;
 
     @ManyToMany(mappedBy = "mensajes")
-    private Set<Folder> folder;
+    private Set<Carpeta> carpeta;
 
     @OneToMany(mappedBy = "mensaje")
     private Set<MensajePropietario> mensajeDestinatario = new HashSet<>();
@@ -40,11 +40,11 @@ public class Mensaje {
     public Mensaje() {
     }
 
-    public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Set<Folder> folder, Usuario usuario) {
+    public Mensaje(String asunto, String cuerpo, Date fechaEnvio, Set<Carpeta> carpeta, Usuario usuario) {
         this.asunto = asunto;
         this.cuerpo = cuerpo;
         this.fechaEnvio = fechaEnvio;
-        this.folder = folder;
+        this.carpeta = carpeta;
         this.usuario = usuario;
     }
 
@@ -63,12 +63,12 @@ public class Mensaje {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    public Set<Folder> getFolder() {
-        return folder;
+    public Set<Carpeta> getFolder() {
+        return carpeta;
     }
 
-    public void setFolder(Set<Folder> folder) {
-        this.folder = folder;
+    public void setFolder(Set<Carpeta> carpeta) {
+        this.carpeta = carpeta;
     }
 
     public Date getFechaEnvio() {

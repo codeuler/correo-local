@@ -1,8 +1,8 @@
 package com.example.codemail.autenticacion;
 
 import com.example.codemail.jwt.ServicioJwt;
-import com.example.codemail.folder.CarpetasDefecto;
-import com.example.codemail.folder.FolderService;
+import com.example.codemail.carpeta.CarpetaPorDefecto;
+import com.example.codemail.carpeta.ServicioCarpeta;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioMapper;
 import com.example.codemail.usuario.UsuarioRepository;
@@ -21,14 +21,14 @@ public class ServicioAutenticacion {
     private final UsuarioRepository usuarioRepository;
     private final ServicioJwt servicioJwt;
     private final AuthenticationManager authenticationManager;
-    private final FolderService folderService;
+    private final ServicioCarpeta servicioCarpeta;
 
-    public ServicioAutenticacion(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ServicioJwt servicioJwt, AuthenticationManager authenticationManager, FolderService folderService) {
+    public ServicioAutenticacion(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ServicioJwt servicioJwt, AuthenticationManager authenticationManager, ServicioCarpeta servicioCarpeta) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.servicioJwt = servicioJwt;
         this.authenticationManager = authenticationManager;
-        this.folderService = folderService;
+        this.servicioCarpeta = servicioCarpeta;
     }
 
     public ResponseEntity<RespuestaAutenticacion> tryLogin(PeticionLogin peticionLogin) throws AutenticacionNoValidaExcepcion {
@@ -84,8 +84,8 @@ public class ServicioAutenticacion {
         Usuario usuario = usuarioMapper.toUsuario(request);
         usuarioRepository.save(usuario);
         // A todos los usuarios se les crea una carpeta de Entrada y Enviados
-        folderService.crearFolder(usuario, CarpetasDefecto.ENTRADA.getNombreCarpeta());
-        folderService.crearFolder(usuario, CarpetasDefecto.ENVIADOS.getNombreCarpeta());
+        servicioCarpeta.crearFolder(usuario, CarpetaPorDefecto.ENTRADA.getNombreCarpeta());
+        servicioCarpeta.crearFolder(usuario, CarpetaPorDefecto.ENVIADOS.getNombreCarpeta());
         return new RespuestaAutenticacion(servicioJwt.getToken(usuario));
     }
 

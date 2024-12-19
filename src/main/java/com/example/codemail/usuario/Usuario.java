@@ -1,6 +1,6 @@
 package com.example.codemail.usuario;
 
-import com.example.codemail.folder.Folder;
+import com.example.codemail.carpeta.Carpeta;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensajepropietario.MensajePropietario;
 import jakarta.persistence.*;
@@ -43,7 +43,7 @@ public class Usuario implements UserDetails {
     private Rol rol;
 
     @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
-    Set<Folder> folders = new HashSet<>();
+    Set<Carpeta> carpetas = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     Set<Mensaje> mensajesEnviados = new HashSet<>();
@@ -62,12 +62,12 @@ public class Usuario implements UserDetails {
         this.rol = rol;
     }
 
-    public Set<Folder> getFolders() {
-        return folders;
+    public Set<Carpeta> getFolders() {
+        return carpetas;
     }
 
-    public void setFolders(Set<Folder> folders) {
-        this.folders = folders;
+    public void setFolders(Set<Carpeta> carpetas) {
+        this.carpetas = carpetas;
     }
 
     public Set<Mensaje> getMensajesEnviados() {

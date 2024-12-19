@@ -1,7 +1,7 @@
 package com.example.codemail.mensajepropietario;
 
-import com.example.codemail.folder.Folder;
-import com.example.codemail.folder.FolderRepository;
+import com.example.codemail.carpeta.Carpeta;
+import com.example.codemail.carpeta.RepositorioCarpeta;
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
 import com.example.codemail.mensaje.RepositorioMensaje;
@@ -18,13 +18,13 @@ public class ServicioMensajePropietario {
     private final RepositorioMensajePropietario repositorioMensajePropietario;
     private final MensajePropietarioMapeador mensajePropietarioMapeador;
     private final RepositorioMensaje repositorioMensaje;
-    private final FolderRepository folderRepository;
+    private final RepositorioCarpeta repositorioCarpeta;
 
-    public ServicioMensajePropietario(RepositorioMensajePropietario repositorioMensajePropietario, MensajePropietarioMapeador mensajePropietarioMapeador, RepositorioMensaje repositorioMensaje, FolderRepository folderRepository) {
+    public ServicioMensajePropietario(RepositorioMensajePropietario repositorioMensajePropietario, MensajePropietarioMapeador mensajePropietarioMapeador, RepositorioMensaje repositorioMensaje, RepositorioCarpeta repositorioCarpeta) {
         this.repositorioMensajePropietario = repositorioMensajePropietario;
         this.mensajePropietarioMapeador = mensajePropietarioMapeador;
         this.repositorioMensaje = repositorioMensaje;
-        this.folderRepository = folderRepository;
+        this.repositorioCarpeta = repositorioCarpeta;
     }
 
     public void guardarMensajePropietario(MensajePropietario mensajePropietario) {
@@ -33,7 +33,7 @@ public class ServicioMensajePropietario {
 
     public ResponseEntity<List<MensajePropietarioRespuesta>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteExcepcion {
         //Obtener el folder especifico del usuario
-        Folder carpeta = folderRepository.findByIdAndPropietario(folderId,usuario)
+        Carpeta carpeta = repositorioCarpeta.findByIdAndPropietario(folderId,usuario)
                 .orElseThrow(() -> new MensajeNoExisteExcepcion("El folder con id" + folderId + " no existe"));
 
         return ResponseEntity.ok(carpeta.getMensajes()

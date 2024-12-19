@@ -1,4 +1,4 @@
-package com.example.codemail.folder;
+package com.example.codemail.carpeta;
 
 public class FolderYaExisteException extends Exception {
 

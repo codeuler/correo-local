@@ -1,4 +1,4 @@
-package com.example.codemail.folder;
+package com.example.codemail.carpeta;
 
 import com.example.codemail.mensaje.Mensaje;
 import com.example.codemail.usuario.Usuario;
@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Folder {
+public class Carpeta {
     @Id
     @GeneratedValue
     private Integer id;
@@ -31,12 +31,12 @@ public class Folder {
     @JoinColumn(name = "propietario_id")
     private Usuario propietario;
 
-    public Folder(String nombre, Usuario propietario) {
+    public Carpeta(String nombre, Usuario propietario) {
         this.nombre = nombre;
         this.propietario = propietario;
     }
 
-    public Folder() {
+    public Carpeta() {
 
     }
     public Set<Mensaje> getMensajes() {
