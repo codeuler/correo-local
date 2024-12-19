@@ -1,6 +1,6 @@
 package com.example.codemail.usuario;
 
-import com.example.codemail.auth.RegisterRequest;
+import com.example.codemail.autenticacion.PeticionRegistro;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,13 @@ public class UsuarioMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Usuario toUsuario(RegisterRequest registerRequest) {
+    public Usuario toUsuario(PeticionRegistro peticionRegistro) {
         return new Usuario(
-                registerRequest.nombre(),
-                registerRequest.apellido(),
-                registerRequest.correo(),
+                peticionRegistro.nombre(),
+                peticionRegistro.apellido(),
+                peticionRegistro.correo(),
                 //Encriptar password
-                passwordEncoder.encode(registerRequest.password()),
+                passwordEncoder.encode(peticionRegistro.password()),
                 Rol.USUARIO
         );
     }

@@ -1,10 +1,10 @@
-package com.example.codemail.auth;
+package com.example.codemail.autenticacion;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record RegisterRequest(
+public record PeticionRegistro(
         @NotBlank(
                 message = "El nombre no debe estar vacío"
         )

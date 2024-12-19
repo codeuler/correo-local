@@ -1,4 +1,4 @@
-package com.example.codemail.auth;
+package com.example.codemail.autenticacion;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-public class AuthController {
-    public final AuthService authService;
+public class ControladorAutenticacion {
+    public final ServicioAutenticacion servicioAutenticacion;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    public ControladorAutenticacion(ServicioAutenticacion servicioAutenticacion) {
+        this.servicioAutenticacion = servicioAutenticacion;
     }
 
     @GetMapping("/registro")
@@ -31,17 +31,17 @@ public class AuthController {
     }
 
     @PostMapping(value = "login")
-    public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequest request
-    ) throws AuthNoValidException {
-        return authService.tryLogin(request);
+    public ResponseEntity<RespuestaAutenticacion> login(
+            @RequestBody PeticionLogin request
+    ) throws AutenticacionNoValidaExcepcion {
+        return servicioAutenticacion.tryLogin(request);
     }
 
     @PostMapping(value = "registro")
-    public ResponseEntity<AuthResponse> registro(
-            @RequestBody @Validated RegisterRequest request
-    ) throws AuthRegistrerException {
-        return authService.tryRegistro(request);
+    public ResponseEntity<RespuestaAutenticacion> registro(
+            @RequestBody @Validated PeticionRegistro request
+    ) throws ErrorRegistroExcepcion {
+        return servicioAutenticacion.tryRegistro(request);
     }
 
 }

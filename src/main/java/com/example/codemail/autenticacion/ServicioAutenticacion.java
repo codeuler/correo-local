@@ -1,4 +1,4 @@
-package com.example.codemail.auth;
+package com.example.codemail.autenticacion;
 
 import com.example.codemail.jwt.JwtService;
 import com.example.codemail.folder.CarpetasDefecto;
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AuthService {
+public class ServicioAutenticacion {
     private final UsuarioMapper usuarioMapper;
     private final UsuarioRepository usuarioRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final FolderService folderService;
 
-    public AuthService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager, FolderService folderService) {
+    public ServicioAutenticacion(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager, FolderService folderService) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.jwtService = jwtService;
@@ -31,28 +31,28 @@ public class AuthService {
         this.folderService = folderService;
     }
 
-    public ResponseEntity<AuthResponse> tryLogin(LoginRequest loginRequest) throws AuthNoValidException {
+    public ResponseEntity<RespuestaAutenticacion> tryLogin(PeticionLogin peticionLogin) throws AutenticacionNoValidaExcepcion {
         try {
-            return ResponseEntity.ok(login(loginRequest));
+            return ResponseEntity.ok(login(peticionLogin));
         } catch (AuthenticationException authenticationManager) {
-            throw new AuthNoValidException("No se ha podido loguear");
+            throw new AutenticacionNoValidaExcepcion("No se ha podido loguear");
         }
     }
 
-    public ResponseEntity<AuthResponse> tryRegistro(RegisterRequest registerRequest) throws AuthRegistrerException {
+    public ResponseEntity<RespuestaAutenticacion> tryRegistro(PeticionRegistro peticionRegistro) throws ErrorRegistroExcepcion {
         /*
          * En caso de que el correo que se ingresa exista, se devolverá un código de error 409
          * de lo contrario se creará el usuario en la base de datos
          */
-        if (buscarUsuario(registerRequest.correo()).isPresent()) {
-            throw new AuthRegistrerException("El usuario ya existe");
+        if (buscarUsuario(peticionRegistro.correo()).isPresent()) {
+            throw new ErrorRegistroExcepcion("El usuario ya existe");
         } else {
-            return ResponseEntity.ok(registro(registerRequest));
+            return ResponseEntity.ok(registro(peticionRegistro));
         }
 
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public RespuestaAutenticacion login(PeticionLogin request) {
         /*
          * Cuando se llama al método authenticationManager.authenticate(...) en Spring Security, el
          * AuthenticationManager utiliza un AuthenticationProvider para autenticar al usuario.
@@ -77,16 +77,16 @@ public class AuthService {
         //Crear el token para el usuario
         String token = jwtService.getToken(usuario);
         //Retornar el token
-        return new AuthResponse(token);
+        return new RespuestaAutenticacion(token);
     }
 
-    public AuthResponse registro(RegisterRequest request) {
+    public RespuestaAutenticacion registro(PeticionRegistro request) {
         Usuario usuario = usuarioMapper.toUsuario(request);
         usuarioRepository.save(usuario);
         // A todos los usuarios se les crea una carpeta de Entrada y Enviados
         folderService.crearFolder(usuario, CarpetasDefecto.ENTRADA.getNombreCarpeta());
         folderService.crearFolder(usuario, CarpetasDefecto.ENVIADOS.getNombreCarpeta());
-        return new AuthResponse(jwtService.getToken(usuario));
+        return new RespuestaAutenticacion(jwtService.getToken(usuario));
     }
 
     public Optional<Usuario> buscarUsuario(String email) {
