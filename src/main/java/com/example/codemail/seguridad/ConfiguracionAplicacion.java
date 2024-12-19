@@ -13,11 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class ApplicationConfig {
+public class ConfiguracionAplicacion {
 
     private final UsuarioRepository usuarioRepository;
 
-    public ApplicationConfig(UsuarioRepository usuarioRepository) {
+    public ConfiguracionAplicacion(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
