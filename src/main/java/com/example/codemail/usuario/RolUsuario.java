@@ -1,6 +1,6 @@
 package com.example.codemail.usuario;
 
-public enum Rol {
+public enum RolUsuario {
     ADMINISTRADOR,
     USUARIO
 }

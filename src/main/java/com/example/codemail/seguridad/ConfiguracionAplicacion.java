@@ -1,6 +1,6 @@
 package com.example.codemail.seguridad;
 
-import com.example.codemail.usuario.UsuarioRepository;
+import com.example.codemail.usuario.RepositorioUsuario;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,10 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ConfiguracionAplicacion {
 
-    private final UsuarioRepository usuarioRepository;
+    private final RepositorioUsuario repositorioUsuario;
 
-    public ConfiguracionAplicacion(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+    public ConfiguracionAplicacion(RepositorioUsuario repositorioUsuario) {
+        this.repositorioUsuario = repositorioUsuario;
     }
 
 
@@ -63,7 +63,7 @@ public class ConfiguracionAplicacion {
          * La lambda es ejecutada: La lambda username -> ... se ejecuta con el nombre de usuario que Spring Security ha
          * pasado.
          */
-        return username -> usuarioRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        return username -> repositorioUsuario.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
 }

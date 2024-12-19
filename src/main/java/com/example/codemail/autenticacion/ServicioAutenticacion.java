@@ -4,8 +4,8 @@ import com.example.codemail.jwt.ServicioJwt;
 import com.example.codemail.carpeta.CarpetaPorDefecto;
 import com.example.codemail.carpeta.ServicioCarpeta;
 import com.example.codemail.usuario.Usuario;
-import com.example.codemail.usuario.UsuarioMapper;
-import com.example.codemail.usuario.UsuarioRepository;
+import com.example.codemail.usuario.UsuarioMapeador;
+import com.example.codemail.usuario.RepositorioUsuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,15 +17,15 @@ import java.util.Optional;
 
 @Service
 public class ServicioAutenticacion {
-    private final UsuarioMapper usuarioMapper;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapeador usuarioMapeador;
+    private final RepositorioUsuario repositorioUsuario;
     private final ServicioJwt servicioJwt;
     private final AuthenticationManager authenticationManager;
     private final ServicioCarpeta servicioCarpeta;
 
-    public ServicioAutenticacion(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ServicioJwt servicioJwt, AuthenticationManager authenticationManager, ServicioCarpeta servicioCarpeta) {
-        this.usuarioMapper = usuarioMapper;
-        this.usuarioRepository = usuarioRepository;
+    public ServicioAutenticacion(UsuarioMapeador usuarioMapeador, RepositorioUsuario repositorioUsuario, ServicioJwt servicioJwt, AuthenticationManager authenticationManager, ServicioCarpeta servicioCarpeta) {
+        this.usuarioMapeador = usuarioMapeador;
+        this.repositorioUsuario = repositorioUsuario;
         this.servicioJwt = servicioJwt;
         this.authenticationManager = authenticationManager;
         this.servicioCarpeta = servicioCarpeta;
@@ -73,7 +73,7 @@ public class ServicioAutenticacion {
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
         //Buscar al usuario en la base de datos
-        UserDetails usuario = usuarioRepository.findByEmail(request.username()).orElseThrow();
+        UserDetails usuario = repositorioUsuario.findByEmail(request.username()).orElseThrow();
         //Crear el token para el usuario
         String token = servicioJwt.getToken(usuario);
         //Retornar el token
@@ -81,8 +81,8 @@ public class ServicioAutenticacion {
     }
 
     public RespuestaAutenticacion registro(PeticionRegistro request) {
-        Usuario usuario = usuarioMapper.toUsuario(request);
-        usuarioRepository.save(usuario);
+        Usuario usuario = usuarioMapeador.toUsuario(request);
+        repositorioUsuario.save(usuario);
         // A todos los usuarios se les crea una carpeta de Entrada y Enviados
         servicioCarpeta.crearFolder(usuario, CarpetaPorDefecto.ENTRADA.getNombreCarpeta());
         servicioCarpeta.crearFolder(usuario, CarpetaPorDefecto.ENVIADOS.getNombreCarpeta());
@@ -90,6 +90,6 @@ public class ServicioAutenticacion {
     }
 
     public Optional<Usuario> buscarUsuario(String email) {
-        return usuarioRepository.findByEmail(email);
+        return repositorioUsuario.findByEmail(email);
     }
 }

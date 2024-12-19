@@ -5,10 +5,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuarioMapper {
+public class UsuarioMapeador {
     private final PasswordEncoder passwordEncoder;
 
-    public UsuarioMapper(PasswordEncoder passwordEncoder) {
+    public UsuarioMapeador(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -19,12 +19,12 @@ public class UsuarioMapper {
                 peticionRegistro.correo(),
                 //Encriptar password
                 passwordEncoder.encode(peticionRegistro.password()),
-                Rol.USUARIO
+                RolUsuario.USUARIO
         );
     }
 
-    public UsuarioInformacion toUsuarioInformacion(Usuario usuario) {
-        return new UsuarioInformacion(
+    public InformacionUsuario toUsuarioInformacion(Usuario usuario) {
+        return new InformacionUsuario(
                 usuario.getNombre(),
                 usuario.getApellido(),
                 usuario.getEmail()

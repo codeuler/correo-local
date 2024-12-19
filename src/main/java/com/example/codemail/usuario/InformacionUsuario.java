@@ -1,6 +1,6 @@
 package com.example.codemail.usuario;
 
-public record UsuarioInformacion(
+public record InformacionUsuario(
         String nombre,
         String apellido,
         String email

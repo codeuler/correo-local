@@ -3,8 +3,8 @@ package com.example.codemail.mensaje;
 import com.example.codemail.carpeta.*;
 import com.example.codemail.mensajepropietario.*;
 import com.example.codemail.usuario.Usuario;
-import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
-import com.example.codemail.usuario.UsuarioRepository;
+import com.example.codemail.usuario.CorreoNoValidoExcepcion;
+import com.example.codemail.usuario.RepositorioUsuario;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,9 +20,9 @@ public class MensajeService {
     private final MensajeMapeador mensajeMapeador;
     private final ServicioMensajePropietario servicioMensajePropietario;
     private final RepositorioMensajePropietario repositorioMensajePropietario;
-    private final UsuarioRepository usuarioRepository;
+    private final RepositorioUsuario repositorioUsuario;
 
-    public MensajeService(UsuarioRepository usuarioRepository, RepositorioCarpeta repositorioCarpeta,
+    public MensajeService(RepositorioUsuario repositorioUsuario, RepositorioCarpeta repositorioCarpeta,
                           RepositorioMensaje repositorioMensaje, MensajeMapeador mensajeMapeador,
                           ServicioMensajePropietario servicioMensajePropietario,
                           RepositorioMensajePropietario repositorioMensajePropietario) {
@@ -31,16 +31,16 @@ public class MensajeService {
         this.mensajeMapeador = mensajeMapeador;
         this.servicioMensajePropietario = servicioMensajePropietario;
         this.repositorioMensajePropietario = repositorioMensajePropietario;
-        this.usuarioRepository = usuarioRepository;
+        this.repositorioUsuario = repositorioUsuario;
     }
 
     public ResponseEntity<String> enviarMensaje(MensajeEnviado mensajeEnviado, Usuario usuario)
-            throws CarpetaNoExisteExcepcion, UsuarioCorreoNoValidoException {
+            throws CarpetaNoExisteExcepcion, CorreoNoValidoExcepcion {
         // Encontrar todos los usuarios que tengan por id el correo que se ha enviado en MensajeEnviado
         Set<Usuario> destinatarios = mensajeEnviado
                 .correoDestinatarios()
                 .stream()
-                .map(usuarioRepository::findByEmail)
+                .map(repositorioUsuario::findByEmail)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
         // Buscar todos los folder de entrada de los detinarios
@@ -53,7 +53,7 @@ public class MensajeService {
         Carpeta folder = getFolder(usuario, CarpetaPorDefecto.ENVIADOS.getNombreCarpeta()).orElseThrow(() -> new CarpetaNoExisteExcepcion("No Existe la carpeta de 'Enviados'"));
         //En caso de que no exista ningún correo de destinatario
         if (destinatarios.isEmpty()) {
-            throw new UsuarioCorreoNoValidoException("La o las direcciones de correo que se ingresaron no son válidas");
+            throw new CorreoNoValidoExcepcion("La o las direcciones de correo que se ingresaron no son válidas");
         }
         Mensaje mensaje = mensajeMapeador.toMensaje(mensajeEnviado, usuario, carpetaEntrada);
         // Agregar el mensaje a cada folder

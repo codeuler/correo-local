@@ -3,7 +3,7 @@ package com.example.codemail.mensaje;
 import com.example.codemail.carpeta.CarpetaNoExisteExcepcion;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
 import com.example.codemail.usuario.Usuario;
-import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
+import com.example.codemail.usuario.CorreoNoValidoExcepcion;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ public class MensajeControlador {
     public ResponseEntity<String> enviarMensaje(
             @RequestBody MensajeEnviado mensajeEnviado,
             @AuthenticationPrincipal Usuario usuario
-    ) throws UsuarioCorreoNoValidoException, CarpetaNoExisteExcepcion {
+    ) throws CorreoNoValidoExcepcion, CarpetaNoExisteExcepcion {
         return mensajeService.enviarMensaje(mensajeEnviado, usuario);
     }
 

@@ -9,7 +9,7 @@ import com.example.codemail.mensaje.ErrorCambioCarpetaExcepcion;
 import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
 import com.example.codemail.mensaje.MensajePerteneceCarpetaOrigenExcepcion;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
-import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
+import com.example.codemail.usuario.CorreoNoValidoExcepcion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -40,7 +40,7 @@ public class GestorErroresHttp {
             FolderYaExisteException.class,
             ErrorCambioCarpetaExcepcion.class,
             MensajePerteneceCarpetaOrigenExcepcion.class,
-            UsuarioCorreoNoValidoException.class,
+            CorreoNoValidoExcepcion.class,
             ErrorRegistroExcepcion.class
     })
     public ResponseEntity<String> handleConflictException(

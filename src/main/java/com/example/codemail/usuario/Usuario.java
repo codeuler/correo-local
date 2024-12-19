@@ -40,7 +40,7 @@ public class Usuario implements UserDetails {
     )
     private String password;
     @Enumerated(EnumType.STRING)
-    private Rol rol;
+    private RolUsuario rolUsuario;
 
     @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
     Set<Carpeta> carpetas = new HashSet<>();
@@ -54,12 +54,12 @@ public class Usuario implements UserDetails {
     public Usuario() {
     }
 
-    public Usuario(String nombre, String apellido, String email, String password, Rol rol) {
+    public Usuario(String nombre, String apellido, String email, String password, RolUsuario rolUsuario) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.password = password;
-        this.rol = rol;
+        this.rolUsuario = rolUsuario;
     }
 
     public Set<Carpeta> getFolders() {
@@ -122,19 +122,19 @@ public class Usuario implements UserDetails {
         this.password = password;
     }
 
-    public Rol getRol() {
-        return rol;
+    public RolUsuario getRol() {
+        return rolUsuario;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    public void setRol(RolUsuario rolUsuario) {
+        this.rolUsuario = rolUsuario;
     }
 
     //Metodos implementados de la interfaz
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //Retorna una lista de un objeto que representa el rol del usuario
-        return List.of(new SimpleGrantedAuthority(rol.name()));
+        return List.of(new SimpleGrantedAuthority(rolUsuario.name()));
     }
 
     public String getPassword() {
