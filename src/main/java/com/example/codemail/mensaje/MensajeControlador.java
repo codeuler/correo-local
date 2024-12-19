@@ -1,7 +1,7 @@
 package com.example.codemail.mensaje;
 
 import com.example.codemail.folder.FolderNoExisteException;
-import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
+import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
 import com.example.codemail.usuario.Usuario;
 import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +46,7 @@ public class MensajeControlador {
     public ResponseEntity<String> eliminarFolder(
             @RequestBody MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta,
             @AuthenticationPrincipal Usuario usuario
-    ) throws FolderNoExisteException, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteException, MensajeNoExisteExcepcion {
+    ) throws FolderNoExisteException, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
         return mensajeService.eliminarMensajeFolder(mensajeAEliminarDeCarpeta, usuario);
     }
 

@@ -1,6 +1,6 @@
 package com.example.codemail.folder;
 
-import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
+import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,7 +40,7 @@ public class FolderControlador {
     @DeleteMapping("/eliminar")
     public ResponseEntity<FolderRespuesta> eliminarFolder(@AuthenticationPrincipal Usuario usuario,
                                                           @RequestBody @Validated FolderEliminar folderEliminar
-    ) throws FolderNoExisteException, MensajePropietarioNoExisteException, FolderImposibleEliminarException {
+    ) throws FolderNoExisteException, MensajePropietarioNoExisteExcepcion, FolderImposibleEliminarException {
         return folderService.eliminarFolder(usuario, folderEliminar);
     }
 

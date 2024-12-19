@@ -18,19 +18,19 @@ public class MensajeService {
     private final FolderRepository folderRepository;
     private final RepositorioMensaje repositorioMensaje;
     private final MensajeMapeador mensajeMapeador;
-    private final MensajePropietarioService mensajePropietarioService;
-    private final MensajePropietarioRepository mensajePropietarioRepository;
+    private final ServicioMensajePropietario servicioMensajePropietario;
+    private final RepositorioMensajePropietario repositorioMensajePropietario;
     private final UsuarioRepository usuarioRepository;
 
     public MensajeService(UsuarioRepository usuarioRepository, FolderRepository folderRepository,
                           RepositorioMensaje repositorioMensaje, MensajeMapeador mensajeMapeador,
-                          MensajePropietarioService mensajePropietarioService,
-                          MensajePropietarioRepository mensajePropietarioRepository) {
+                          ServicioMensajePropietario servicioMensajePropietario,
+                          RepositorioMensajePropietario repositorioMensajePropietario) {
         this.folderRepository = folderRepository;
         this.repositorioMensaje = repositorioMensaje;
         this.mensajeMapeador = mensajeMapeador;
-        this.mensajePropietarioService = mensajePropietarioService;
-        this.mensajePropietarioRepository = mensajePropietarioRepository;
+        this.servicioMensajePropietario = servicioMensajePropietario;
+        this.repositorioMensajePropietario = repositorioMensajePropietario;
         this.usuarioRepository = usuarioRepository;
     }
 
@@ -71,13 +71,13 @@ public class MensajeService {
         destinatarios.stream()
                 // Eliminar al usuario que realizo el autoenvio
                 .filter(user -> !user.getId().equals(usuario.getId()))
-                .forEach(user -> mensajePropietarioService.
+                .forEach(user -> servicioMensajePropietario.
                         guardarMensajePropietario(
                                 new MensajePropietario(user, mensaje, false, RolMensajePropietario.DESTINATARIO)
                         )
                 );
         // Se agrega porque se va a guardar dentro del folder de enviados, si el usuario que envía se hizo un autoenvio, es marcado con el rol de ambos
-        mensajePropietarioService.guardarMensajePropietario(
+        servicioMensajePropietario.guardarMensajePropietario(
                 new MensajePropietario(usuario, mensaje, false, (existeAutoenvio) ? RolMensajePropietario.AMBOS : RolMensajePropietario.REMITENTE)
         );
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -91,7 +91,7 @@ public class MensajeService {
         if (folderCambio.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderCambio.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()) || folderCambio.getId().equals(folderBase.getId())) {
             throw new ErrorCambioCarpetaExcepcion("No se puede cambiar a carpeta: Entrada, Enviados o sí mismo");
         }
-        if (mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))) {
+        if (repositorioMensajePropietario.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow().getRolMensajePropietario().equals(RolMensajePropietario.AMBOS) && (folderBase.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folderBase.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))) {
             // Se encuentra la bandeja de entrada y enviados del usuario, desvicular el mensaje de los folders y viceversa
             folderRepository.findAllByPropietario(usuario).stream()
                     .filter(folder -> folder.getNombre().equals(CarpetasDefecto.ENTRADA.getNombreCarpeta()) || folder.getNombre().equals(CarpetasDefecto.ENVIADOS.getNombreCarpeta()))
@@ -124,7 +124,7 @@ public class MensajeService {
     }
 
     public ResponseEntity<String> eliminarMensajeFolder(MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta, Usuario usuario)
-            throws FolderNoExisteException, MensajePerteneceCarpetaOrigenExcepcion, MensajeNoExisteExcepcion, MensajePropietarioNoExisteException {
+            throws FolderNoExisteException, MensajePerteneceCarpetaOrigenExcepcion, MensajeNoExisteExcepcion, MensajePropietarioNoExisteExcepcion {
         // Verificar si la carpeta existe
         Folder folder = folderRepository.findByIdAndPropietario(mensajeAEliminarDeCarpeta.folderId(), usuario).orElseThrow(() -> new FolderNoExisteException("No existe la carpeta buscada"));
 
@@ -139,7 +139,7 @@ public class MensajeService {
         ).findFirst().orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje con id " + mensajeAEliminarDeCarpeta.mensajeId() + " no existe"));
 
         // Verificar si el mensaje corresponde a un envio o recibido del usuario
-        MensajePropietario MensajePropietario = mensajePropietarioRepository.findByUsuario(usuario).stream().filter(mensajeDestinatario -> mensajeDestinatario.getMensaje().getId().equals(mensajeAEliminarDeCarpeta.mensajeId())).findFirst().orElseThrow(() -> new MensajePropietarioNoExisteException("No Existe una relación entre el mensaje y un usuario"));
+        MensajePropietario MensajePropietario = repositorioMensajePropietario.findByUsuario(usuario).stream().filter(mensajeDestinatario -> mensajeDestinatario.getMensaje().getId().equals(mensajeAEliminarDeCarpeta.mensajeId())).findFirst().orElseThrow(() -> new MensajePropietarioNoExisteExcepcion("No Existe una relación entre el mensaje y un usuario"));
         Folder folderEntrada = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENTRADA.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("No existe la carpeta 'Entrada'"));
         Folder folderEnviados = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENVIADOS.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("No existe la carpeta 'Enviados'"));
         FolderService.desvincularMensajeFolder(mensaje, folder);
@@ -178,7 +178,7 @@ public class MensajeService {
         folders.forEach(folder -> FolderService.desvincularMensajeFolder(mensaje, folder));
         repositorioMensaje.save(mensaje);
         // Eliminar el registro que relaciona un mensaje con sus destinatario
-        mensajePropietarioRepository.delete(mensaje.getMensajeDestinatario().stream()
+        repositorioMensajePropietario.delete(mensaje.getMensajeDestinatario().stream()
                 .filter(mensajesDestinatario -> mensajesDestinatario.getMensaje().getId().equals(mensaje.getId()) && mensajesDestinatario.getUsuario().getId().equals(usuario.getId()))
                 .findFirst()
                 .orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje no existe")));

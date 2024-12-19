@@ -1,9 +1,9 @@
 package com.example.codemail.folder;
 
 import com.example.codemail.mensaje.Mensaje;
-import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
+import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
 import com.example.codemail.mensajepropietario.MensajePropietario;
-import com.example.codemail.mensajepropietario.MensajePropietarioRepository;
+import com.example.codemail.mensajepropietario.RepositorioMensajePropietario;
 import com.example.codemail.mensajepropietario.RolMensajePropietario;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.HttpStatus;
@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 public class FolderService {
     private final FolderRepository folderRepository;
     private final FolderMapper folderMapper;
-    private final MensajePropietarioRepository mensajePropietarioRepository;
+    private final RepositorioMensajePropietario repositorioMensajePropietario;
 
-    public FolderService(FolderRepository folderRepository, FolderMapper folderMapper, MensajePropietarioRepository mensajePropietarioRepository) {
+    public FolderService(FolderRepository folderRepository, FolderMapper folderMapper, RepositorioMensajePropietario repositorioMensajePropietario) {
         this.folderRepository = folderRepository;
         this.folderMapper = folderMapper;
-        this.mensajePropietarioRepository = mensajePropietarioRepository;
+        this.repositorioMensajePropietario = repositorioMensajePropietario;
     }
 
     public ResponseEntity<List<FolderRespuesta>> getAll(Usuario usuario) {
@@ -67,7 +67,7 @@ public class FolderService {
         return ResponseEntity.ok().body(folderMapper.toFolderRespuesta(folder));
     }
 
-    public ResponseEntity<FolderRespuesta> eliminarFolder(Usuario usuario, FolderEliminar folderEliminar) throws FolderNoExisteException, FolderImposibleEliminarException, MensajePropietarioNoExisteException {
+    public ResponseEntity<FolderRespuesta> eliminarFolder(Usuario usuario, FolderEliminar folderEliminar) throws FolderNoExisteException, FolderImposibleEliminarException, MensajePropietarioNoExisteExcepcion {
         Folder folder = folderRepository.findByIdAndPropietario(folderEliminar.folderId(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta solicitada no existe dentro de las carpetas almacenadas"));
         Folder folderEntrada = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENTRADA.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Entrada' no existe dentro de las carpetas almacenadas"));
         Folder folderEnviados = folderRepository.findByNombreAndPropietario(CarpetasDefecto.ENVIADOS.getNombreCarpeta(), usuario).orElseThrow(() -> new FolderNoExisteException("La carpeta 'Enviados' solicitada no existe dentro de las carpetas almacenadas"));
@@ -82,7 +82,7 @@ public class FolderService {
                     mensaje -> {
                         desvincularMensajeFolder(mensaje, folder);
                         // En caso de que sea un auto envio, el mensaje se manda para ambas bandejas
-                        MensajePropietario mensajePropietario = mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow();
+                        MensajePropietario mensajePropietario = repositorioMensajePropietario.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow();
                         if (mensajePropietario.getRolMensajePropietario().equals(RolMensajePropietario.AMBOS)) {
                             vincularMensajeFolder(mensaje, folderEntrada);
                             vincularMensajeFolder(mensaje, folderEnviados);
@@ -93,7 +93,7 @@ public class FolderService {
                     }
             );
         } catch (Exception e) {
-            throw new MensajePropietarioNoExisteException("No existe relación alguna entre el mensaje y algún destinatario");
+            throw new MensajePropietarioNoExisteExcepcion("No existe relación alguna entre el mensaje y algún destinatario");
         }
         folderRepository.saveAll(Arrays.asList(folderEntrada, folderEnviados, folder));
         folderRepository.delete(folder);

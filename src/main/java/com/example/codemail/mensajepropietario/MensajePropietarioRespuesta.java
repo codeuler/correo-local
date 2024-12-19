@@ -2,7 +2,7 @@ package com.example.codemail.mensajepropietario;
 
 import java.util.Date;
 
-public record MensajePropietarioEntrega(
+public record MensajePropietarioRespuesta(
         Long mensajeId,
         String asunto,
         String cuerpo,

@@ -8,7 +8,7 @@ import com.example.codemail.folder.FolderYaExisteException;
 import com.example.codemail.mensaje.ErrorCambioCarpetaExcepcion;
 import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
 import com.example.codemail.mensaje.MensajePerteneceCarpetaOrigenExcepcion;
-import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
+import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteExcepcion;
 import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +52,7 @@ public class GestorErroresHttp {
     @ExceptionHandler(value = {
             FolderNoExisteException.class,
             MensajeNoExisteExcepcion.class,
-            MensajePropietarioNoExisteException.class
+            MensajePropietarioNoExisteExcepcion.class
     })
     public ResponseEntity<String> handleNotFoundException(
             Exception e

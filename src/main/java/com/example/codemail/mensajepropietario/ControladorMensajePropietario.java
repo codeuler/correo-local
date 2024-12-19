@@ -10,26 +10,26 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mensajes/complejos")
-public class MensajePropietarioControlador {
-    private final MensajePropietarioService mensajePropietarioService;
+public class ControladorMensajePropietario {
+    private final ServicioMensajePropietario servicioMensajePropietario;
 
-    public MensajePropietarioControlador(MensajePropietarioService mensajePropietarioService) {
-        this.mensajePropietarioService = mensajePropietarioService;
+    public ControladorMensajePropietario(ServicioMensajePropietario servicioMensajePropietario) {
+        this.servicioMensajePropietario = servicioMensajePropietario;
     }
 
     @GetMapping("/obtener/{folder}")
-    public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(
+    public ResponseEntity<List<MensajePropietarioRespuesta>> obtenerMensajes(
             @AuthenticationPrincipal Usuario usuario,
             @PathVariable Integer folder
     ) throws MensajeNoExisteExcepcion {
-        return mensajePropietarioService.obtenerMensajes(usuario, folder);
+        return servicioMensajePropietario.obtenerMensajes(usuario, folder);
     }
 
     @PostMapping("/revisar")
     public ResponseEntity<String> revisarMensaje(
             @AuthenticationPrincipal Usuario usuario,
-            @RequestBody MensajePropietarioRevisar mensajePropietarioRevisar
-    ) throws MensajePropietarioNoExisteException, MensajeNoExisteExcepcion {
-        return mensajePropietarioService.revisarMensaje(usuario, mensajePropietarioRevisar);
+            @RequestBody MensajePropietarioARevisar mensajePropietarioARevisar
+    ) throws MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
+        return servicioMensajePropietario.revisarMensaje(usuario, mensajePropietarioARevisar);
     }
 }

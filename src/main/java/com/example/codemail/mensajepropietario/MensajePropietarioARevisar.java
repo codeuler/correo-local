@@ -1,5 +1,5 @@
 package com.example.codemail.mensajepropietario;
 
-public record MensajePropietarioRevisar(
+public record MensajePropietarioARevisar(
         Long mensajeId
 ) {}
