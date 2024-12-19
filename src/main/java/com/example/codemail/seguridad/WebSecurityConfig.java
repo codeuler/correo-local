@@ -1,6 +1,6 @@
 package com.example.codemail.seguridad;
 
-import com.example.codemail.jwt.JwtAuthenticationFilter;
+import com.example.codemail.jwt.FiltroAutenticacionJwt;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,11 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final FiltroAutenticacionJwt filtroAutenticacionJwt;
     private final AuthenticationProvider authenticationProvider;
 
-    public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    public WebSecurityConfig(FiltroAutenticacionJwt filtroAutenticacionJwt, AuthenticationProvider authenticationProvider) {
+        this.filtroAutenticacionJwt = filtroAutenticacionJwt;
         this.authenticationProvider = authenticationProvider;
     }
 
@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                  * Al llamar a addFilterBefore, estás indicando que jwtAuthenticationFilter debe ser agregado antes del
                  * filtro de autenticación de nombre de usuario y contraseña (UsernamePasswordAuthenticationFilter).
                  */
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filtroAutenticacionJwt, UsernamePasswordAuthenticationFilter.class)
                 .csrf(
                     AbstractHttpConfigurer::disable
                 )

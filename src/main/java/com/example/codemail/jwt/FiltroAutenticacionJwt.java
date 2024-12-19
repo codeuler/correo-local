@@ -23,13 +23,13 @@ import java.io.IOException;
  * solicitud http
  */
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class FiltroAutenticacionJwt extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final ServicioJwt servicioJwt;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
+    public FiltroAutenticacionJwt(ServicioJwt servicioJwt, UserDetailsService userDetailsService) {
+        this.servicioJwt = servicioJwt;
         this.userDetailsService = userDetailsService;
     }
     // Es una convención en Spring Security para definir métodos que contienen la lógica principal de un filtro personalizado
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        username = jwtService.getUsernameFromToken(token);
+        username = servicioJwt.getUsernameFromToken(token);
         /*
          * En aplicaciones que utilizan Spring Security (o algún otro mecanismo de seguridad similar), el contexto de
          * seguridad (SecurityContext) es un objeto que contiene los detalles de la autenticación y autorización del
@@ -73,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             //Busca en la base de datos por el username utilizando el método sobreescrito
             // ApplicationConfig::userDetailService
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtService.isTokenValid(token, userDetails)) {
+            if (servicioJwt.isTokenValid(token, userDetails)) {
                 /*
                  * UsernamePasswordAuthenticationToken: Esta es una clase proporcionada por Spring Security que
                  * implementa la interfaz Authentication. Se utiliza para representar una solicitud de autenticación

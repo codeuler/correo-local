@@ -1,6 +1,6 @@
 package com.example.codemail.autenticacion;
 
-import com.example.codemail.jwt.JwtService;
+import com.example.codemail.jwt.ServicioJwt;
 import com.example.codemail.folder.CarpetasDefecto;
 import com.example.codemail.folder.FolderService;
 import com.example.codemail.usuario.Usuario;
@@ -19,14 +19,14 @@ import java.util.Optional;
 public class ServicioAutenticacion {
     private final UsuarioMapper usuarioMapper;
     private final UsuarioRepository usuarioRepository;
-    private final JwtService jwtService;
+    private final ServicioJwt servicioJwt;
     private final AuthenticationManager authenticationManager;
     private final FolderService folderService;
 
-    public ServicioAutenticacion(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, JwtService jwtService, AuthenticationManager authenticationManager, FolderService folderService) {
+    public ServicioAutenticacion(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ServicioJwt servicioJwt, AuthenticationManager authenticationManager, FolderService folderService) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
-        this.jwtService = jwtService;
+        this.servicioJwt = servicioJwt;
         this.authenticationManager = authenticationManager;
         this.folderService = folderService;
     }
@@ -75,7 +75,7 @@ public class ServicioAutenticacion {
         //Buscar al usuario en la base de datos
         UserDetails usuario = usuarioRepository.findByEmail(request.username()).orElseThrow();
         //Crear el token para el usuario
-        String token = jwtService.getToken(usuario);
+        String token = servicioJwt.getToken(usuario);
         //Retornar el token
         return new RespuestaAutenticacion(token);
     }
@@ -86,7 +86,7 @@ public class ServicioAutenticacion {
         // A todos los usuarios se les crea una carpeta de Entrada y Enviados
         folderService.crearFolder(usuario, CarpetasDefecto.ENTRADA.getNombreCarpeta());
         folderService.crearFolder(usuario, CarpetasDefecto.ENVIADOS.getNombreCarpeta());
-        return new RespuestaAutenticacion(jwtService.getToken(usuario));
+        return new RespuestaAutenticacion(servicioJwt.getToken(usuario));
     }
 
     public Optional<Usuario> buscarUsuario(String email) {

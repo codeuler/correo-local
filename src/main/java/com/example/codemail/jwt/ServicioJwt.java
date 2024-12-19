@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class ServicioJwt {
     private final String SECRET_KEY;
 
-    public JwtService(@Value("${semilla-encriptar.semilla}") String semilla) {
+    public ServicioJwt(@Value("${semilla-encriptar.semilla}") String semilla) {
         this.SECRET_KEY = Base64.getEncoder().encodeToString(semilla.getBytes());
     }
 
