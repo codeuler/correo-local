@@ -5,9 +5,9 @@ import com.example.codemail.autenticacion.ErrorRegistroExcepcion;
 import com.example.codemail.folder.FolderImposibleEliminarException;
 import com.example.codemail.folder.FolderNoExisteException;
 import com.example.codemail.folder.FolderYaExisteException;
-import com.example.codemail.mensaje.MensajeErrorCambioFolderException;
-import com.example.codemail.mensaje.MensajeNoExisteException;
-import com.example.codemail.mensaje.MensajePerteneceCarpetaOrigenException;
+import com.example.codemail.mensaje.ErrorCambioCarpetaExcepcion;
+import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
+import com.example.codemail.mensaje.MensajePerteneceCarpetaOrigenExcepcion;
 import com.example.codemail.mensajepropietario.MensajePropietarioNoExisteException;
 import com.example.codemail.usuario.UsuarioCorreoNoValidoException;
 import org.springframework.http.HttpStatus;
@@ -38,8 +38,8 @@ public class GestorErroresHttp {
     @ExceptionHandler(value = {
             FolderImposibleEliminarException.class,
             FolderYaExisteException.class,
-            MensajeErrorCambioFolderException.class,
-            MensajePerteneceCarpetaOrigenException.class,
+            ErrorCambioCarpetaExcepcion.class,
+            MensajePerteneceCarpetaOrigenExcepcion.class,
             UsuarioCorreoNoValidoException.class,
             ErrorRegistroExcepcion.class
     })
@@ -51,7 +51,7 @@ public class GestorErroresHttp {
 
     @ExceptionHandler(value = {
             FolderNoExisteException.class,
-            MensajeNoExisteException.class,
+            MensajeNoExisteExcepcion.class,
             MensajePropietarioNoExisteException.class
     })
     public ResponseEntity<String> handleNotFoundException(

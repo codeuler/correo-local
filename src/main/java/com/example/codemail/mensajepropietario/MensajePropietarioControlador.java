@@ -1,6 +1,6 @@
 package com.example.codemail.mensajepropietario;
 
-import com.example.codemail.mensaje.MensajeNoExisteException;
+import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +21,7 @@ public class MensajePropietarioControlador {
     public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(
             @AuthenticationPrincipal Usuario usuario,
             @PathVariable Integer folder
-    ) throws MensajeNoExisteException {
+    ) throws MensajeNoExisteExcepcion {
         return mensajePropietarioService.obtenerMensajes(usuario, folder);
     }
 
@@ -29,7 +29,7 @@ public class MensajePropietarioControlador {
     public ResponseEntity<String> revisarMensaje(
             @AuthenticationPrincipal Usuario usuario,
             @RequestBody MensajePropietarioRevisar mensajePropietarioRevisar
-    ) throws MensajePropietarioNoExisteException, MensajeNoExisteException {
+    ) throws MensajePropietarioNoExisteException, MensajeNoExisteExcepcion {
         return mensajePropietarioService.revisarMensaje(usuario, mensajePropietarioRevisar);
     }
 }

@@ -28,33 +28,33 @@ public class MensajeControlador {
 
     @PutMapping("/cambiarFolder")
     public ResponseEntity<String> cambiarFolder(
-            @RequestBody MensajeCambiar mensajeCambiar,
+            @RequestBody MensajeAActualizar mensajeAActualizar,
             @AuthenticationPrincipal Usuario usuario
-    ) throws MensajeNoExisteException, MensajeErrorCambioFolderException {
-        return mensajeService.cambiarFolder(mensajeCambiar, usuario);
+    ) throws MensajeNoExisteExcepcion, ErrorCambioCarpetaExcepcion {
+        return mensajeService.cambiarFolder(mensajeAActualizar, usuario);
     }
 
     @GetMapping("/{mensajeId}/validacionFolder")
     public ResponseEntity<String> validacionFolder(
             @PathVariable Long mensajeId,
             @AuthenticationPrincipal Usuario usuario
-    ) throws MensajeNoExisteException {
+    ) throws MensajeNoExisteExcepcion {
         return mensajeService.validarFolder(mensajeId, usuario);
     }
 
     @DeleteMapping("/eliminar/folder")
     public ResponseEntity<String> eliminarFolder(
-            @RequestBody MensajeEliminarFolder mensajeEliminarFolder,
+            @RequestBody MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta,
             @AuthenticationPrincipal Usuario usuario
-    ) throws FolderNoExisteException, MensajePerteneceCarpetaOrigenException, MensajePropietarioNoExisteException, MensajeNoExisteException {
-        return mensajeService.eliminarMensajeFolder(mensajeEliminarFolder, usuario);
+    ) throws FolderNoExisteException, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteException, MensajeNoExisteExcepcion {
+        return mensajeService.eliminarMensajeFolder(mensajeAEliminarDeCarpeta, usuario);
     }
 
     @DeleteMapping("/eliminar")
     public ResponseEntity<String> eliminarMensaje(
-            @RequestBody MensajeEliminar mensajeEliminar,
+            @RequestBody MensajeAEliminar mensajeAEliminar,
             @AuthenticationPrincipal Usuario usuario
-    ) throws MensajeNoExisteException {
-        return mensajeService.eliminarMensaje(mensajeEliminar, usuario);
+    ) throws MensajeNoExisteExcepcion {
+        return mensajeService.eliminarMensaje(mensajeAEliminar, usuario);
     }
 }

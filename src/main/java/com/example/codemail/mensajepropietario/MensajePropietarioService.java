@@ -3,8 +3,8 @@ package com.example.codemail.mensajepropietario;
 import com.example.codemail.folder.Folder;
 import com.example.codemail.folder.FolderRepository;
 import com.example.codemail.mensaje.Mensaje;
-import com.example.codemail.mensaje.MensajeNoExisteException;
-import com.example.codemail.mensaje.MensajeRepository;
+import com.example.codemail.mensaje.MensajeNoExisteExcepcion;
+import com.example.codemail.mensaje.RepositorioMensaje;
 import com.example.codemail.usuario.Usuario;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 public class MensajePropietarioService {
     private final MensajePropietarioRepository mensajePropietarioRepository;
     private final MensajePropietarioMapper mensajePropietarioMapper;
-    private final MensajeRepository mensajeRepository;
+    private final RepositorioMensaje repositorioMensaje;
     private final FolderRepository folderRepository;
 
-    public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, MensajeRepository mensajeRepository, FolderRepository folderRepository) {
+    public MensajePropietarioService(MensajePropietarioRepository mensajePropietarioRepository, MensajePropietarioMapper mensajePropietarioMapper, RepositorioMensaje repositorioMensaje, FolderRepository folderRepository) {
         this.mensajePropietarioRepository = mensajePropietarioRepository;
         this.mensajePropietarioMapper = mensajePropietarioMapper;
-        this.mensajeRepository = mensajeRepository;
+        this.repositorioMensaje = repositorioMensaje;
         this.folderRepository = folderRepository;
     }
 
@@ -31,10 +31,10 @@ public class MensajePropietarioService {
         mensajePropietarioRepository.save(mensajePropietario);
     }
 
-    public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteException {
+    public ResponseEntity<List<MensajePropietarioEntrega>> obtenerMensajes(Usuario usuario, Integer folderId) throws MensajeNoExisteExcepcion {
         //Obtener el folder especifico del usuario
         Folder carpeta = folderRepository.findByIdAndPropietario(folderId,usuario)
-                .orElseThrow(() -> new MensajeNoExisteException("El folder con id" + folderId + " no existe"));
+                .orElseThrow(() -> new MensajeNoExisteExcepcion("El folder con id" + folderId + " no existe"));
 
         return ResponseEntity.ok(carpeta.getMensajes()
                 .stream()
@@ -46,9 +46,9 @@ public class MensajePropietarioService {
         );
     }
 
-    public ResponseEntity<String> revisarMensaje(Usuario usuario, MensajePropietarioRevisar mensajePropietarioRevisar) throws MensajeNoExisteException, MensajePropietarioNoExisteException {
+    public ResponseEntity<String> revisarMensaje(Usuario usuario, MensajePropietarioRevisar mensajePropietarioRevisar) throws MensajeNoExisteExcepcion, MensajePropietarioNoExisteException {
         // Revisar que el mensaje exista
-        Mensaje mensaje = mensajeRepository.findById(mensajePropietarioRevisar.mensajeId()).orElseThrow(() -> new MensajeNoExisteException("No existe el mensaje con id " + mensajePropietarioRevisar.mensajeId()));
+        Mensaje mensaje = repositorioMensaje.findById(mensajePropietarioRevisar.mensajeId()).orElseThrow(() -> new MensajeNoExisteExcepcion("No existe el mensaje con id " + mensajePropietarioRevisar.mensajeId()));
         // Revisar que el mensaje tenga relación con algún destinatario
         MensajePropietario mensajePropietarioEntregar = mensajePropietarioRepository.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow(() -> new MensajePropietarioNoExisteException("No se ha encontrado dicho mensaje asociado al usuario"));
         mensajePropietarioEntregar.setRevisado(true);

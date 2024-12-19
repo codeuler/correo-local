@@ -1,6 +1,6 @@
 package com.example.codemail.mensaje;
 
-public record MensajeCambiar(
+public record MensajeAActualizar(
         Long idMesajeCambiar,
         Integer idFolderOrigen,
         Integer idFolderDestino

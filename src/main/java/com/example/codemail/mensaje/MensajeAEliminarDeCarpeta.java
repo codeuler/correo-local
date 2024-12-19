@@ -1,6 +1,6 @@
 package com.example.codemail.mensaje;
 
-public record MensajeEliminarFolder(
+public record MensajeAEliminarDeCarpeta(
         Long mensajeId,
         Integer folderId
 ) {

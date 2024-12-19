@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Service
-public class MensajeMapper {
+public class MensajeMapeador {
     public Mensaje toMensaje(MensajeEnviado mensajeEnviado, Usuario usuario, Set<Folder> folder) {
         return new Mensaje(
                 mensajeEnviado.asunto(),

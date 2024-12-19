@@ -1,6 +1,6 @@
 package com.example.codemail.mensaje;
 
-public record MensajeEliminar(
+public record MensajeAEliminar(
         Long mensajeId
 ) {
 }
