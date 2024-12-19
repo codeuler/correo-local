@@ -1,4 +1,4 @@
-package com.example.codemail.errores;
+package com.example.codemail.gestionerrores;
 
 import com.example.codemail.autenticacion.AutenticacionNoValidaExcepcion;
 import com.example.codemail.autenticacion.ErrorRegistroExcepcion;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 
 @ControllerAdvice
-public class ManejadorDeErroresHttp {
+public class GestorErroresHttp {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<HashMap<String, String>> handleMethodArgumentNotValidException(
