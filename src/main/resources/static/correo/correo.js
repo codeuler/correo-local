@@ -605,7 +605,7 @@ asideCrearCarpetasContenedor.addEventListener("click", () => {
 
 document.querySelector(".asideDerecho__logout").addEventListener("click", (evento) => {
   window.localStorage.removeItem("token");
-  window.location.replace("/login");
+  window.location.replace("/auth/login");
   console.log("Logout existoso");
 })
 const contenedorInfoUsuario = document.querySelector(".contenedor--infoUsuario");

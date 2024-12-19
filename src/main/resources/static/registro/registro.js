@@ -68,7 +68,7 @@ document.querySelector(".card__form").addEventListener("submit",  event=> {
     errorCorreo.style.display = "none";
     cuentaCreada.style.display = "none";
     errorExtra.style.display = "none";
-    fetch("/registro",{
+    fetch("/auth/registro",{
         method: "POST",
         headers: {
             "Content-Type": "application/JSON",

@@ -87,7 +87,7 @@ public class ServicioMensaje {
             throws MensajeNoExisteExcepcion, ErrorCambioCarpetaExcepcion {
         Carpeta carpetaBase = repositorioCarpeta.findById(mensajeAActualizar.idFolderOrigen()).orElseThrow(() -> new MensajeNoExisteExcepcion("El folder " + mensajeAActualizar.idFolderOrigen() + " no existe"));
         Carpeta carpetaCambio = repositorioCarpeta.findById(mensajeAActualizar.idFolderDestino()).orElseThrow(() -> new MensajeNoExisteExcepcion("El folder " + mensajeAActualizar.idFolderDestino() + " no existe"));
-        Mensaje mensaje = repositorioMensaje.findByIdAndFolder(mensajeAActualizar.idMesajeCambiar(), Set.of(carpetaBase)).orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje no existe"));
+        Mensaje mensaje = repositorioMensaje.findByIdAndCarpeta(mensajeAActualizar.idMesajeCambiar(), Set.of(carpetaBase)).orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje no existe"));
         if (carpetaCambio.getNombre().equals(CarpetaPorDefecto.ENTRADA.getNombreCarpeta()) || carpetaCambio.getNombre().equals(CarpetaPorDefecto.ENVIADOS.getNombreCarpeta()) || carpetaCambio.getId().equals(carpetaBase.getId())) {
             throw new ErrorCambioCarpetaExcepcion("No se puede cambiar a carpeta: Entrada, Enviados o sí mismo");
         }

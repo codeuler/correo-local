@@ -32,7 +32,7 @@ public class ConfiguracionSeguridadWeb {
         http.
                 authorizeHttpRequests(
                     (requests) -> requests
-                            .requestMatchers("/registro","/registro/**","/usuarios","/login/**","/inbox","/correo","/correo/**"
+                            .requestMatchers("/registro/**","/usuarios","/login/**","/bandeja","/correo/**", "/auth/**"
                                     ).permitAll()
                             .anyRequest().authenticated()
                 )/*.formLogin(

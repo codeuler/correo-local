@@ -16,7 +16,7 @@ form.addEventListener("submit", e => {
     e.preventDefault();
     errorOutput.style.display = "none";
     errorOutput.textContent = "";
-    fetch("/login", {
+    fetch("/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/JSON"
@@ -31,7 +31,7 @@ form.addEventListener("submit", e => {
                 //Guardar jwt
                 const {token} = data;
                 localStorage.setItem("token", token);
-                window.location.replace("/inbox")
+                window.location.replace("/bandeja")
             })
         } else if (response.status === 401) {
             errorOutput.textContent = "Error de credenciales";

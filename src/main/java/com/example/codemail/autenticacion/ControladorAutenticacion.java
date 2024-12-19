@@ -6,8 +6,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/auth")
 public class ControladorAutenticacion {
     public final ServicioAutenticacion servicioAutenticacion;
 
@@ -23,11 +25,6 @@ public class ControladorAutenticacion {
     @GetMapping("/login")
     public String loginTemplate() {
         return "login/login";
-    }
-
-    @GetMapping("/correo")
-    public String correoTemplate() {
-        return "correo/correo";
     }
 
     @PostMapping(value = "login")

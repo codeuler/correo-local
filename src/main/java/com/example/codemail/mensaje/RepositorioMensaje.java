@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface RepositorioMensaje extends JpaRepository<Mensaje, Long> {
-    Optional<Mensaje> findByIdAndFolder(Long id, Set<Carpeta> carpeta);
+    Optional<Mensaje> findByIdAndCarpeta(Long id, Set<Carpeta> carpeta);
 }
