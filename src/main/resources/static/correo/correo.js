@@ -563,7 +563,7 @@ botonRedactar.addEventListener("click", () => {
 })
 
 function getInfoUsuario() {
-    return fetch("/usuarios/informacion", {
+    return fetch("/usuarios", {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",
