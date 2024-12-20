@@ -22,8 +22,8 @@ function agregarFuncionAbrir(event) {
                             <p class="main__remitenteCorreoAbierto">Remitente: ${remitente}</p>
                             <p class="main__contenidoCorreoAbierto">${contenido}</p>
                         </div>`;
-    fetch(`mensajes/complejos/revisar`,  {
-        method: "POST",
+    fetch(`mensajes-propietarios/mensajes/${mensajeId}/estado`,  {
+        method: "PUT",
         headers: {
             "Content-Type": "application/JSON",
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
@@ -176,7 +176,7 @@ function eliminarMensajeCarpeta(mensajeId, folderId) {
 }
 
 function eliminarMensajeCompletamente(mensajeId) {
-    return fetch(`carpetas/eliminar`,{
+    return fetch(`mensajes/${mensajeId}`,{
         method:"DELETE",
         headers:{
             "Content-Type": "application/json",
@@ -228,7 +228,7 @@ function eliminarMensaje(e) {
 }
 
 function obtenerMensajes(folderId) {
-    fetch(`mensajes/complejos/obtener/${folderId}`, {
+    fetch(`mensajes-propietarios/carpetas/${folderId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",

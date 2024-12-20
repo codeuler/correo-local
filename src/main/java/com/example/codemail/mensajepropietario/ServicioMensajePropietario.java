@@ -46,9 +46,9 @@ public class ServicioMensajePropietario {
         );
     }
 
-    public ResponseEntity<String> revisarMensaje(Usuario usuario, MensajePropietarioARevisar mensajePropietarioARevisar) throws MensajeNoExisteExcepcion, MensajePropietarioNoExisteExcepcion {
+    public ResponseEntity<String> revisarMensaje(Usuario usuario, Long idMensaje) throws MensajeNoExisteExcepcion, MensajePropietarioNoExisteExcepcion {
         // Revisar que el mensaje exista
-        Mensaje mensaje = repositorioMensaje.findById(mensajePropietarioARevisar.mensajeId()).orElseThrow(() -> new MensajeNoExisteExcepcion("No existe el mensaje con id " + mensajePropietarioARevisar.mensajeId()));
+        Mensaje mensaje = repositorioMensaje.findById(idMensaje).orElseThrow(() -> new MensajeNoExisteExcepcion("No existe el mensaje con id " + idMensaje));
         // Revisar que el mensaje tenga relación con algún destinatario
         MensajePropietario mensajePropietarioEntregar = repositorioMensajePropietario.findByUsuarioAndMensaje(usuario, mensaje).orElseThrow(() -> new MensajePropietarioNoExisteExcepcion("No se ha encontrado dicho mensaje asociado al usuario"));
         mensajePropietarioEntregar.setRevisado(true);

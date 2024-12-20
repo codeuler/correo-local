@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mensajes/complejos")
+@RequestMapping("/mensajes-propietarios")
 public class ControladorMensajePropietario {
     private final ServicioMensajePropietario servicioMensajePropietario;
 
@@ -17,19 +17,19 @@ public class ControladorMensajePropietario {
         this.servicioMensajePropietario = servicioMensajePropietario;
     }
 
-    @GetMapping("/obtener/{folder}")
+    @GetMapping("/carpetas/{idCarpeta}")
     public ResponseEntity<List<MensajePropietarioRespuesta>> obtenerMensajes(
             @AuthenticationPrincipal Usuario usuario,
-            @PathVariable Integer folder
+            @PathVariable Integer idCarpeta
     ) throws MensajeNoExisteExcepcion {
-        return servicioMensajePropietario.obtenerMensajes(usuario, folder);
+        return servicioMensajePropietario.obtenerMensajes(usuario, idCarpeta);
     }
 
-    @PostMapping("/revisar")
+    @PutMapping("/mensajes/{idMensaje}/estado")
     public ResponseEntity<String> revisarMensaje(
             @AuthenticationPrincipal Usuario usuario,
-            @RequestBody MensajePropietarioARevisar mensajePropietarioARevisar
+            @PathVariable Long idMensaje
     ) throws MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
-        return servicioMensajePropietario.revisarMensaje(usuario, mensajePropietarioARevisar);
+        return servicioMensajePropietario.revisarMensaje(usuario, idMensaje);
     }
 }
