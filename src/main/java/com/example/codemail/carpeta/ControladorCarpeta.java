@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/folders")
+@RequestMapping("/carpetas")
 public class ControladorCarpeta {
     private final ServicioCarpeta servicioCarpeta;
 
@@ -19,17 +19,19 @@ public class ControladorCarpeta {
         this.servicioCarpeta = servicioCarpeta;
     }
 
-    @GetMapping("/obtener/todos")
-    public ResponseEntity<List<CarpetaRespuesta>> obtenerTodos(@AuthenticationPrincipal Usuario usuario) {
+    @GetMapping
+    public ResponseEntity<List<CarpetaRespuesta>> obtenerTodas(@AuthenticationPrincipal Usuario usuario) {
         return servicioCarpeta.getAll(usuario);
     }
 
-    @PostMapping("/crear")
-    public ResponseEntity<String> crearFolder(@AuthenticationPrincipal Usuario usuario, @RequestBody @Validated CarpetaAGuardar carpetaAGuardar) throws FolderYaExisteException {
+    @PostMapping
+    public ResponseEntity<String> crearFolder(@AuthenticationPrincipal Usuario usuario,
+                                              @RequestBody @Validated CarpetaAGuardar carpetaAGuardar
+    ) throws FolderYaExisteException {
         return servicioCarpeta.crearFolder(usuario, carpetaAGuardar);
     }
 
-    @PutMapping("/{idCarpeta}/actualizar")
+    @PutMapping("/{idCarpeta}")
     public ResponseEntity<CarpetaRespuesta> actualizarFolder(@AuthenticationPrincipal Usuario usuario,
                                                              @PathVariable Integer idCarpeta,
                                                              @Validated @RequestBody CarpetaAGuardar carpetaAGuardar
@@ -37,14 +39,14 @@ public class ControladorCarpeta {
         return servicioCarpeta.actualizarFolder(usuario, idCarpeta, carpetaAGuardar);
     }
 
-    @DeleteMapping("/eliminar")
+    @DeleteMapping("/{folderId}")
     public ResponseEntity<CarpetaRespuesta> eliminarFolder(@AuthenticationPrincipal Usuario usuario,
-                                                           @RequestBody @Validated CarpetaAEliminar carpetaAEliminar
+                                                           @PathVariable Integer folderId
     ) throws CarpetaNoExisteExcepcion, MensajePropietarioNoExisteExcepcion, CarpetaImposibleEliminarExcepcion {
-        return servicioCarpeta.eliminarFolder(usuario, carpetaAEliminar);
+        return servicioCarpeta.eliminarFolder(usuario, folderId);
     }
 
-    @GetMapping("/{nombreCarpeta}/id")
+    @GetMapping("/nombre/{nombreCarpeta}")
     public ResponseEntity<CarpetaRespuesta> obtenerFolder(@PathVariable String nombreCarpeta,
                                                           @AuthenticationPrincipal Usuario usuario
     ) throws CarpetaNoExisteExcepcion {

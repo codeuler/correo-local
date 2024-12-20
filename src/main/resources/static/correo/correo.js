@@ -291,15 +291,12 @@ function crearOption(contenido, value) {
 }
 
 function eliminarCarpeta(folderId) {
-    fetch("/folders/eliminar",{
+    fetch(`/carpetas/${folderId}`,{
         method: "DELETE",
         headers: {
             "Content-Type": "application/JSON",
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
-        },
-        body: JSON.stringify({
-            folderId: folderId
-        })
+        }
     }).then((respuesta)=>{
         if (!respuesta.ok) {
             window.alert("El folder no pudo ser eliminado: ");
@@ -312,7 +309,7 @@ function eliminarCarpeta(folderId) {
 }
 
 function actualizarNombreCarpeta(folderId, nuevoNombre) {
-    fetch(`/folders/${folderId}/actualizar`,{
+    fetch(`/carpetas/${folderId}`,{
         method: "PUT",
         headers: {
             "Content-Type": "application/JSON",
@@ -402,7 +399,7 @@ function crearBotonFolder(folder) {
 }
 
 function crearFolder(folder) {
-    return fetch(`/folders/crear`, {
+    return fetch(`carpetas`, {
         method: "POST",
         headers: {
             "Content-Type": "application/JSON",
@@ -429,7 +426,7 @@ function crearFolder(folder) {
 }
 
 function obtenerFolders() {
-    return fetch("folders/obtener/todos", {
+    return fetch("carpetas", {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",
@@ -472,7 +469,7 @@ function cargarFolders() {
 }
 
 function buscarCarpeta(nombreCarpeta) {
-    return fetch(`/folders/${nombreCarpeta}/id`, {
+    return fetch(`/carpetas/nombre/${nombreCarpeta}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",

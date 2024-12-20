@@ -67,8 +67,8 @@ public class ServicioCarpeta {
         return ResponseEntity.ok().body(carpetaMapeador.toFolderRespuesta(carpeta));
     }
 
-    public ResponseEntity<CarpetaRespuesta> eliminarFolder(Usuario usuario, CarpetaAEliminar carpetaAEliminar) throws CarpetaNoExisteExcepcion, CarpetaImposibleEliminarExcepcion, MensajePropietarioNoExisteExcepcion {
-        Carpeta carpeta = repositorioCarpeta.findByIdAndPropietario(carpetaAEliminar.folderId(), usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("La carpeta solicitada no existe dentro de las carpetas almacenadas"));
+    public ResponseEntity<CarpetaRespuesta> eliminarFolder(Usuario usuario, Integer folderId) throws CarpetaNoExisteExcepcion, CarpetaImposibleEliminarExcepcion, MensajePropietarioNoExisteExcepcion {
+        Carpeta carpeta = repositorioCarpeta.findByIdAndPropietario(folderId, usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("La carpeta solicitada no existe dentro de las carpetas almacenadas"));
         Carpeta carpetaEntrada = repositorioCarpeta.findByNombreAndPropietario(CarpetaPorDefecto.ENTRADA.getNombreCarpeta(), usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("La carpeta 'Entrada' no existe dentro de las carpetas almacenadas"));
         Carpeta carpetaEnviados = repositorioCarpeta.findByNombreAndPropietario(CarpetaPorDefecto.ENVIADOS.getNombreCarpeta(), usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("La carpeta 'Enviados' solicitada no existe dentro de las carpetas almacenadas"));
         // Verificar que el folder a eliminar no sea el de Entrada o Enviados.
