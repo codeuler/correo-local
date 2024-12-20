@@ -43,14 +43,13 @@ function agregarFuncionAbrir(event) {
 }
 
 function llamarApiCambiarMensajeFolder(mensajeId, idFolderOrigen, idFolderDestino) {
-    return fetch("mensajes/cambiarFolder", {
+    return fetch(`mensajes/${mensajeId}/carpeta`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/JSON",
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
         },
         body: JSON.stringify({
-            idMesajeCambiar: mensajeId,
             idFolderOrigen: idFolderOrigen,
             idFolderDestino: idFolderDestino
         })
@@ -111,7 +110,7 @@ function cambiarMensajeFolder(e) {
 }
 
 function verificarFolder(mensajeId) {
-    return fetch(`mensajes/${mensajeId}/validacionFolder`, {
+    return fetch(`mensajes/${mensajeId}/es-entrada-o-enviados`, {
         method: "GET",
         headers: {
             "Content-Type": "application/JSON",
@@ -154,16 +153,12 @@ function vaciarMainMensajes() {
 }
 
 function eliminarMensajeCarpeta(mensajeId, folderId) {
-    return fetch("mensajes/eliminar/folder",{
+    return fetch(`carpetas/${folderId}/mensaje/${mensajeId}`,{
         method:"DELETE",
         headers:{
             "Content-Type": "application/json",
             'Authorization': `Bearer ${localStorage.getItem("token")}` // Incluir el token en el encabezado Authorization
-        },
-        body: JSON.stringify({
-            mensajeId: mensajeId,
-            folderId: folderId
-        })
+        }
     }).then(response => {
         switch (response.status) {
             case 409:
@@ -181,7 +176,7 @@ function eliminarMensajeCarpeta(mensajeId, folderId) {
 }
 
 function eliminarMensajeCompletamente(mensajeId) {
-    return fetch("mensajes/eliminar",{
+    return fetch(`carpetas/eliminar`,{
         method:"DELETE",
         headers:{
             "Content-Type": "application/json",
@@ -526,7 +521,7 @@ botonRedactar.addEventListener("click", () => {
     formRedaccion.addEventListener("submit", event => {
         event.preventDefault();
         const correos = divMain.querySelector(".main__destinatarios").value.split(", ");
-        fetch(`mensajes/crear`,  {
+        fetch(`mensajes`,  {
             method: "POST",
             headers: {
                 "Content-Type": "application/JSON",

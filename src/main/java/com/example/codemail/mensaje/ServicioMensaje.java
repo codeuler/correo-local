@@ -83,11 +83,11 @@ public class ServicioMensaje {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    public ResponseEntity<String> cambiarFolder(MensajeAActualizar mensajeAActualizar, Usuario usuario)
+    public ResponseEntity<String> cambiarFolder(MensajeAActualizar mensajeAActualizar, Long idMensajeCambiar, Usuario usuario)
             throws MensajeNoExisteExcepcion, ErrorCambioCarpetaExcepcion {
         Carpeta carpetaBase = repositorioCarpeta.findById(mensajeAActualizar.idFolderOrigen()).orElseThrow(() -> new MensajeNoExisteExcepcion("El folder " + mensajeAActualizar.idFolderOrigen() + " no existe"));
         Carpeta carpetaCambio = repositorioCarpeta.findById(mensajeAActualizar.idFolderDestino()).orElseThrow(() -> new MensajeNoExisteExcepcion("El folder " + mensajeAActualizar.idFolderDestino() + " no existe"));
-        Mensaje mensaje = repositorioMensaje.findByIdAndCarpeta(mensajeAActualizar.idMesajeCambiar(), Set.of(carpetaBase)).orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje no existe"));
+        Mensaje mensaje = repositorioMensaje.findByIdAndCarpeta(idMensajeCambiar, Set.of(carpetaBase)).orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje no existe"));
         if (carpetaCambio.getNombre().equals(CarpetaPorDefecto.ENTRADA.getNombreCarpeta()) || carpetaCambio.getNombre().equals(CarpetaPorDefecto.ENVIADOS.getNombreCarpeta()) || carpetaCambio.getId().equals(carpetaBase.getId())) {
             throw new ErrorCambioCarpetaExcepcion("No se puede cambiar a carpeta: Entrada, Enviados o sí mismo");
         }
@@ -123,46 +123,10 @@ public class ServicioMensaje {
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Pertenece a la Carpeta de Entrada/Enviados");
     }
 
-    public ResponseEntity<String> eliminarMensajeFolder(MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta, Usuario usuario)
-            throws CarpetaNoExisteExcepcion, MensajePerteneceCarpetaOrigenExcepcion, MensajeNoExisteExcepcion, MensajePropietarioNoExisteExcepcion {
-        // Verificar si la carpeta existe
-        Carpeta carpeta = repositorioCarpeta.findByIdAndPropietario(mensajeAEliminarDeCarpeta.folderId(), usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("No existe la carpeta buscada"));
-
-        // Verificar si la carpeta no es de entrada o enviados
-        if (Arrays.asList(CarpetaPorDefecto.ENTRADA.getNombreCarpeta(), CarpetaPorDefecto.ENVIADOS.getNombreCarpeta()).contains(carpeta.getNombre())) {
-            throw new MensajePerteneceCarpetaOrigenExcepcion("El mensaje pertenece a la carpeta Entrada o enviados");
-        }
-
-        // Verificar si el mensaje existe
-        Mensaje mensaje = carpeta.getMensajes().stream().filter(
-                mensajes -> mensajes.getId().equals(mensajeAEliminarDeCarpeta.mensajeId())
-        ).findFirst().orElseThrow(() -> new MensajeNoExisteExcepcion("El mensaje con id " + mensajeAEliminarDeCarpeta.mensajeId() + " no existe"));
-
-        // Verificar si el mensaje corresponde a un envio o recibido del usuario
-        MensajePropietario MensajePropietario = repositorioMensajePropietario.findByUsuario(usuario).stream().filter(mensajeDestinatario -> mensajeDestinatario.getMensaje().getId().equals(mensajeAEliminarDeCarpeta.mensajeId())).findFirst().orElseThrow(() -> new MensajePropietarioNoExisteExcepcion("No Existe una relación entre el mensaje y un usuario"));
-        Carpeta carpetaEntrada = repositorioCarpeta.findByNombreAndPropietario(CarpetaPorDefecto.ENTRADA.getNombreCarpeta(), usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("No existe la carpeta 'Entrada'"));
-        Carpeta carpetaEnviados = repositorioCarpeta.findByNombreAndPropietario(CarpetaPorDefecto.ENVIADOS.getNombreCarpeta(), usuario).orElseThrow(() -> new CarpetaNoExisteExcepcion("No existe la carpeta 'Enviados'"));
-        ServicioCarpeta.desvincularMensajeFolder(mensaje, carpeta);
-
-        // Devolver el mensaje a su carpeta de origen
-        switch (MensajePropietario.getRolMensajePropietario()) {
-            case REMITENTE -> ServicioCarpeta.vincularMensajeFolder(mensaje, carpetaEnviados);
-            case DESTINATARIO -> ServicioCarpeta.vincularMensajeFolder(mensaje, carpetaEntrada);
-            case AMBOS -> {
-                ServicioCarpeta.vincularMensajeFolder(mensaje, carpetaEnviados);
-                ServicioCarpeta.vincularMensajeFolder(mensaje, carpetaEntrada);
-            }
-            default -> {
-            }
-        }
-        repositorioMensaje.save(mensaje);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
-
-    public ResponseEntity<String> eliminarMensaje(MensajeAEliminar mensajeAEliminar, Usuario usuario)
+    public ResponseEntity<String> eliminarMensaje(Long mensajeId, Usuario usuario)
             throws MensajeNoExisteExcepcion {
         // Verificar si el mensaje existe
-        Mensaje mensaje = repositorioMensaje.findById(mensajeAEliminar.mensajeId())
+        Mensaje mensaje = repositorioMensaje.findById(mensajeId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El mensaje no existe"));
         // Lista para agrupar las carpetas en caso de que un mensaje este la bandeja de entrada como la de salida
         Set<Carpeta> carpetas = new HashSet<>();
@@ -172,7 +136,7 @@ public class ServicioMensaje {
             }
         });
         if (carpetas.stream().noneMatch(folder -> folder.getMensajes().contains(mensaje))) {
-            throw new MensajeNoExisteExcepcion("El mensaje con id " + mensajeAEliminar.mensajeId() + " no pertenece al usuario");
+            throw new MensajeNoExisteExcepcion("El mensaje con id " + mensajeId + " no pertenece al usuario");
         }
         // Desvincular el mensaje de la carpeta y viceversa
         carpetas.forEach(folder -> ServicioCarpeta.desvincularMensajeFolder(mensaje, folder));

@@ -18,7 +18,7 @@ public class MensajeControlador {
         this.servicioMensaje = servicioMensaje;
     }
 
-    @PostMapping("/crear")
+    @PostMapping
     public ResponseEntity<String> enviarMensaje(
             @RequestBody MensajeEnviado mensajeEnviado,
             @AuthenticationPrincipal Usuario usuario
@@ -26,15 +26,16 @@ public class MensajeControlador {
         return servicioMensaje.enviarMensaje(mensajeEnviado, usuario);
     }
 
-    @PutMapping("/cambiarFolder")
+    @PutMapping("/{idMensaje}/carpeta")
     public ResponseEntity<String> cambiarFolder(
             @RequestBody MensajeAActualizar mensajeAActualizar,
-            @AuthenticationPrincipal Usuario usuario
+            @AuthenticationPrincipal Usuario usuario,
+            @PathVariable Long idMensaje
     ) throws MensajeNoExisteExcepcion, ErrorCambioCarpetaExcepcion {
-        return servicioMensaje.cambiarFolder(mensajeAActualizar, usuario);
+        return servicioMensaje.cambiarFolder(mensajeAActualizar, idMensaje, usuario);
     }
 
-    @GetMapping("/{mensajeId}/validacionFolder")
+    @GetMapping("/{mensajeId}/es-entrada-o-enviados")
     public ResponseEntity<String> validacionFolder(
             @PathVariable Long mensajeId,
             @AuthenticationPrincipal Usuario usuario
@@ -42,19 +43,11 @@ public class MensajeControlador {
         return servicioMensaje.validarFolder(mensajeId, usuario);
     }
 
-    @DeleteMapping("/eliminar/folder")
-    public ResponseEntity<String> eliminarFolder(
-            @RequestBody MensajeAEliminarDeCarpeta mensajeAEliminarDeCarpeta,
-            @AuthenticationPrincipal Usuario usuario
-    ) throws CarpetaNoExisteExcepcion, MensajePerteneceCarpetaOrigenExcepcion, MensajePropietarioNoExisteExcepcion, MensajeNoExisteExcepcion {
-        return servicioMensaje.eliminarMensajeFolder(mensajeAEliminarDeCarpeta, usuario);
-    }
-
-    @DeleteMapping("/eliminar")
+    @DeleteMapping("/{idMensaje}")
     public ResponseEntity<String> eliminarMensaje(
-            @RequestBody MensajeAEliminar mensajeAEliminar,
+            @PathVariable Long idMensaje,
             @AuthenticationPrincipal Usuario usuario
     ) throws MensajeNoExisteExcepcion {
-        return servicioMensaje.eliminarMensaje(mensajeAEliminar, usuario);
+        return servicioMensaje.eliminarMensaje(idMensaje, usuario);
     }
 }

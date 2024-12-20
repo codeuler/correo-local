@@ -2,7 +2,6 @@ package com.example.codemail.mensaje;
 
 import jakarta.validation.constraints.NotEmpty;
 
-import java.util.Date;
 import java.util.Set;
 
 public record MensajeEnviado(
