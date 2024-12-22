@@ -28,13 +28,12 @@ public class ServicioCarpeta {
     }
 
     public ResponseEntity<List<CarpetaRespuesta>> getAll(Usuario usuario) {
-        List<CarpetaRespuesta> folders = repositorioCarpeta.findAllByPropietario(usuario)
-                .stream()
-                .map(carpetaMapeador::toFolderRespuesta)
-                .sorted(
-                        (folder1, folder2) -> folder1.nombre().compareToIgnoreCase(folder2.nombre())
-                ).collect(Collectors.toList());
-        return ResponseEntity.ok(folders);
+        return ResponseEntity.ok(
+                repositorioCarpeta.findAllByPropietarioOrderByNombreAsc(usuario)
+                        .stream()
+                        .map(carpetaMapeador::toFolderRespuesta)
+                        .collect(Collectors.toList())
+        );
     }
 
     public ResponseEntity<String> crearFolder(Usuario usuario, CarpetaAGuardar carpetaAGuardar) throws FolderYaExisteException {
