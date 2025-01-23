@@ -4,12 +4,17 @@ services:
     build: .
     ports:
       - "8080:8080"
-# Evitar llamar al comando build cada vez que haya cambios en el .jar
     volumes:
-      - ./target:/app
-      - ./env.properties:/app/env.properties
+      - ./target/codemail-0.0.1-SNAPSHOT.jar:/app/app_java.jar
     depends_on:
       - java_db
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      LLAVE_ENCRIPTAR: ${LLAVE_ENCRIPTAR}
   java_db:
     container_name: java_db
     image: postgres

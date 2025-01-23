@@ -61,7 +61,6 @@ El backend proporciona una API RESTful con los siguientes endpoints:
 ## Instrucciones de Configuración
 
 ### Requisitos Previos
-- **Java 17 o superior**
 - **Docker**: Nos permite manejar la ejecución de la aplicación web junto con la base de datos de una manera mucho más fácil a través de contenedores
 
 ### Configuración del Backend
