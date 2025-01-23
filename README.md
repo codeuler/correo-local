@@ -79,21 +79,15 @@ El backend proporciona una API RESTful con los siguientes endpoints:
    DB_NAME=nombre-de-tu-preferencia
    DB_USERNAME=username-de-tu-preferencia
    DB_PASSWORD=password-de-tu-prferencia
+   DB_HOST=java_db
+   DB_PORT=5432
+   LLAVE_ENCRIPTAR=debes-elegir-una-frase-lo-suficientemente-larga-como-para-que-su-cantidad-de-bits-sea->=256
    ```
-4. Crea un archivo `env.properties` para configurar las variables globales que usará java:
-    ```properties
-    DB_HOST=java_db
-    DB_PORT=5432
-    DB_NAME=mismo-nombre-de-.env
-    DB_USERNAME=mismo-username-que-.env
-    DB_PASSWORD=mismo-password-que-.env
-    LLAVE_ENCRIPTAR=debes-elegir-una-frase-lo-suficientemente-larga-como-para-que-su-cantidad-de-bits-sea->=256
-   ```
-5. Compila la aplicación haciendo uso de maven:
+4. Compila la aplicación haciendo uso de maven:
    ```bash
    ./mvnw clean install -D skipTests
    ```
-6. Ejecuta la aplicación haciendo uso de docker:
+5. Ejecuta la aplicación haciendo uso de docker:
    ```bash
    docker compose up
    ```
